@@ -1,0 +1,18 @@
+.sea{
+    display: flex;
+    
+}
+.flexSwitchCheckDefault{
+    display: flex;
+    align-items:  center;
+}
+.manage-user {
+    padding-top: 30px
+}
+.btn-save{
+    display: flex;
+    justify-content: flex-end;
+}
+.form-select{
+    
+}

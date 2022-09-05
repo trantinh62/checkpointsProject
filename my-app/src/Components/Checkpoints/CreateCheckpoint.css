@@ -1,0 +1,15 @@
+.create-check-form{ 
+    padding-top: 30px;
+}
+.title-create{
+    width: 120px;
+    display: flex;  
+    padding-right: 20px;
+}
+.date-title{
+    width: 120px;
+}
+.in-title{
+    display: flex;
+    padding-left: 20px;
+}
