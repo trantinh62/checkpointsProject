@@ -22,7 +22,7 @@ function ResetPassword() {
   };
   console.log(dataProfile);
 
-  const handleSumbit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       console.log(dataProfile);
@@ -38,38 +38,31 @@ function ResetPassword() {
   };
   return (
     <>
-      <div className="container" style={{ paddingTop: "50px" }}>
-        <div className="row">
-          <div className="col"></div>
-          <div className="col-6">
-            <h1>Link Reset password</h1>
-            <Form onSubmit={handleSumbit}>
-              <Form.Group className="mb-3" controlId="formBasicNewPass">
-                <Form.Label>New password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  onChange={onChangeInput}
-                  placeholder="New password"
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formBasiConfirmPass">
-                <Form.Label>Confirm password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password_confirm"
-                  onChange={onChangeInput}
-                  placeholder="Confirm password"
-                />
-              </Form.Group>
-
-              <Button variant="primary" type="submit">
-                Change
-              </Button>
-            </Form>
-          </div>
-          <div className="col"></div>
+      <div className="wrapper fadeInDown">
+        <div id="formContent">
+          <div className="fadeIn first"></div>
+          <form onSubmit={handleSubmit}>
+            <h1>Reset password Form</h1>
+            <input
+              type="password"
+              className="fadeIn second"
+              name="password"
+              onChange={onChangeInput}
+              placeholder="password"
+            ></input>
+            <input
+              type="password"
+              className="fadeIn second"
+              name="password_confirm"
+              onChange={onChangeInput}
+              placeholder="confirm password"
+            ></input>
+            <input
+              type="submit"
+              className="fadeIn fourth"
+              value="Submit"
+            ></input>
+          </form>
         </div>
       </div>
     </>

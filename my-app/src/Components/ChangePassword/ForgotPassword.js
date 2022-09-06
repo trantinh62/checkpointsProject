@@ -48,58 +48,32 @@ function ForgotPassword() {
 
   return (
     <>
-      <div className="container">
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <ToastContainer />
+      <div className="wrapper fadeInDown">
+        <div id="formContent">
+          <div className="fadeIn first"></div>
 
-        <div className="row">
-          <div className="col-4"></div>
-          <div className="col-4" style={{ paddingTop: "100px" }}>
+          <form onSubmit={handleSubmit}>
             <h1>Forgot password</h1>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={dataEmail.email}
-                  onChange={onChangeInput}
-                  placeholder="Enter email"
-                />
-                <Form.Text className="text-muted">
-                  We'll never share your email with anyone else.
-                </Form.Text>
-              </Form.Group>
+            <input
+              type="text"
+              className="fadeIn second"
+              name="email"
+              value={dataEmail.email}
+              onChange={onChangeInput}
+              placeholder="enter email to reset password"
+            ></input>
+            <input
+              type="submit"
+              className="fadeIn fourth"
+              value="Submit"
+            ></input>
+          </form>
 
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-              <Button
-                variant="primary"
-                type="button"
-                className="forgotpassword"
-                style={{ marginLeft: "100px" }}
-              >
-                <Link
-                  style={{ textDecoration: "none", color: "white" }}
-                  to="/login"
-                >
-                  Back to login!
-                </Link>
-              </Button>
-            </Form>
+          <div id="formFooter">
+            <a className="underlineHover" href="/login">
+              Back to login
+            </a>
           </div>
-          <div className="col-4"></div>
         </div>
       </div>
     </>

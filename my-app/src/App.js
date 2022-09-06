@@ -1,7 +1,6 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Login from "./Components/Login/Login";
-import Home from "./Components/Home/Home";
 import Register from "./Components/Register/Register";
 import Profile from "./Components/Profile/Profile";
 import ChangePassword from "./Components/ChangePassword/ChangePassword";
@@ -9,8 +8,9 @@ import ForgotPassword from "./Components/ChangePassword/ForgotPassword";
 import ResetPassword from "./Components/ChangePassword/ResetPassword";
 import Review from "./Components/Checkpoints/Checkpoints";
 import PerformCheckpoint from "./Components/Checkpoints/PerformCheckpoint";
+import ListPerform from "./Components/Checkpoints/ListPerform";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
-import SelectReviewerAndChecker from "./Components/Checkpoints/SelectReviewerAndChecker";
+import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
 
 import HistoryDetail from "./Components/History/HistoryDetail";
@@ -19,7 +19,7 @@ import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -60,18 +60,15 @@ function App() {
       </div>
 
       <Routes>
-        <Route path="/home" element={<Home />}></Route>
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/invite" element={<Invite />}></Route>
         <Route path="/users" element={<User />}></Route>
         <Route path="/changepassword" element={<ChangePassword />}></Route>
         <Route path="/review" element={<Review />}></Route>
-        <Route path="/checkpoints/:id" element={<PerformCheckpoint />}></Route>
-        <Route path="/createcheckpoint" element={<CreateCheckpoint />}></Route>
-        <Route
-          path="/selectreviewerandchecker/:id"
-          element={<SelectReviewerAndChecker />}
-        ></Route>
+        <Route path="/perform" element={<ListPerform />}></Route>
+        <Route path="/perform/:id" element={<PerformCheckpoint />}></Route>
+        <Route path="/create" element={<CreateCheckpoint />}></Route>
+        <Route path="/assign/:id" element={<Assign />}></Route>
         <Route path="/historys" element={<History />}></Route>
         <Route path="/historys/:id" element={<HistoryDetail />}></Route>
       </Routes>
