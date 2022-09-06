@@ -46,42 +46,44 @@ function ChangePassword() {
         <div className="row">
           <div className="col"></div>
           <div className="col-6">
-            <h1>Change password</h1>
-            <Form onSubmit={handleSumbit}>
-              <Form.Group className="mb-3" controlId="formBasicOldPass">
-                <Form.Label>Old password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="old_password"
-                  onChange={onChangeInput}
-                  placeholder="Old password"
-                />
-              </Form.Group>
+            <form className="form-profile">
+              <h1>Change password</h1>
+              <Form onSubmit={handleSumbit}>
+                <Form.Group className="mb-3" controlId="formBasicOldPass">
+                  <Form.Label>Old password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="old_password"
+                    onChange={onChangeInput}
+                    placeholder="Old password"
+                  />
+                </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formBasicNewPass">
-                <Form.Label>New password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password"
-                  onChange={onChangeInput}
-                  placeholder="New password"
-                />
-              </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicNewPass">
+                  <Form.Label>New password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    onChange={onChangeInput}
+                    placeholder="New password"
+                  />
+                </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formBasiConfirmPass">
-                <Form.Label>Confirm password</Form.Label>
-                <Form.Control
-                  type="password"
-                  name="password_confirm"
-                  onChange={onChangeInput}
-                  placeholder="Confirm password"
-                />
-              </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasiConfirmPass">
+                  <Form.Label>Confirm password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    name="password_confirm"
+                    onChange={onChangeInput}
+                    placeholder="Confirm password"
+                  />
+                </Form.Group>
 
-              <Button variant="primary" type="submit">
-                Change
-              </Button>
-            </Form>
+                <Button variant="primary" type="submit">
+                  Change
+                </Button>
+              </Form>
+            </form>
           </div>
           <div className="col"></div>
         </div>
