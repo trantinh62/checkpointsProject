@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axiosClient from "../../Api/axiosClient";
@@ -11,6 +11,7 @@ function Assgin() {
   const navigate = useNavigate();
   const params = useParams();
   const search = useLocation().search;
+  const selectAll = useRef(null);
 
   const page = new URLSearchParams(search).get("page") || 1;
   const itemsPerPage = 10;
@@ -51,12 +52,12 @@ function Assgin() {
           Accept: "application/json",
         },
       });
-      const resReview = await axiosClient.get(`/api/review/${params.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+      // const resReview = await axiosClient.get(`/api/review/${params.id}`, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //     Accept: "application/json",
+      //   },
+      // });
 
       setDataCheckpoint(resCheckpoint.data.data);
       setDataReview({
@@ -83,6 +84,7 @@ function Assgin() {
       });
     } else if (name === "review_id") {
       value = parseInt(value);
+
       if (!dataReview.review_id.includes(value)) {
         setDataReview({
           ...dataReview,
@@ -94,6 +96,11 @@ function Assgin() {
           [name]: dataReview.review_id.filter((item) => item !== value),
         });
       }
+      if (dataReview.review_id.length === dataUser.length) {
+        selectAll.current.checked = false;
+      } else if (dataReview.review_id.push(value) === dataUser.length) {
+        selectAll.current.checked = true;
+      }
     }
   };
 
@@ -102,6 +109,20 @@ function Assgin() {
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
     setDataPerPage(dataUser.slice(start, end));
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setDataReview({
+        ...dataReview,
+        review_id: dataUser.map((item) => item.id),
+      });
+    } else {
+      setDataReview({
+        ...dataReview,
+        review_id: [],
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -232,10 +253,12 @@ function Assgin() {
               <input
                 type="checkbox"
                 id="selectall"
-                name="selectall"
+                className="checkbox-all"
                 autoComplete="off"
+                onClick={handleSelectAll}
+                ref={selectAll}
               ></input>
-              <label htmlFor="scales">Chọn tất cả</label>
+              <label htmlFor="scales">Select all</label>
             </div>
             <div className="btn-save">
               <button type="submit" className="btn btn-primary btn-save">

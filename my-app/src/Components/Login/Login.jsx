@@ -69,7 +69,7 @@ function Login() {
 
   return (
     <>
-      <div className="wrapper fadeInDown">
+      {/* <div className="wrapper fadeInDown">
         <div id="formContent">
           <div className="fadeIn first"></div>
 
@@ -105,6 +105,61 @@ function Login() {
               Forgot Password?
             </a>
           </div>
+        </div>
+      </div> */}
+      {/* <div class="wrapper">
+        <form class="login">
+          <p class="title">Log in</p>
+          <input type="text" placeholder="Username" autofocus />
+          <i class="fa fa-user"></i>
+          <input type="password" placeholder="Password" />
+          <i class="fa fa-key"></i>
+          <a href="1">Forgot your password?</a>
+          <button>
+            <i class="spinner"></i>
+            <span class="state">Log in</span>
+          </button>
+        </form>
+      </div> */}
+      <div className="container">
+        <div className="card card-container">
+          <img
+            id="profile-img"
+            className="profile-img-card"
+            src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+          />
+          <p id="profile-name" className="profile-name-card"></p>
+          <form className="form-signin" onSubmit={handleSubmit}>
+            <span id="reauth-email" className="reauth-email"></span>
+            <input
+              type="email"
+              id="inputEmail"
+              name="email"
+              className="form-control"
+              placeholder="Email address"
+              required
+              autoFocus
+              onChange={onChangeInput}
+            ></input>
+            <input
+              type="password"
+              id="inputPassword"
+              name="password"
+              className="form-control"
+              placeholder="Password"
+              required
+              onChange={onChangeInput}
+            ></input>
+            <button
+              className="btn btn-lg btn-primary btn-block btn-signin"
+              type="submit"
+            >
+              Sign in
+            </button>
+          </form>
+          <a href="/forgot" className="forgot-password">
+            Forgot the password?
+          </a>
         </div>
       </div>
     </>
