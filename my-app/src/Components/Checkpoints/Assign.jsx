@@ -64,9 +64,7 @@ function Assgin() {
         checkpoint_id: resCheckpoint.data.data.id,
         user_id: resUser.data.data[0].id,
       });
-      setNumPages(
-        Math.floor(resUser.data.data.checkpoints.length / itemsPerPage)
-      );
+      setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
 
       setDataUser(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
@@ -103,7 +101,7 @@ function Assgin() {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
-    setDataPerPage(dataReview.slice(start, end));
+    setDataPerPage(dataUser.slice(start, end));
   };
 
   const handleSubmit = async (e) => {
@@ -115,13 +113,14 @@ function Assgin() {
           Accept: "application/json",
         },
       });
-      navigate("/assgin", { replace: true });
+      navigate("/create", { replace: true });
       navigate(0);
     } catch (err) {
       console.log("err", err);
     }
   };
 
+  console.log(numPages);
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
@@ -198,7 +197,7 @@ function Assgin() {
                 </tr>
               </thead>
               <tbody>
-                {dataUser?.map((ele, index) => {
+                {dataPerPage?.map((ele, index) => {
                   return (
                     <tr key={index}>
                       <td>
@@ -207,6 +206,7 @@ function Assgin() {
                           onChange={onChangeInput}
                           type="checkbox"
                           value={ele.id}
+                          checked={dataReview.review_id.includes(ele.id) || ""}
                         ></input>
                       </td>
                       <td>{ele.email}</td>
@@ -239,20 +239,12 @@ function Assgin() {
             </div>
             <div className="btn-save">
               <button type="submit" className="btn btn-primary btn-save">
-                Save
+                Assign
               </button>
             </div>
           </form>
           <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">
-              <li className="page-item disabled">
-                <button className="page-link">Previous</button>
-              </li>
-              {menuItems}
-              <li className="page-item">
-                <button className="page-link">Next</button>
-              </li>
-            </ul>
+            <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>
         </div>
       </div>
