@@ -3,7 +3,6 @@ import axiosClient from "../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./Login.css";
 
 const login_url = "/api/login";
 function Login() {
@@ -66,61 +65,9 @@ function Login() {
       console.log("debug", err);
     }
   };
-
+  require("./Login.css");
   return (
     <>
-      {/* <div className="wrapper fadeInDown">
-        <div id="formContent">
-          <div className="fadeIn first"></div>
-
-          <form onSubmit={handleSubmit}>
-            <h1>Login Form</h1>
-            <input
-              type="text"
-              id="login"
-              className="fadeIn second"
-              name="email"
-              value={dataLogin.email}
-              onChange={onChangeInput}
-              placeholder="email"
-            ></input>
-            <input
-              type="password"
-              id="password"
-              className="fadeIn third"
-              name="password"
-              value={dataLogin.password}
-              onChange={onChangeInput}
-              placeholder="password"
-            ></input>
-            <input
-              type="submit"
-              className="fadeIn fourth"
-              value="Log In"
-            ></input>
-          </form>
-
-          <div id="formFooter">
-            <a className="underlineHover" href="/forgotpassword">
-              Forgot Password?
-            </a>
-          </div>
-        </div>
-      </div> */}
-      {/* <div class="wrapper">
-        <form class="login">
-          <p class="title">Log in</p>
-          <input type="text" placeholder="Username" autofocus />
-          <i class="fa fa-user"></i>
-          <input type="password" placeholder="Password" />
-          <i class="fa fa-key"></i>
-          <a href="1">Forgot your password?</a>
-          <button>
-            <i class="spinner"></i>
-            <span class="state">Log in</span>
-          </button>
-        </form>
-      </div> */}
       <div className="container">
         <div className="card card-container">
           <img

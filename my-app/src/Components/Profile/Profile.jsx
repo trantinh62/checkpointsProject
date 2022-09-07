@@ -178,20 +178,6 @@ const Profile = () => {
                 >
                   <div className="row">
                     <div className="col-md-6">
-                      <label>User Id</label>
-                    </div>
-                    <div className="col-md-6">
-                      <input
-                        type="text-form"
-                        name="id"
-                        defaultValue={dataProfile.id}
-                        onChange={onChangeInput}
-                        placeholder="id"
-                      ></input>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
                       <label>Firstname</label>
                     </div>
                     <div className="col-md-6">
@@ -243,7 +229,7 @@ const Profile = () => {
                         name="phone"
                         defaultValue={dataProfile.phone}
                         onChange={onChangeInput}
-                        placeholder="email"
+                        placeholder="phone"
                       ></input>
                     </div>
                   </div>
