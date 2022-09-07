@@ -50,12 +50,6 @@ function Assgin() {
           Accept: "application/json",
         },
       });
-      // const resReview = await axiosClient.get(`/api/review/${params.id}`, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     Accept: "application/json",
-      //   },
-      // });
 
       setDataCheckpoint(resCheckpoint.data.data);
       setDataReview({
@@ -68,7 +62,6 @@ function Assgin() {
       setDataUser(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
     } catch (err) {
-      console.log(err);
     }
   };
 
@@ -135,11 +128,9 @@ function Assgin() {
       navigate("/create", { replace: true });
       navigate(0);
     } catch (err) {
-      console.log("err", err);
     }
   };
 
-  console.log(numPages);
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
