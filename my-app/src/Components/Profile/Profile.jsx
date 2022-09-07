@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import axiosClient from "../../Api/axiosClient";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import Toast from "../Toast/Toast";
 const profile_url = "/api/profile/detail";
 const update_url = "/api/profile";
 
@@ -60,26 +57,10 @@ const Profile = () => {
       });
       console.log(response);
       sessionStorage.setItem("sessionUser", response.data.data.first_name);
-      toast.success("Update successful!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("Cập nhật profile thành công!", "success");
     } catch (err) {
       console.log("err", err);
-      toast.error("Update failed!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("Cập nhật profile thất bại!", "error");
     }
   };
   require("./Profile.css");
@@ -150,21 +131,21 @@ const Profile = () => {
             <div className="col-md-4">
               <div className="profile-work">
                 <p>WORK LINK</p>
-                <a href="">Website Link</a>
+                <a href="#1">Website Link</a>
                 <br />
-                <a href="">Bootsnipp Profile</a>
+                <a href="#2">Bootsnipp Profile</a>
                 <br />
-                <a href="">Bootply Profile</a>
+                <a href="#1">Bootply Profile</a>
                 <p>SKILLS</p>
-                <a href="">Web Designer</a>
+                <a href="#1">Web Designer</a>
                 <br />
-                <a href="">Web Developer</a>
+                <a href="/">Web Developer</a>
                 <br />
-                <a href="">WordPress</a>
+                <a href="/">WordPress</a>
                 <br />
-                <a href="">WooCommerce</a>
+                <a href="/">WooCommerce</a>
                 <br />
-                <a href="">PHP, .Net</a>
+                <a href="/">PHP, .Net</a>
                 <br />
               </div>
             </div>
