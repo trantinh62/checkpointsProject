@@ -206,7 +206,9 @@ function Assgin() {
                           onChange={onChangeInput}
                           type="checkbox"
                           value={ele.id}
-                          checked={dataReview.review_id.includes(ele.id) || ""}
+                          checked={
+                            dataReview.review_id.includes(ele.id) || false
+                          }
                         ></input>
                       </td>
                       <td>{ele.email}</td>

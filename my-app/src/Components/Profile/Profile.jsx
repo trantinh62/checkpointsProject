@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axiosClient from "../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
-import "./Profile.css";
+
 const profile_url = "/api/profile/detail";
 const update_url = "/api/profile";
 
@@ -11,10 +11,16 @@ const Profile = () => {
   const navigate = useNavigate();
 
   const [dataProfile, setDataProfile] = useState({
+    id: null,
+    age: null,
+    email: "",
+    role_id: null,
     last_name: "",
     first_name: "",
     address: "",
     phone: "",
+    createdAt: null,
+    updateAt: null,
   });
   const onChangeInput = (e) => {
     const { name, value } = e.target;
@@ -44,7 +50,7 @@ const Profile = () => {
     }
   };
 
-  const handleSumbit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axiosClient.put(update_url, dataProfile, {
@@ -60,78 +66,244 @@ const Profile = () => {
       console.log("err", err);
     }
   };
-
+  require("./Profile.css");
   return (
     <>
-      <div className="container content">
-        <div className="row">
-          <div className="col"></div>
-          <div className="col-6">
-            <form className="form-profile">
-              <h1>Profile</h1>
-              <Form onSubmit={handleSumbit}>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                  <Form.Label>Email address</Form.Label>
-                  <Form.Control
-                    type="text-form"
-                    readOnly
-                    defaultValue={dataProfile.email}
-                    placeholder="Enter email"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicFirstname">
-                  <Form.Label>Firstname</Form.Label>
-                  <Form.Control
-                    type="text-form"
-                    name="first_name"
-                    defaultValue={dataProfile.first_name}
-                    onChange={onChangeInput}
-                    placeholder="FirstName"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicLastname">
-                  <Form.Label>Lastname</Form.Label>
-                  <Form.Control
-                    type="text-form"
-                    name="last_name"
-                    defaultValue={dataProfile.last_name}
-                    onChange={onChangeInput}
-                    placeholder="Lastname"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicAddress">
-                  <Form.Label>Address</Form.Label>
-                  <Form.Control
-                    type="text-form"
-                    name="address"
-                    onChange={onChangeInput}
-                    defaultValue={dataProfile.address}
-                    placeholder="Address"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3" controlId="formBasicPhone">
-                  <Form.Label>Phone</Form.Label>
-                  <Form.Control
-                    type="text-form"
-                    name="phone"
-                    onChange={onChangeInput}
-                    defaultValue={dataProfile.phone}
-                    placeholder="Phone"
-                  />
-                </Form.Group>
-
-                <Button variant="primary" type="submit">
-                  Update
-                </Button>
-              </Form>
-            </form>
+      <div className="container emp-profile">
+        <form onSubmit={handleSubmit}>
+          <div className="row">
+            <div className="col-md-4">
+              <div className="profile-img">
+                <img
+                  src="https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=2000"
+                  alt=""
+                />
+                <div className="file btn btn-lg btn-primary">
+                  Change Photo
+                  <input type="file" name="file" />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="profile-head">
+                <h5>{dataProfile.first_name + " " + dataProfile.last_name}</h5>
+                <h6>{dataProfile.age}</h6>
+                <p className="proile-rating">
+                  RANKINGS : <span>8/10</span>
+                </p>
+                <ul className="nav nav-tabs" id="myTab" role="tablist">
+                  <li className="nav-item">
+                    <a
+                      className="nav-link active"
+                      id="home-tab"
+                      data-toggle="tab"
+                      href="#home"
+                      role="tab"
+                      aria-controls="home"
+                      aria-selected="true"
+                    >
+                      About
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      id="profile-tab"
+                      data-toggle="tab"
+                      href="#change"
+                      role="tab"
+                      aria-controls="change"
+                      aria-selected="false"
+                    >
+                      Timeline
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-md-2">
+              <input
+                type="submit"
+                className="profile-edit-btn"
+                name="btnAddMore"
+                value="Edit Profile"
+              />
+            </div>
           </div>
-          <div className="col"></div>
-        </div>
+          <div className="row">
+            <div className="col-md-4">
+              <div className="profile-work">
+                <p>WORK LINK</p>
+                <a href="">Website Link</a>
+                <br />
+                <a href="">Bootsnipp Profile</a>
+                <br />
+                <a href="">Bootply Profile</a>
+                <p>SKILLS</p>
+                <a href="">Web Designer</a>
+                <br />
+                <a href="">Web Developer</a>
+                <br />
+                <a href="">WordPress</a>
+                <br />
+                <a href="">WooCommerce</a>
+                <br />
+                <a href="">PHP, .Net</a>
+                <br />
+              </div>
+            </div>
+            <div className="col-md-8">
+              <div className="tab-content profile-tab" id="myTabContent">
+                <div
+                  className="tab-pane fade show active"
+                  id="home"
+                  role="tabpanel"
+                  aria-labelledby="home-tab"
+                >
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>User Id</label>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text-form"
+                        name="id"
+                        defaultValue={dataProfile.id}
+                        onChange={onChangeInput}
+                        placeholder="id"
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Firstname</label>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text-form"
+                        name="first_name"
+                        defaultValue={dataProfile.first_name}
+                        onChange={onChangeInput}
+                        placeholder="firstname"
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Lastname</label>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text-form"
+                        name="last_name"
+                        defaultValue={dataProfile.last_name}
+                        onChange={onChangeInput}
+                        placeholder="lastname"
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Email</label>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text-form"
+                        name="email"
+                        defaultValue={dataProfile.email}
+                        onChange={onChangeInput}
+                        placeholder="email"
+                        readOnly
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Phone</label>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text-form"
+                        name="phone"
+                        defaultValue={dataProfile.phone}
+                        onChange={onChangeInput}
+                        placeholder="email"
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Age</label>
+                    </div>
+                    <div className="col-md-6">
+                      <input
+                        type="text-form"
+                        name="age"
+                        defaultValue={dataProfile.age}
+                        onChange={onChangeInput}
+                        placeholder="age"
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="tab-pane fade"
+                  id="profile"
+                  role="tabpanel"
+                  aria-labelledby="profile-tab"
+                >
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Experience</label>
+                    </div>
+                    <div className="col-md-6">
+                      <p>Expert</p>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Hourly Rate</label>
+                    </div>
+                    <div className="col-md-6">
+                      <p>10$/hr</p>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Total Projects</label>
+                    </div>
+                    <div className="col-md-6">
+                      <p>230</p>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>English Level</label>
+                    </div>
+                    <div className="col-md-6">
+                      <p>Expert</p>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Availability</label>
+                    </div>
+                    <div className="col-md-6">
+                      <p>6 months</p>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-12">
+                      <label>Your Bio</label>
+                      <br />
+                      <p>Your detail description</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </>
   );
