@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axiosClient from "../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import Toast from "../Toast/Toast";
 import "react-toastify/dist/ReactToastify.css";
 
 const login_url = "/api/login";
@@ -30,37 +31,15 @@ function Login() {
       if (response.data.status === 200) {
         navigate("/perform", { replace: true });
         navigate(0);
-        toast.success("Đăng nhập thành công!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        Toast("Đăng nhập thành công!", "success");
       }
     } catch (err) {
       if (err.response.status === 403) {
-        toast.error("Tài khoản đã bị khóa!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        Toast("Tài khoản đã bị khóa!", "error");
       } else if (err.response.status === 400) {
-        toast.error("Sai thông tin tài khoản!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+        Toast("Sai thông tin tài khoản!", "error");
+      } else if (err.response.status === 422) {
+        Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
       }
       console.log("debug", err);
     }
