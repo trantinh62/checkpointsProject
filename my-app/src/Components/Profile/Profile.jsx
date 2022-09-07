@@ -3,13 +3,11 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axiosClient from "../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
 const profile_url = "/api/profile/detail";
 const update_url = "/api/profile";
 
 const Profile = () => {
-  const navigate = useNavigate();
-
   const [dataProfile, setDataProfile] = useState({
     id: null,
     age: null,
@@ -17,6 +15,7 @@ const Profile = () => {
     role_id: null,
     last_name: "",
     first_name: "",
+    age: "",
     address: "",
     phone: "",
     createdAt: null,
@@ -59,11 +58,28 @@ const Profile = () => {
           Accept: "application/json",
         },
       });
+      console.log(response);
       sessionStorage.setItem("sessionUser", response.data.data.first_name);
-      navigate("/profile", { replace: true });
-      navigate(0);
+      toast.success("Update successful!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch (err) {
       console.log("err", err);
+      toast.error("Update failed!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
   };
   require("./Profile.css");
