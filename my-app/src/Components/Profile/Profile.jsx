@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
-import axiosClient from "../../Api/axiosClient";
 import Toast from "../Toast/Toast";
-import { useNavigate } from "react-router-dom";
-import { profileApi, passApi } from "../../Api/userApi";
-const profile_url = "/api/profile/detail";
-const update_url = "/api/profile";
+import { profileApi, passApi, getProfileApi } from "../../Api/userApi";
 
 const Profile = () => {
-  const navigate = useNavigate();
   const [dataProfile, setDataProfile] = useState({
     id: null,
     age: null,
@@ -48,12 +43,7 @@ const Profile = () => {
 
   const fetchData = async () => {
     try {
-      const res = await axiosClient.get(profile_url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+      const res = await getProfileApi(token);
       setDataProfile(res.data.data);
     } catch (err) {}
   };

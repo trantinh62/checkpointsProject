@@ -18,3 +18,11 @@ export const passApi = (data, token) =>
       Accept: "application/json",
     },
   });
+
+export const getProfileApi = (token) =>
+  axiosClient.get("/api/profile/detail", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
