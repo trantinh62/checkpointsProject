@@ -1,10 +1,10 @@
 import { useState } from "react";
-import axiosClient from "../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import "react-toastify/dist/ReactToastify.css";
 
-const login_url = "/api/login";
+import { loginApi } from "../../Api/userApi";
+
 function Login() {
   const navigate = useNavigate();
   const [dataLogin, setDataLogin] = useState({
@@ -21,12 +21,11 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post(login_url, dataLogin);
+      const response = await loginApi(dataLogin);
       sessionStorage.setItem("sessionUsername", response.data.data.last_name);
       sessionStorage.setItem("sessionUserId", response.data.data.id);
       sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
       sessionStorage.setItem("sessionToken", response.data.data.token);
-      console.log(response);
       if (response.data.status === 200) {
         navigate("/perform", { replace: true });
         navigate(0);
@@ -40,7 +39,6 @@ function Login() {
       } else if (err.response.status === 422) {
         Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
       }
-      console.log("debug", err);
     }
   };
   require("./Login.css");

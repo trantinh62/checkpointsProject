@@ -1,8 +1,7 @@
 import { useState } from "react";
-import axiosClient from "../../Api/axiosClient";
 import Toast from "../Toast/Toast";
 import { useNavigate } from "react-router-dom";
-
+import { forgotApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
 
 function ForgotPassword() {
@@ -21,11 +20,7 @@ function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post(
-        "api/invite_reset_password",
-        dataEmail
-      );
-      console.log(response);
+      const response = await forgotApi(dataEmail);
       if (response.data.status === 200) {
         navigate("/login", { replace: true });
         navigate(0);

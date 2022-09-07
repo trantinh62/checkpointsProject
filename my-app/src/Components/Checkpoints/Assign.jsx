@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import axiosClient from "../../Api/axiosClient";
 import Table from "react-bootstrap/Table";
 import { useNavigate, useParams, useLocation } from "react-router-dom";

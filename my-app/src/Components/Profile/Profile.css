@@ -48,7 +48,7 @@ body{
 .profile-edit-btn{
     border: none;
     border-radius: 1.5rem;
-    width: 70%;
+    width: 100%;
     padding: 2%;
     font-weight: 600;
     color: #6c757d;
@@ -102,9 +102,18 @@ body{
     color: #0062cc;
 }
 .col-md-6{
-    width: 30%;
+    width: 20%;
     padding-bottom: 20px;
+    font-weight: 600;
+}
+.btn-save{
+    margin-left: auto;
+    margin-right: 100px;
 }
 input[type=text-form] {
-    width: 200%;
+    width: 380%;
+    
+}
+input[type=password] {
+    width: 380%;
 }
