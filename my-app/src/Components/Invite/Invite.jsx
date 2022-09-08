@@ -1,7 +1,6 @@
 import { useState } from "react";
-import axiosClient from "../../Api/axiosClient";
 import Toast from "../Toast/Toast";
-const invite_url = "/api/invite";
+import { inviteApi } from "../../Api/userApi";
 
 function Invite() {
   const [dataInvite, setDataInvite] = useState({
@@ -20,7 +19,7 @@ function Invite() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post(invite_url, dataInvite);
+      const response = inviteApi(dataInvite);
       Toast("Invite user successful!", "success");
     } catch (err) {
       Toast(err.response.data.message, "error");
