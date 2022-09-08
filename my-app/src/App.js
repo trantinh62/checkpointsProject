@@ -25,8 +25,6 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   let [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
   const search = useLocation().search;
-  // const tokenRegister = new URLSearchParams(search).get("token");
-  // const tokenResetPass = new URLSearchParams(search).get("tokenResetPass");
   if (!token) {
     return (
       <>

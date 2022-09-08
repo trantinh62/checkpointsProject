@@ -3,7 +3,6 @@ import axiosClient from "../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./Login.css";
 
 const login_url = "/api/login";
 function Login() {
@@ -66,7 +65,7 @@ function Login() {
       console.log("debug", err);
     }
   };
-
+  require("./Login.css");
   return (
     <>
       {/* <div className="wrapper fadeInDown">
