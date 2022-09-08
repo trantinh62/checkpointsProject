@@ -1,9 +1,8 @@
 import { useState } from "react";
-import axiosClient from "../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { registerApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
-const register_url = "/api/register";
 function Register() {
   const navigate = useNavigate();
   const search = useLocation().search;
@@ -27,10 +26,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.put(
-        register_url + "?token=" + token,
-        dataRegister
-      );
+      const response = await registerApi(dataRegister, token);
       Toast("Register successful!", "success");
       navigate("/login", { replace: true });
       navigate(0);
