@@ -1,47 +1,41 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
+import { useNavigate } from "react-router-dom";
+import { forgotApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
 
-import { loginApi } from "../../Api/userApi";
-
-function Login() {
+function ForgotPassword() {
   const navigate = useNavigate();
-  const [dataLogin, setDataLogin] = useState({
+
+  const [dataEmail, setDataEmail] = useState({
     email: "",
-    password: "",
   });
   const onChangeInput = (e) => {
     const { name, value } = e.target;
-    setDataLogin({
-      ...dataLogin,
+    setDataEmail({
+      ...dataEmail,
       [name]: value,
     });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await loginApi(dataLogin);
-      sessionStorage.setItem("sessionUsername", response.data.data.last_name);
-      sessionStorage.setItem("sessionUserId", response.data.data.id);
-      sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
-      sessionStorage.setItem("sessionToken", response.data.data.token);
+      const response = await forgotApi(dataEmail);
       if (response.data.status === 200) {
-        navigate("/perform", { replace: true });
+        navigate("/login", { replace: true });
         navigate(0);
-        Toast("Đăng nhập thành công!", "success");
+        Toast("Gửi yêu cầu reset password thành công!", "success");
       }
     } catch (err) {
       if (err.response.status === 403) {
-        Toast("Tài khoản đã bị khóa!", "error");
+        Toast("Email của bạn đã bị khóa!", "error");
       } else if (err.response.status === 400) {
-        Toast("Sai thông tin tài khoản!", "error");
-      } else if (err.response.status === 422) {
-        Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
+        Toast("Email bạn nhập không đúng!", "error");
       }
+      console.log("debug", err);
     }
   };
-  require("./Login.css");
+  require("./ForgotPassword.css");
   return (
     <>
       <div className="container">
@@ -54,22 +48,13 @@ function Login() {
           <p id="profile-name" className="profile-name-card"></p>
           <form className="form-signin" onSubmit={handleSubmit}>
             <span id="reauth-email" className="reauth-email"></span>
+            <p>Forgot password</p>
             <input
               type="email"
-              id="inputEmail"
+              id="inputPassword"
               name="email"
               className="form-control"
-              placeholder="Email address"
-              required
-              autoFocus
-              onChange={onChangeInput}
-            ></input>
-            <input
-              type="password"
-              id="inputPassword"
-              name="password"
-              className="form-control"
-              placeholder="Password"
+              placeholder="Enter email to reset"
               required
               onChange={onChangeInput}
             ></input>
@@ -77,11 +62,11 @@ function Login() {
               className="btn btn-lg btn-primary btn-block btn-signin"
               type="submit"
             >
-              Sign in
+              Reset
             </button>
           </form>
-          <a href="/forgot" className="forgot-password">
-            Forgot the password?
+          <a href="/login" className="forgot-password">
+            Back to login!
           </a>
         </div>
       </div>
@@ -89,4 +74,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default ForgotPassword;

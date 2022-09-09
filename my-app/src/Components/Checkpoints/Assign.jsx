@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import { useState, useEffect, useRef } from "react";
 import axiosClient from "../../Api/axiosClient";
 import Table from "react-bootstrap/Table";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -11,6 +9,7 @@ function Assgin() {
   const navigate = useNavigate();
   const params = useParams();
   const search = useLocation().search;
+  const selectAll = useRef(null);
 
   const page = new URLSearchParams(search).get("page") || 1;
   const itemsPerPage = 10;
@@ -51,12 +50,6 @@ function Assgin() {
           Accept: "application/json",
         },
       });
-      const resReview = await axiosClient.get(`/api/review/${params.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
 
       setDataCheckpoint(resCheckpoint.data.data);
       setDataReview({
@@ -64,14 +57,11 @@ function Assgin() {
         checkpoint_id: resCheckpoint.data.data.id,
         user_id: resUser.data.data[0].id,
       });
-      setNumPages(
-        Math.floor(resUser.data.data.checkpoints.length / itemsPerPage)
-      );
+      setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
 
       setDataUser(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
     } catch (err) {
-      console.log(err);
     }
   };
 
@@ -85,6 +75,7 @@ function Assgin() {
       });
     } else if (name === "review_id") {
       value = parseInt(value);
+
       if (!dataReview.review_id.includes(value)) {
         setDataReview({
           ...dataReview,
@@ -96,6 +87,11 @@ function Assgin() {
           [name]: dataReview.review_id.filter((item) => item !== value),
         });
       }
+      if (dataReview.review_id.length === dataUser.length) {
+        selectAll.current.checked = false;
+      } else if (dataReview.review_id.push(value) === dataUser.length) {
+        selectAll.current.checked = true;
+      }
     }
   };
 
@@ -103,7 +99,21 @@ function Assgin() {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
-    setDataPerPage(dataReview.slice(start, end));
+    setDataPerPage(dataUser.slice(start, end));
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setDataReview({
+        ...dataReview,
+        review_id: dataUser.map((item) => item.id),
+      });
+    } else {
+      setDataReview({
+        ...dataReview,
+        review_id: [],
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -115,10 +125,9 @@ function Assgin() {
           Accept: "application/json",
         },
       });
-      navigate("/assgin", { replace: true });
+      navigate("/create", { replace: true });
       navigate(0);
     } catch (err) {
-      console.log("err", err);
     }
   };
 
@@ -198,7 +207,7 @@ function Assgin() {
                 </tr>
               </thead>
               <tbody>
-                {dataUser?.map((ele, index) => {
+                {dataPerPage?.map((ele, index) => {
                   return (
                     <tr key={index}>
                       <td>
@@ -207,6 +216,9 @@ function Assgin() {
                           onChange={onChangeInput}
                           type="checkbox"
                           value={ele.id}
+                          checked={
+                            dataReview.review_id.includes(ele.id) || false
+                          }
                         ></input>
                       </td>
                       <td>{ele.email}</td>
@@ -232,27 +244,21 @@ function Assgin() {
               <input
                 type="checkbox"
                 id="selectall"
-                name="selectall"
+                className="checkbox-all"
                 autoComplete="off"
+                onClick={handleSelectAll}
+                ref={selectAll}
               ></input>
-              <label htmlFor="scales">Chọn tất cả</label>
+              <label htmlFor="scales">Select all</label>
             </div>
             <div className="btn-save">
               <button type="submit" className="btn btn-primary btn-save">
-                Save
+                Assign
               </button>
             </div>
           </form>
           <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">
-              <li className="page-item disabled">
-                <button className="page-link">Previous</button>
-              </li>
-              {menuItems}
-              <li className="page-item">
-                <button className="page-link">Next</button>
-              </li>
-            </ul>
+            <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>
         </div>
       </div>
