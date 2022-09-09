@@ -27,12 +27,7 @@ function ForgotPassword() {
         Toast("Gửi yêu cầu reset password thành công!", "success");
       }
     } catch (err) {
-      if (err.response.status === 403) {
-        Toast("Email của bạn đã bị khóa!", "error");
-      } else if (err.response.status === 400) {
-        Toast("Email bạn nhập không đúng!", "error");
-      }
-      console.log("debug", err);
+      Toast(err.response.data.message, "error");
     }
   };
   return (
