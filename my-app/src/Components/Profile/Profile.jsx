@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Toast from "../Toast/Toast";
 import { profileApi, passApi, getProfileApi } from "../../Api/userApi";
-
+import "./Profile.css";
 const Profile = () => {
   const [dataProfile, setDataProfile] = useState({
     id: null,
@@ -67,9 +67,8 @@ const Profile = () => {
       Toast(err.response.data.message, "error");
     }
   };
-  require("./Profile.css");
   return (
-    <>
+    <div className="profile-cover">
       <div className="container emp-profile">
         <div className="row">
           <div className="col-md-4">
@@ -95,10 +94,10 @@ const Profile = () => {
                     aria-labelledby="home-tab"
                   >
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <label>Firstname:</label>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <input
                           type="text-form"
                           name="first_name"
@@ -109,10 +108,10 @@ const Profile = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <label>Lastname:</label>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <input
                           type="text-form"
                           name="last_name"
@@ -123,10 +122,10 @@ const Profile = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <label>Email:</label>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <input
                           type="text-form"
                           name="email"
@@ -138,10 +137,10 @@ const Profile = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <label>Phone:</label>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <input
                           type="text-form"
                           name="phone"
@@ -152,10 +151,10 @@ const Profile = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <label>Age:</label>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <input
                           type="text-form"
                           name="age"
@@ -166,10 +165,10 @@ const Profile = () => {
                       </div>
                     </div>
                     <div className="row">
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <label>Address:</label>
                       </div>
-                      <div className="col-md-6">
+                      <div className="col-md-6 col1">
                         <input
                           type="text-form"
                           name="address"
@@ -180,7 +179,7 @@ const Profile = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 btn-save">
+                  <div className="col-md-6 col1 btn-save">
                     <input
                       type="submit"
                       className="profile-edit-btn"
@@ -221,10 +220,10 @@ const Profile = () => {
                 aria-labelledby="home-tab"
               >
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-6 col1">
                     <label>Old password:</label>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-6 col1">
                     <input
                       type="password"
                       name="old_password"
@@ -235,10 +234,10 @@ const Profile = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-6 col1">
                     <label>New password:</label>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-6 col1">
                     <input
                       type="password"
                       name="password"
@@ -249,10 +248,10 @@ const Profile = () => {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-md-6">
+                  <div className="col-md-6 col1">
                     <label>Confirm password:</label>
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-6 col1">
                     <input
                       type="password"
                       name="password_confirm"
@@ -262,7 +261,7 @@ const Profile = () => {
                     ></input>
                   </div>
                 </div>
-                <div className="col-md-6 btn-save">
+                <div className="col-md-6 col1 btn-save">
                   <input
                     type="submit"
                     className="profile-edit-btn"
@@ -275,7 +274,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

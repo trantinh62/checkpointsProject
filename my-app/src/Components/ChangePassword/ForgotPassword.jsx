@@ -3,7 +3,7 @@ import Toast from "../Toast/Toast";
 import { useNavigate } from "react-router-dom";
 import { forgotApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
-
+import "./ForgotPassword.css";
 function ForgotPassword() {
   const navigate = useNavigate();
 
@@ -35,9 +35,8 @@ function ForgotPassword() {
       console.log("debug", err);
     }
   };
-  require("./ForgotPassword.css");
   return (
-    <>
+    <div className="forgot-cover">
       <div className="container">
         <div className="card card-container">
           <img
@@ -70,7 +69,7 @@ function ForgotPassword() {
           </a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

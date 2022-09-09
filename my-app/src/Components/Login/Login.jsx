@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import "react-toastify/dist/ReactToastify.css";
-
 import { loginApi } from "../../Api/userApi";
-
+import "./Login.css";
 function Login() {
   const navigate = useNavigate();
   const [dataLogin, setDataLogin] = useState({
@@ -41,10 +40,10 @@ function Login() {
       }
     }
   };
-  require("./Login.css");
+
   return (
-    <>
-      <div className="container">
+    <div className="login-cover">
+      <div className="container ">
         <div className="card card-container">
           <img
             id="profile-img"
@@ -85,7 +84,7 @@ function Login() {
           </a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

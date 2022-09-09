@@ -15,19 +15,20 @@ function Invite() {
       [name]: value,
     });
   };
-  console.log(dataInvite);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = inviteApi(dataInvite);
-      Toast("Invite user successful!", "success");
+      const response = await inviteApi(dataInvite);
+      if (response.data.status === 200) {
+        Toast("Invite user successful!", "success");
+      }
     } catch (err) {
       Toast(err.response.data.message, "error");
     }
   };
   require("./Invite.css");
   return (
-    <>
+    <div className="invite-cover">
       <div className="container contact">
         <div className="row">
           <div className="col-md-3">
@@ -87,7 +88,7 @@ function Invite() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 export default Invite;
