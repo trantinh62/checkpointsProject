@@ -40,7 +40,7 @@ function Login() {
       }
     }
   };
-
+  require("./Login.css");
   return (
     <div className="login-cover">
       <div className="container ">
