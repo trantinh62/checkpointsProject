@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import "react-toastify/dist/ReactToastify.css";
-
 import { loginApi } from "../../Api/userApi";
-
+import "./Login.css";
 function Login() {
   const navigate = useNavigate();
   const [dataLogin, setDataLogin] = useState({
@@ -32,19 +31,13 @@ function Login() {
         Toast("Đăng nhập thành công!", "success");
       }
     } catch (err) {
-      if (err.response.status === 403) {
-        Toast("Tài khoản đã bị khóa!", "error");
-      } else if (err.response.status === 400) {
-        Toast("Sai thông tin tài khoản!", "error");
-      } else if (err.response.status === 422) {
-        Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
-      }
+      Toast(err.response.data.message, "error");
     }
   };
   require("./Login.css");
   return (
-    <>
-      <div className="container">
+    <div className="login-cover">
+      <div className="container ">
         <div className="card card-container">
           <img
             id="profile-img"
@@ -85,7 +78,7 @@ function Login() {
           </a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

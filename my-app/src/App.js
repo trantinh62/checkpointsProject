@@ -43,6 +43,16 @@ function App() {
           <Route path="/forgot" element={<ForgotPassword />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/resetpassword" element={<ResetPassword />}></Route>
+          <Route path="/profile" element={<Login />}></Route>
+          <Route path="/invite" element={<Login />}></Route>
+          <Route path="/users" element={<Login />}></Route>
+          <Route path="/review" element={<Login />}></Route>
+          <Route path="/perform" element={<Login />}></Route>
+          <Route path="/perform/:id" element={<Login />}></Route>
+          <Route path="/create" element={<Login />}></Route>
+          <Route path="/assign/:id" element={<Login />}></Route>
+          <Route path="/historys" element={<Login />}></Route>
+          <Route path="/historys/:id" element={<Login />}></Route>
         </Routes>
       </>
     );

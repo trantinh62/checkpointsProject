@@ -1,17 +1,11 @@
-/* .form-profile{
-    border-style: double;
-    padding: 20px;
-}
-.content {
-    padding-top: 50px;
-} */
 
-body{
+.profile-cover{
+    padding-top: 50px;
+    height: 100vh;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
 }
 .emp-profile{
     padding: 3%;
-    margin-top: 3%;
     margin-bottom: 3%;
     border-radius: 0.5rem;
     background: #fff;
@@ -101,7 +95,7 @@ body{
     font-weight: 600;
     color: #0062cc;
 }
-.col-md-6{
+.col-md-6.col1{
     width: 20%;
     padding-bottom: 20px;
     font-weight: 600;

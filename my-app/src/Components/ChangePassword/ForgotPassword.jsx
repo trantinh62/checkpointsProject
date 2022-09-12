@@ -3,7 +3,7 @@ import Toast from "../Toast/Toast";
 import { useNavigate } from "react-router-dom";
 import { forgotApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
-
+import "./ForgotPassword.css";
 function ForgotPassword() {
   const navigate = useNavigate();
 
@@ -27,17 +27,11 @@ function ForgotPassword() {
         Toast("Gửi yêu cầu reset password thành công!", "success");
       }
     } catch (err) {
-      if (err.response.status === 403) {
-        Toast("Email của bạn đã bị khóa!", "error");
-      } else if (err.response.status === 400) {
-        Toast("Email bạn nhập không đúng!", "error");
-      }
-      console.log("debug", err);
+      Toast(err.response.data.message, "error");
     }
   };
-  require("./ForgotPassword.css");
   return (
-    <>
+    <div className="forgot-cover">
       <div className="container">
         <div className="card card-container">
           <img
@@ -70,7 +64,7 @@ function ForgotPassword() {
           </a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

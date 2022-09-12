@@ -26,3 +26,5 @@ export const getProfileApi = (token) =>
       Accept: "application/json",
     },
   });
+
+export const inviteApi = (data) => axiosClient.post("/api/invite", data);
