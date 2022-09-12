@@ -11,9 +11,10 @@ import ListPerform from "./Components/Checkpoints/ListPerform";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
-
 import HistoryDetail from "./Components/History/HistoryDetail";
+import MemberHistory from "./Components/History/MemberHistory";
 import User from "./Components/Users/Users";
+import Checkpoint from "./Components/Checkpoints/ListCheckpoints";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
 import { useState } from "react";
@@ -80,13 +81,15 @@ function App() {
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/invite" element={<Invite />}></Route>
         <Route path="/users" element={<User />}></Route>
+        <Route path="/checkpoints" element={<Checkpoint />}></Route>
         <Route path="/review" element={<Review />}></Route>
         <Route path="/perform" element={<ListPerform />}></Route>
         <Route path="/perform/:id" element={<PerformCheckpoint />}></Route>
         <Route path="/create" element={<CreateCheckpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
-        <Route path="/historys" element={<History />}></Route>
-        <Route path="/historys/:id" element={<HistoryDetail />}></Route>
+        <Route path="/histories" element={<History />}></Route>
+        <Route path="/histories/member" element={<MemberHistory />}></Route>
+        <Route path="/histories/:id" element={<HistoryDetail />}></Route>
       </Routes>
     </>
   );

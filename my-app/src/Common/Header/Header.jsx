@@ -34,8 +34,8 @@ function Header() {
                     <NavDropdown.Item href="/create">
                       Create Checkpoint
                     </NavDropdown.Item>
-                    <NavDropdown.Item href="/checkpoints">
-                      Manage checkpoints
+                    <NavDropdown.Item href="/histories/member">
+                      Member's review histories
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>
