@@ -12,7 +12,7 @@ import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
 
-import HistoryDetail from "./Components/History/HistoryDetail";
+import DetailHistory from "./Components/History/DetailHistory";
 import User from "./Components/Users/Users";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
@@ -51,8 +51,8 @@ function App() {
           <Route path="/perform/:id" element={<Login />}></Route>
           <Route path="/create" element={<Login />}></Route>
           <Route path="/assign/:id" element={<Login />}></Route>
-          <Route path="/historys" element={<Login />}></Route>
-          <Route path="/historys/:id" element={<Login />}></Route>
+          <Route path="/histories" element={<Login />}></Route>
+          <Route path="/histories/:id" element={<Login />}></Route>
         </Routes>
       </>
     );
@@ -85,8 +85,8 @@ function App() {
         <Route path="/perform/:id" element={<PerformCheckpoint />}></Route>
         <Route path="/create" element={<CreateCheckpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
-        <Route path="/historys" element={<History />}></Route>
-        <Route path="/historys/:id" element={<HistoryDetail />}></Route>
+        <Route path="/histories" element={<History />}></Route>
+        <Route path="/histories/:id" element={<DetailHistory />}></Route>
       </Routes>
     </>
   );
