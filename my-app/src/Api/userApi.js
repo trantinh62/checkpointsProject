@@ -28,3 +28,18 @@ export const getProfileApi = (token) =>
   });
 
 export const inviteApi = (data) => axiosClient.post("/api/invite", data);
+export const getCheckApi = (token) =>
+  axiosClient.get("/api/checkpoint", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const createApi = (data, token) =>
+  axiosClient.post("/api/checkpoint", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
