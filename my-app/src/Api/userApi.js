@@ -28,3 +28,6 @@ export const getProfileApi = (token) =>
   });
 
 export const inviteApi = (data) => axiosClient.post("/api/invite", data);
+
+export const resetApi = (data, token) =>
+  axiosClient.put("/api/reset_password?token=" + token, data);
