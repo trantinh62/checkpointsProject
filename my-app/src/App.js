@@ -9,6 +9,7 @@ import Review from "./Components/Checkpoints/Checkpoints";
 import PerformCheckpoint from "./Components/Checkpoints/PerformCheckpoint";
 import ListPerform from "./Components/Checkpoints/ListPerform";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
+import DetailCheck from "./Components/Checkpoints/DetailCheck";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
 import HistoryDetail from "./Components/History/HistoryDetail";
@@ -52,8 +53,11 @@ function App() {
           <Route path="/perform/:id" element={<Login />}></Route>
           <Route path="/create" element={<Login />}></Route>
           <Route path="/assign/:id" element={<Login />}></Route>
-          <Route path="/historys" element={<Login />}></Route>
-          <Route path="/historys/:id" element={<Login />}></Route>
+          <Route path="/histories" element={<Login />}></Route>
+          <Route path="/histories/member:id" element={<Login />}></Route>
+          <Route path="/histories/:id" element={<Login />}></Route>
+          <Route path="/checkpoints" element={<Login />}></Route>
+          <Route path="/checkpoints/:id" element={<Login />}></Route>
         </Routes>
       </>
     );
@@ -88,7 +92,7 @@ function App() {
         <Route path="/create" element={<CreateCheckpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
         <Route path="/histories" element={<History />}></Route>
-        <Route path="/histories/member" element={<MemberHistory />}></Route>
+        <Route path="/histories/member/:id" element={<MemberHistory />}></Route>
         <Route path="/histories/:id" element={<HistoryDetail />}></Route>
       </Routes>
     </>

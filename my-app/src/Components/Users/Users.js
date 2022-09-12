@@ -48,15 +48,7 @@ function User() {
 
   const onChangeInput = (e, index) => {
     const { name, value } = e.target;
-    console.log(
-      "index",
-      index,
-      "name",
-      name,
-      "value",
-      value,
-      "dataUser",
-    );
+    console.log("index", index, "name", name, "value", value, "dataUser");
     setdataUser({
       ...dataUser,
       [name]: value,
@@ -131,7 +123,6 @@ function User() {
                             className="form-check-input"
                             name="switch"
                             type="checkbox"
-                            
                             // role="switch"
                             onChange={onChangeInput}
                             // id="flexSwitchCheckDefault"

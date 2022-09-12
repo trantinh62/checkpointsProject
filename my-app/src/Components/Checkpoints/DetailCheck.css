@@ -1,5 +1,5 @@
 
-.member-his-cover {
+.detail-check-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
@@ -42,10 +42,9 @@ table.table th i {
     cursor: pointer;
 }
 table.table th:last-child {
-    width: 300px;
 }
 table.table th:first-child {
-    width: 100px;
+    width: 4rem;
 }
 table.table td a {
     cursor: pointer;
@@ -94,8 +93,7 @@ table.table td .add {
 .form-group button{
     background: #ff9b00;
     color: #fff;
-    width: auto;
-    min-width: 10rem;
+    width: 10rem;
     font-weight: 600;
     display: flex;
     margin-left: auto;

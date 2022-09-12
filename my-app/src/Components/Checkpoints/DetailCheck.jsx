@@ -1,96 +1,100 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import Toast from "../Toast/Toast";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import {
-  getCheckApi,
-  getCheckedUser,
   getListUsersApi,
-  getReviewsByCheckpointIdAndUserId,
-  getListUsersByCheckpointId,
+  getReviewsByCheckpointId,
+  getCheckApi,
 } from "../../Api/userApi";
-import dayjs from "dayjs";
-import "./MemberHistory.css";
-
-function MemberHistory() {
-  const navigate = useNavigate();
+import "./DetailCheck.css";
+function ListReviews() {
   const params = useParams();
+  const navigate = useNavigate();
   const search = useLocation().search;
-  const [dataPagination, setDataPagination] = useState({
-    page: new URLSearchParams(search).get("page") || 1,
-    itemsPerPage: 10,
-  });
-  const start = (dataPagination.page - 1) * dataPagination.itemsPerPage;
-  const end = dataPagination.page * dataPagination.itemsPerPage;
-  let [numPages, setNumPages] = useState(1, []);
+  const page = new URLSearchParams(search).get("page") || 1;
+  const itemsPerPage = 10;
+  const start = (page - 1) * itemsPerPage;
+  const end = page * itemsPerPage;
+  const [listReviews, setListReviews] = useState([]);
   const [dataCheckpoint, setDataCheckpoint] = useState({
     id: null,
     name: "",
   });
-  const [dataCheckpointByUser, setDataCheckpointByUser] = useState([]);
-  const [dataUser, setDataUser] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
+  const [dataUser, setDataUser] = useState([]);
+  const [idAssign, setIdAssign] = useState(null, []);
+  let [numPages, setNumPages] = useState(1, []);
+  const handleOnClick = (e) => {
+    const page = e.target.value;
+    const start = (page - 1) * itemsPerPage;
+    const end = page * itemsPerPage;
+    setDataPerPage(listReviews.slice(start, end));
+  };
+  const token = sessionStorage.getItem("sessionToken");
+
   useEffect(() => {
     fetchData();
   }, []);
-
-  const token = sessionStorage.getItem("sessionToken");
   const fetchData = async () => {
     try {
-      const resCheck = await getCheckApi(token, params.id);
-      setDataCheckpoint(resCheck.data.data);
-      const resUser = await getListUsersByCheckpointId(token, params.id);
-      setDataUser(resUser.data.data);
-      console.log(resUser);
-      const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
-        token,
-        params.id,
-        resUser.data.data[0].id
-      );
-      setDataCheckpointByUser(resMemberHistory.data);
-      console.log("his", resMemberHistory.data);
-      setNumPages(
-        Math.ceil(resMemberHistory.data.length / dataPagination.itemsPerPage)
-      );
-      setDataPerPage(resMemberHistory.data.slice(start, end));
-    } catch (err) {
-      console.log(err);
-    }
+      try {
+        // const res = await getCheckApi(token, params.id);
+        const resUser = await getListUsersApi(token);
+        const res = await getCheckApi(token, params.id);
+        setDataCheckpoint(res.data.data);
+
+        // const res = getReviewsByCheckpointId(token, params.id);
+        // console.log("res", res);
+        // setDataCheckpoint(res.data.data);
+        // setDataReview({
+        //   ...dataReview,
+        //   checkpoint_id: res.data.data.id,
+        //   user_id: resUser.data.data[0].id,
+        // });
+        setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
+        setDataUser(resUser.data.data);
+        // setDataFilter(
+        //   resUser.data.data.filter((item) => item.id !== resUser.data.data[0].id)
+        // );
+        setDataPerPage(
+          resUser.data.data
+            .filter((item) => item.id !== resUser.data.data[0].id)
+            .slice(start, end)
+        );
+        // const resChecked = await getCheckedUser(
+        //   token,
+        //   params.id,
+        //   resUser.data.data[0].id
+        // );
+        // setDataChecked(resChecked.data);
+        // setIdAssign(resUser.data.data[0].id);
+      } catch (err) {}
+
+      //   const res = await getListReviews(token);
+      //   setNumPages(Math.ceil(res.data.data.assign_review.length / itemsPerPage));
+      //   setDataPerPage(res.data.data.assign_review.slice(start, end));
+      //   setListReviews(res.data.data.assign_review);
+    } catch (err) {}
   };
 
   const onChangeInput = async (e) => {
     let { name, value } = e.target;
     if (name === "user_id") {
       value = parseInt(value);
-      const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
-        token,
-        params.id,
-        value
-      );
-      console.log("his", resMemberHistory.data);
-      setNumPages(
-        Math.ceil(resMemberHistory.data.length / dataPagination.itemsPerPage)
-      );
-      setDataCheckpointByUser(resMemberHistory.data);
-      setDataPerPage(resMemberHistory.data.slice(start, end));
+      setIdAssign(value);
+      // setDataFilter(dataUser.filter((item) => item.id !== value));
+      // setDataReview({
+      //   ...dataReview,
+      //   [name]: value,
+      // });
+      const res = await getReviewsByCheckpointId(token, params.id);
+      setDataPerPage();
+      // dataUser.filter((item) => item.id !== value).slice(start, end)
+      // const res = await getCheckedUser(token, params.id, value);
+      // setDataChecked(res.data);
+      // selectAll.current.checked = false;
     }
   };
-
-  const handleOnClick = (e) => {
-    setDataPagination({
-      ...dataPagination,
-      page: e.target.value,
-    });
-    const page = e.target.value;
-    const start = (page - 1) * dataPagination.itemsPerPage;
-    const end = page * dataPagination.itemsPerPage;
-    setDataPerPage(dataCheckpointByUser.slice(start, end));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-    } catch (err) {}
-  };
+  const handleSubmit = async (e) => {};
 
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
@@ -103,7 +107,7 @@ function MemberHistory() {
     );
   }
   return (
-    <div className="member-his-cover">
+    <div className="detail-check-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -112,12 +116,13 @@ function MemberHistory() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a href="/create">
-                        Manage checkpoints: Member's review histories
-                      </a>
+                      <a href="/create">Checkpoints</a>
+                    </li>
+                    <li className="breadcrumb-item">
+                      <a href="/create">Manage checkpoints</a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Title:
+                      Detail checkpoint
                     </li>
                   </ol>
                 </nav>
@@ -137,6 +142,7 @@ function MemberHistory() {
                       className="form-control"
                       placeholder="Enter title checkpoint"
                       name="name"
+                      onChange={onChangeInput}
                       value={dataCheckpoint.name}
                       readOnly
                     ></input>
@@ -169,34 +175,6 @@ function MemberHistory() {
                     </select>
                   </div>
                 </div>
-                {/* <div className="form-group form2">
-                  <label className="control-label label1 col-sm-2">
-                    Start date:
-                  </label>
-                  <div className="col-sm-4">
-                    <input
-                      type="datetime-local"
-                      className="form-control"
-                      id="start"
-                      name="start_date"
-                      onChange={onChangeInput}
-                      value={dataCheckpoint.start_date}
-                    ></input>
-                  </div>
-                  <label className="control-label label1 col-sm-2">
-                    End date:
-                  </label>
-                  <div className="col-sm-4">
-                    <input
-                      type="datetime-local"
-                      className="form-control"
-                      id="end"
-                      name="end_date"
-                      onChange={onChangeInput}
-                      value={dataCheckpoint.end_date}
-                    ></input>
-                  </div>
-                </div> */}
               </div>
             </div>
 
@@ -209,43 +187,22 @@ function MemberHistory() {
                   <th className="point-table">Teamwork</th>
                   <th className="point-table">Training</th>
                   <th className="point-table">Adhere</th>
-                  <th className="point-table">Created date</th>
                   <th>Strength</th>
                   <th>Weakness</th>
-                  <th className="point-table">Note</th>
                 </tr>
               </thead>
               <tbody>
                 {dataPerPage?.map((ele, index) => {
                   return (
                     <tr key={index}>
-                      <td>
-                        {(dataPagination.page - 1) *
-                          dataPagination.itemsPerPage +
-                          index +
-                          1}
-                      </td>
+                      <td>{index + 1}</td>
                       <td>{ele.attitude}</td>
                       <td>{ele.performance}</td>
                       <td>{ele.teamwork}</td>
                       <td>{ele.training}</td>
                       <td>{ele.adhere}</td>
-                      <td>
-                        {ele.updated_at !== ele.created_at
-                          ? dayjs(ele.updated_at).toString()
-                          : ""}
-                      </td>
                       <td>{ele.strength}</td>
                       <td>{ele.weakness}</td>
-                      <td>
-                        {ele.attitude === null &&
-                        ele.performance === null &&
-                        ele.teamwork === null &&
-                        ele.training === null &&
-                        ele.adhere === null
-                          ? "Chưa đánh giá"
-                          : "Đã đánh giá"}
-                      </td>
                     </tr>
                   );
                 })}
@@ -254,7 +211,7 @@ function MemberHistory() {
             <div className="form-group form1">
               <div className="d-flex btn-group-1">
                 <button type="submit" className="btn btn-default ">
-                  Create mean value
+                  Close & calculate
                 </button>
                 <button
                   onClick={() => navigate(-1)}
@@ -275,4 +232,4 @@ function MemberHistory() {
   );
 }
 
-export default MemberHistory;
+export default ListReviews;
