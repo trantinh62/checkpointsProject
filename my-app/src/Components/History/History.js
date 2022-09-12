@@ -1,5 +1,4 @@
 import Table from "react-bootstrap/Table";
-import Header from "../../Common/Header/Header";
 function History() {
   return (
     <>
