@@ -28,3 +28,19 @@ export const getProfileApi = (token) =>
   });
 
 export const inviteApi = (data) => axiosClient.post("/api/invite", data);
+
+export const getAllUsersApi = (token) =>
+  axiosClient.get("/api/profile", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const updateAllUserApi = (data, token) =>
+  axiosClient.put("/api/profile/many", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });

@@ -13,7 +13,7 @@ import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
 
 import HistoryDetail from "./Components/History/HistoryDetail";
-import User from "./Components/Users/Users";
+import User from "./Components/Users/User";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
 import { useState } from "react";
