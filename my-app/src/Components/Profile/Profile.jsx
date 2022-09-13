@@ -71,7 +71,7 @@ const Profile = () => {
     <div className="profile-cover">
       <div className="container emp-profile">
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="profile-img">
               <img
                 src="https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=2000"
@@ -83,7 +83,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-8">
+          <div className="col-md-9">
             <form onSubmit={handleSubmit}>
               <div className="profile-head">
                 <div className="tab-content profile-tab" id="myTabContent">
@@ -199,19 +199,21 @@ const Profile = () => {
           </div>
         </div>
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-3">
             <div className="profile-work">
-              <h3>{dataProfile.first_name + " " + dataProfile.last_name}</h3>
+              <h1>{dataProfile.first_name + " " + dataProfile.last_name}</h1>
               <p>
                 ROLE: {dataProfile.role_id === 1 && "Group leader"}
                 {dataProfile.role_id === 2 && "Tech leader"}
                 {dataProfile.role_id === 3 && "Member"}
               </p>
+              <p>AGE: {dataProfile.age}</p>
               <p>STATUS: {dataProfile.status}</p>
+              <p>ADDRESSS: {dataProfile.address}</p>
               <br />
             </div>
           </div>
-          <div className="col-md-8">
+          <div className="col-md-9">
             <form onSubmit={handleChange}>
               <div
                 className="tab-pane fade show active"
