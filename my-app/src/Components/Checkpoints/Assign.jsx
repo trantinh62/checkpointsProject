@@ -54,12 +54,19 @@ function Assgin() {
       });
       setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
       setDataUser(resUser.data.data);
+      console.log(resUser.data.data);
       setDataFilter(
-        resUser.data.data.filter((item) => item.id !== resUser.data.data[0].id)
+        resUser.data.data.filter(
+          (item) =>
+            item.id !== resUser.data.data[0].id && item.status !== "disable"
+        )
       );
       setDataPerPage(
         resUser.data.data
-          .filter((item) => item.id !== resUser.data.data[0].id)
+          .filter(
+            (item) =>
+              item.id !== resUser.data.data[0].id && item.status !== "disable"
+          )
           .slice(start, end)
       );
       const resChecked = await getCheckedUser(
@@ -104,13 +111,13 @@ function Assgin() {
       }
       if (
         dataReview.review_id.length + dataChecked.length ===
-        dataUser.length - 1
+        dataFilter.length
       ) {
         selectAll.current.checked = false;
       } else if (
         !dataReview.review_id.includes(value) &&
         dataReview.review_id.push(value) + dataChecked.length ===
-          dataUser.length - 1
+          dataFilter.length
       ) {
         selectAll.current.checked = true;
       }

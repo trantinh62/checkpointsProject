@@ -29,7 +29,7 @@ export const getProfileApi = (token) =>
 
 export const inviteApi = (data) => axiosClient.post("/api/invite", data);
 
-export const getCheckApi = (token, id) =>
+export const getDetailCheckpointApi = (token, id) =>
   axiosClient.get(`/api/checkpoint/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
