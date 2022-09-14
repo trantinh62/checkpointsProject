@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { getReviewsByCheckpointIdAndUserId } from "../../Api/userApi";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import "./ListReviews.css";
+import { getCheckpointsByUserId } from "../../Api/userApi";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import "./ListCheckpoints.css";
 function ListReviews() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const params = useParams();
   const page = new URLSearchParams(search).get("page") || 1;
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
@@ -26,8 +26,9 @@ function ListReviews() {
   }, []);
   const fetchData = async () => {
     try {
-      const res = await getReviewsByCheckpointIdAndUserId(token, true, false);
-      const yetReview = res.data.data.assign_review.filter(
+      const res = await getCheckpointsByUserId(token);
+      console.log("res", res);
+      const yetReview = res.data.data.filter(
         (item) =>
           item.attitude === null &&
           item.performance === null &&
@@ -37,7 +38,7 @@ function ListReviews() {
       );
       setDataYetReview(yetReview);
       setNumPages(Math.ceil(yetReview.length / itemsPerPage));
-      setDataPerPage(res.data.data.assign_review.slice(start, end));
+      setDataPerPage(res.data.data.slice(start, end));
     } catch (err) {}
   };
   let menuItems = [];
@@ -50,9 +51,8 @@ function ListReviews() {
       </li>
     );
   }
-  console.log(dataPerPage);
   return (
-    <div className="list-reviews-cover">
+    <div className="list-checkpoints-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -60,13 +60,8 @@ function ListReviews() {
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/mycheckpoints">
-                        My checkpoints: List checkpoints
-                      </a>
-                    </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      List reviews: {dataPerPage[0]?.name_checkpoint.name}
+                      My checkpoints: List checkpoints
                     </li>
                   </ol>
                 </nav>
@@ -77,7 +72,7 @@ function ListReviews() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>User is checked</th>
+                <th>Title</th>
                 <th>Start date</th>
                 <th>End date</th>
               </tr>
@@ -90,35 +85,13 @@ function ListReviews() {
                     <td>
                       <a
                         style={{ textDecoration: "none" }}
-                        href={`/mycheckpoints/${
-                          ele.name_checkpoint.id
-                        }/reviews/${ele.id}?title=${
-                          ele.name_checkpoint.name
-                        }&user_id=${ele.user_info.id}&username=${
-                          ele.user_info.first_name !== null &&
-                          ele.user_info.first_name !== null
-                            ? ele.user_info.first_name +
-                              " " +
-                              ele.user_info.last_name +
-                              " (" +
-                              ele.user_info.email +
-                              " )"
-                            : ele.user_info.email
-                        }`}
+                        href={`/mycheckpoints/${ele.id}`}
                       >
-                        {ele.user_info.first_name !== null &&
-                        ele.user_info.first_name !== null
-                          ? ele.user_info.first_name +
-                            " " +
-                            ele.user_info.last_name +
-                            " (" +
-                            ele.user_info.email +
-                            " )"
-                          : ele.user_info.email}
+                        {ele.name}
                       </a>
                     </td>
-                    <td>{ele.name_checkpoint.start_date}</td>
-                    <td>{ele.name_checkpoint.end_date}</td>
+                    <td>{ele.start_date}</td>
+                    <td>{ele.end_date}</td>
                   </tr>
                 );
               })}

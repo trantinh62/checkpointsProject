@@ -4,7 +4,6 @@ import Toast from "../Toast/Toast";
 import "react-toastify/dist/ReactToastify.css";
 import { loginApi } from "../../Api/userApi";
 import "./Login.css";
-
 function Login() {
   const navigate = useNavigate();
   const [dataLogin, setDataLogin] = useState({
@@ -42,6 +41,7 @@ function Login() {
       } else if (err.response.status === 422) {
         Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
       } else Toast(err.response.data.message, "error");
+      Toast(err.response.data.message, "error");
     }
   };
 
@@ -66,6 +66,7 @@ function Login() {
               required
               autoFocus
               onChange={onChangeInput}
+              value={dataLogin.email}
             ></input>
             <input
               type="password"
@@ -75,6 +76,7 @@ function Login() {
               placeholder="Password"
               required
               onChange={onChangeInput}
+              value={dataLogin.password}
             ></input>
             <button
               className="btn btn-lg btn-primary btn-block btn-signin"

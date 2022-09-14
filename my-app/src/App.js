@@ -5,7 +5,7 @@ import Register from "./Components/Register/Register";
 import Profile from "./Components/Profile/Profile";
 import ForgotPassword from "./Components/ChangePassword/ForgotPassword";
 import ResetPassword from "./Components/ChangePassword/ResetPassword";
-import Review from "./Components/Checkpoints/Checkpoints";
+import ListCheckpoints from "./Components/Reviews/ListCheckpoints";
 import ListReviews from "./Components/Reviews/ListReviews";
 import DetailReview from "./Components/Reviews/DetailReview";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
@@ -46,8 +46,12 @@ function App() {
           <Route path="/profile" element={<Login />}></Route>
           <Route path="/invite" element={<Login />}></Route>
           <Route path="/users" element={<Login />}></Route>
-          <Route path="/reviews" element={<Login />}></Route>
-          <Route path="/reviews/:id" element={<Login />}></Route>
+          <Route path="/mycheckpoints" element={<Login />}></Route>
+          <Route path="/mycheckpoints/:check_id" element={<Login />}></Route>
+          <Route
+            path="/mycheckpoints/:check_id/reviews/:review_id"
+            element={<Login />}
+          ></Route>
           <Route path="/create" element={<Login />}></Route>
           <Route path="/assign/:id" element={<Login />}></Route>
           <Route path="/historys" element={<Login />}></Route>
@@ -79,8 +83,15 @@ function App() {
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/invite" element={<Invite />}></Route>
         <Route path="/users" element={<User />}></Route>
-        <Route path="/reviews" element={<ListReviews />}></Route>
-        <Route path="/reviews/:id" element={<DetailReview />}></Route>
+        <Route path="/mycheckpoints" element={<ListCheckpoints />}></Route>
+        <Route
+          path="/mycheckpoints/:check_id"
+          element={<ListReviews />}
+        ></Route>
+        <Route
+          path="/mycheckpoints/:check_id/reviews/:review_id"
+          element={<DetailReview />}
+        ></Route>
         <Route path="/create" element={<CreateCheckpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
         <Route path="/historys" element={<History />}></Route>

@@ -19,12 +19,12 @@ function Header() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <NavDropdown title="Reviews" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="/reviews">
-                  List reviews
+              <NavDropdown title="My checkpoints" id="collasible-nav-dropdown">
+                <NavDropdown.Item href="/mycheckpoints">
+                  List checkpoints
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/histories">
-                  Review histories
+                  Checkpoint histories
                 </NavDropdown.Item>
               </NavDropdown>
 

@@ -10,7 +10,7 @@ function ListReviews() {
   const params = useParams();
   const [searchParams] = useSearchParams();
   const title = searchParams.get("title");
-  const be_assigned = searchParams.get("be_assigned");
+  const username = searchParams.get("username");
   const [dataReview, setDataReview] = useState({
     attitude: 0,
     performance: 0,
@@ -33,7 +33,13 @@ function ListReviews() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await reviewApi(dataReview, token, params.id);
+      console.log(dataReview);
+      const res = await reviewApi(
+        dataReview,
+        token,
+        params.check_id,
+        searchParams.get("user_id")
+      );
       Toast("Review successful!", "success");
     } catch (err) {
       Toast(err.response.data.message, "error");
@@ -50,16 +56,20 @@ function ListReviews() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a href="/reviews">Reviews</a>
+                      <a className="breadcrumb" href="/mycheckpoints">
+                        My checkpoints: List checkpoints
+                      </a>
                     </li>
                     <li className="breadcrumb-item">
-                      <a href="/reviews">List Reviews</a>
+                      <a
+                        className="breadcrumb"
+                        href={`/mycheckpoints/${params.check_id}`}
+                      >
+                        List reviews: {title}
+                      </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      {title}
-                    </li>
-                    <li className="breadcrumb-item active" aria-current="page">
-                      {be_assigned}
+                      Username: {username}
                     </li>
                   </ol>
                 </nav>
