@@ -11,14 +11,22 @@ import ListPerform from "./Components/Checkpoints/ListPerform";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d0c465 (checkpointFe)
 import HistoryDetail from "./Components/History/HistoryDetail";
 import User from "./Components/Users/Users";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
 import { useState } from "react";
+<<<<<<< HEAD
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+=======
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+>>>>>>> 7d0c465 (checkpointFe)
 
 function App() {
   let [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
@@ -27,7 +35,11 @@ function App() {
       <>
         <ToastContainer
           position="top-right"
+<<<<<<< HEAD
           autoClose={5000}
+=======
+          autoClose={3000}
+>>>>>>> 7d0c465 (checkpointFe)
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -36,7 +48,10 @@ function App() {
           draggable
           pauseOnHover
         />
+<<<<<<< HEAD
         <ToastContainer />
+=======
+>>>>>>> 7d0c465 (checkpointFe)
         <Routes>
           <Route path="/" element={<Login />}></Route>
           <Route path="/login" element={<Login />}></Route>
@@ -54,6 +69,7 @@ function App() {
           <Route path="/historys" element={<Login />}></Route>
           <Route path="/historys/:id" element={<Login />}></Route>
         </Routes>
+<<<<<<< HEAD
       </>
     );
   }
@@ -76,6 +92,26 @@ function App() {
         <Header></Header>
       </div>
 
+=======
+        <ToastContainer />
+      </>
+    );
+  }
+  return (
+    <>
+      <Header></Header>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+>>>>>>> 7d0c465 (checkpointFe)
       <Routes>
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/invite" element={<Invite />}></Route>
@@ -88,6 +124,10 @@ function App() {
         <Route path="/historys" element={<History />}></Route>
         <Route path="/historys/:id" element={<HistoryDetail />}></Route>
       </Routes>
+<<<<<<< HEAD
+=======
+      <ToastContainer />
+>>>>>>> 7d0c465 (checkpointFe)
     </>
   );
 }
