@@ -11,7 +11,6 @@ import ListPerform from "./Components/Checkpoints/ListPerform";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
-
 import HistoryDetail from "./Components/History/HistoryDetail";
 import User from "./Components/Users/Users";
 import Invite from "./Components/Invite/Invite";
@@ -27,7 +26,7 @@ function App() {
       <>
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -74,20 +73,19 @@ function App() {
         />
         <ToastContainer />
         <Header></Header>
+        <Routes>
+          <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/invite" element={<Invite />}></Route>
+          <Route path="/users" element={<User />}></Route>
+          <Route path="/review" element={<Review />}></Route>
+          <Route path="/perform" element={<ListPerform />}></Route>
+          <Route path="/perform/:id" element={<PerformCheckpoint />}></Route>
+          <Route path="/create" element={<CreateCheckpoint />}></Route>
+          <Route path="/assign/:id" element={<Assign />}></Route>
+          <Route path="/historys" element={<History />}></Route>
+          <Route path="/historys/:id" element={<HistoryDetail />}></Route>
+        </Routes>
       </div>
-
-      <Routes>
-        <Route path="/profile" element={<Profile />}></Route>
-        <Route path="/invite" element={<Invite />}></Route>
-        <Route path="/users" element={<User />}></Route>
-        <Route path="/review" element={<Review />}></Route>
-        <Route path="/perform" element={<ListPerform />}></Route>
-        <Route path="/perform/:id" element={<PerformCheckpoint />}></Route>
-        <Route path="/create" element={<CreateCheckpoint />}></Route>
-        <Route path="/assign/:id" element={<Assign />}></Route>
-        <Route path="/historys" element={<History />}></Route>
-        <Route path="/historys/:id" element={<HistoryDetail />}></Route>
-      </Routes>
     </>
   );
 }

@@ -26,9 +26,9 @@ function Login() {
       sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
       sessionStorage.setItem("sessionToken", response.data.data.token);
       if (response.data.status === 200) {
-        navigate("/perform", { replace: true });
-        navigate(0);
         Toast("Đăng nhập thành công!", "success");
+        navigate("/perform", { replace: true, showToast: true });
+        navigate(0);
       }
     } catch (err) {
       Toast(err.response.data.message, "error");

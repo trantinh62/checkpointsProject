@@ -19,23 +19,26 @@ function Header() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <NavDropdown title="Reviews" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="/perform">
-                  List reviews
+              <NavDropdown title="My checkpoints" id="collasible-nav-dropdown">
+                <NavDropdown.Item href="/mycheckpoints">
+                  List checkpoints
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/histories">
-                  Review histories
+                  Checkpoint histories
                 </NavDropdown.Item>
               </NavDropdown>
 
               {roleId !== "3" && (
                 <div>
-                  <NavDropdown title="Checkpoints" id="collasible-nav-dropdown">
+                  <NavDropdown
+                    title="Manage checkpoints"
+                    id="collasible-nav-dropdown"
+                  >
                     <NavDropdown.Item href="/create">
-                      Create Checkpoint
+                      Create & assign checkpoint
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/checkpoints">
-                      Manage checkpoints
+                      Member's checkpoint histories
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>
@@ -43,12 +46,15 @@ function Header() {
 
               {roleId !== "3" && (
                 <div>
-                  <NavDropdown title="User" id="collasible-nav-dropdown">
+                  <NavDropdown
+                    title="Manage users"
+                    id="collasible-nav-dropdown"
+                  >
                     <NavDropdown.Item href="/invite">
                       Invite user
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/users">
-                      Manage users
+                      Update users
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>
