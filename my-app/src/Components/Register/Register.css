@@ -1,9 +1,11 @@
-body{
-    background-image: linear-gradient(rgb(104, 145, 162), rgb(6 20 10))
+
+.register-cover{
+    height: 100vh;
+    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+
 }
 .contact{
-    padding: 4%;
-    height: 400px;
+    padding: 2rem;
 }
 .col-md-3{
     background: #0e3476;

@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import axiosClient from "../../Api/axiosClient";
 import Table from "react-bootstrap/Table";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
@@ -52,12 +50,6 @@ function Assgin() {
           Accept: "application/json",
         },
       });
-      // const resReview = await axiosClient.get(`/api/review/${params.id}`, {
-      //   headers: {
-      //     Authorization: `Bearer ${token}`,
-      //     Accept: "application/json",
-      //   },
-      // });
 
       setDataCheckpoint(resCheckpoint.data.data);
       setDataReview({
@@ -69,9 +61,7 @@ function Assgin() {
 
       setDataUser(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const onChangeInput = (e) => {
@@ -136,12 +126,9 @@ function Assgin() {
       });
       navigate("/create", { replace: true });
       navigate(0);
-    } catch (err) {
-      console.log("err", err);
-    }
+    } catch (err) {}
   };
 
-  console.log(numPages);
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
@@ -227,7 +214,9 @@ function Assgin() {
                           onChange={onChangeInput}
                           type="checkbox"
                           value={ele.id}
-                          checked={dataReview.review_id.includes(ele.id) || ""}
+                          checked={
+                            dataReview.review_id.includes(ele.id) || false
+                          }
                         ></input>
                       </td>
                       <td>{ele.email}</td>

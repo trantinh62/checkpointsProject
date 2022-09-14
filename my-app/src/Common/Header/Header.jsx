@@ -19,24 +19,28 @@ function Header() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <NavDropdown title="Checkpoints" id="collasible-nav-dropdown">
+              <NavDropdown title="Reviews" id="collasible-nav-dropdown">
                 <NavDropdown.Item href="/perform">
-                  Perform checkpoint
+                  List reviews
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/histories">
-                  Checkpoint histories
+                  Review histories
                 </NavDropdown.Item>
-                {roleId !== "3" && (
-                  <div>
+              </NavDropdown>
+
+              {roleId !== "3" && (
+                <div>
+                  <NavDropdown title="Checkpoints" id="collasible-nav-dropdown">
                     <NavDropdown.Item href="/create">
-                      Create checkpoint
+                      Create Checkpoint
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/checkpoints">
                       Manage checkpoints
                     </NavDropdown.Item>
-                  </div>
-                )}
-              </NavDropdown>
+                  </NavDropdown>
+                </div>
+              )}
+
               {roleId !== "3" && (
                 <div>
                   <NavDropdown title="User" id="collasible-nav-dropdown">
@@ -53,9 +57,6 @@ function Header() {
             <Nav>
               <NavDropdown title={firstName} id="collasible-nav-dropdown">
                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/changepassword">
-                  Change password
-                </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/login" onClick={handleLogout}>
                   Logout

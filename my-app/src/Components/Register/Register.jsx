@@ -1,11 +1,13 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { registerApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
+import "./Register.css";
 function Register() {
   const navigate = useNavigate();
-  const search = useLocation().search;
+  const {search} = useLocation();
   const token = new URLSearchParams(search).get("token");
 
   const [dataRegister, setdataRegister] = useState({
@@ -13,20 +15,21 @@ function Register() {
     first_name: "",
     address: "",
     phone: "",
+    age: "",
     password: "",
     password_confirm: "",
   });
   const onChangeInput = (e) => {
-    const { name, value } = e.target;
+    const { id, value } = e.target;
     setdataRegister({
       ...dataRegister,
-      [name]: value,
+      [id]: value,
     });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await registerApi(dataRegister, token);
+      const res = await registerApi(dataRegister, token);
       Toast("Register successful!", "success");
       navigate("/login", { replace: true });
       navigate(0);
@@ -34,9 +37,8 @@ function Register() {
       Toast(err.response.data.message, "error");
     }
   };
-  require("./Register.css");
   return (
-    <>
+    <div className="register-cover">
       <div className="container contact">
         <div className="row">
           <div className="col-md-3">
@@ -57,11 +59,11 @@ function Register() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="firstname"
+                      type="text"
+                      id="first_name"
                       className="form-control"
-                      id="firstname"
                       placeholder="Enter firstname"
-                      name="first_name"
+                      value={dataRegister.first_name}
                       onChange={onChangeInput}
                     ></input>
                   </div>
@@ -72,11 +74,11 @@ function Register() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="lastname"
+                      type="text"
                       className="form-control"
-                      id="lastname"
+                      id="last_name"
                       placeholder="Enter lastname"
-                      name="last_name"
+                      value={dataRegister.last_name}
                       onChange={onChangeInput}
                     ></input>
                   </div>
@@ -87,11 +89,11 @@ function Register() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="age"
+                      type="text"
                       className="form-control"
                       id="age"
                       placeholder="Enter age"
-                      name="age"
+                      value={dataRegister.age}
                       onChange={onChangeInput}
                     ></input>
                   </div>
@@ -102,11 +104,11 @@ function Register() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="phone"
+                      type="text"
                       className="form-control"
                       id="phone"
                       placeholder="Enter phone"
-                      name="phone"
+                      value={dataRegister.phone}
                       onChange={onChangeInput}
                     ></input>
                   </div>
@@ -117,11 +119,11 @@ function Register() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="address"
+                      type="text"
                       className="form-control"
                       id="address"
+                      value={dataRegister.address}
                       placeholder="Enter address"
-                      name="address"
                       onChange={onChangeInput}
                     ></input>
                   </div>
@@ -136,7 +138,7 @@ function Register() {
                       className="form-control"
                       id="password"
                       placeholder="Enter password"
-                      name="password"
+                      value={dataRegister.password}
                       onChange={onChangeInput}
                     ></input>
                   </div>
@@ -151,7 +153,7 @@ function Register() {
                       className="form-control"
                       id="password_confirm"
                       placeholder="Confirm password"
-                      name="password_confirm"
+                      value={dataRegister.password_confirm}
                       onChange={onChangeInput}
                     ></input>
                   </div>
@@ -168,7 +170,7 @@ function Register() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
