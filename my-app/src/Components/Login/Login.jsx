@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import "react-toastify/dist/ReactToastify.css";
-
 import { loginApi } from "../../Api/userApi";
+import "./Login.css";
 
 function Login() {
   const navigate = useNavigate();
@@ -22,12 +22,15 @@ function Login() {
     e.preventDefault();
     try {
       const response = await loginApi(dataLogin);
-      sessionStorage.setItem("sessionUsername", response.data.data.last_name);
+      sessionStorage.setItem(
+        "sessionUsername",
+        response.data.data.first_name + " " + response.data.data.last_name
+      );
       sessionStorage.setItem("sessionUserId", response.data.data.id);
       sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
       sessionStorage.setItem("sessionToken", response.data.data.token);
       if (response.data.status === 200) {
-        navigate("/perform", { replace: true });
+        navigate("/reviews", { replace: true });
         navigate(0);
         Toast("Đăng nhập thành công!", "success");
       }
@@ -38,13 +41,13 @@ function Login() {
         Toast("Sai thông tin tài khoản!", "error");
       } else if (err.response.status === 422) {
         Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
-      }
+      } else Toast(err.response.data.message, "error");
     }
   };
-  require("./Login.css");
+
   return (
-    <>
-      <div className="container">
+    <div className="login-cover">
+      <div className="container ">
         <div className="card card-container">
           <img
             id="profile-img"
@@ -85,7 +88,7 @@ function Login() {
           </a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

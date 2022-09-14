@@ -26,3 +26,20 @@ export const getProfileApi = (token) =>
       Accept: "application/json",
     },
   });
+
+export const getListReviews = (token, useReviewId, useUserId) =>
+  axiosClient.get("/api/review/list-review", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    params: { useReviewId: useReviewId, useUserId: useUserId },
+  });
+
+export const reviewApi = (data, token, id) =>
+  axiosClient.put(`/api/review/${id}`, data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
