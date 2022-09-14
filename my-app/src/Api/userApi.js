@@ -43,3 +43,4 @@ export const reviewApi = (data, token, id) =>
       Accept: "application/json",
     },
   });
+export const inviteApi = (data) => axiosClient.post("/api/invite", data);
