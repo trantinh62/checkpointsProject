@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { getReviewsByCheckpointId } from "../../Api/userApi";
 import "./DetailHistory.css";
 function DetailHistory() {
   const navigate = useNavigate();
+  const params = useParams();
   const search = useLocation().search;
   const page = new URLSearchParams(search).get("page") || 1;
-  const itemsPerPage = 2;
+  const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
   const [listReviews, setListReviews] = useState([]);
@@ -25,10 +26,11 @@ function DetailHistory() {
   }, []);
   const fetchData = async () => {
     try {
-      // const res = await getListReviews(token);
-      // setNumPages(Math.ceil(res.data.data.assign_review.length / itemsPerPage));
-      // setDataPerPage(res.data.data.assign_review.slice(start, end));
-      // setListReviews(res.data.data.assign_review);
+      const res = await getReviewsByCheckpointId(token, params.id);
+      console.log(res);
+      setNumPages(Math.ceil(res.data.length / itemsPerPage));
+      setDataPerPage(res.data.slice(start, end));
+      setListReviews(res.data);
     } catch (err) {}
   };
 
@@ -43,7 +45,7 @@ function DetailHistory() {
     );
   }
   return (
-    <div className="reviews-cover">
+    <div className="histories-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -69,9 +71,15 @@ function DetailHistory() {
             <thead>
               <tr>
                 <th>#</th>
-                <th>Title</th>
-                <th>Start date</th>
-                <th>End date</th>
+                <th className="point-table">Attitude</th>
+                <th className="point-table">Performance</th>
+                <th className="point-table">Teamwork</th>
+                <th className="point-table">Training</th>
+                <th className="point-table">Adhere</th>
+                <th className="point-table">Created date</th>
+                <th>Strength</th>
+                <th>Weakness</th>
+                <th className="point-table">Note</th>
               </tr>
             </thead>
             <tbody>
@@ -79,16 +87,27 @@ function DetailHistory() {
                 return (
                   <tr key={index}>
                     <td>{index + 1}</td>
+                    <td>{ele.attitude}</td>
+                    <td>{ele.performance}</td>
+                    <td>{ele.teamwork}</td>
+                    <td>{ele.training}</td>
+                    <td>{ele.adhere}</td>
                     <td>
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={`/reviews/${ele.id}`}
-                      >
-                        {ele.name_checkpoint.name}
-                      </a>
+                      {ele.updated_at !== ele.created_at
+                        ? Date(ele.updated_at).toString()
+                        : ""}
                     </td>
-                    <td>{ele.name_checkpoint.end_date}</td>
-                    <td>{ele.name_checkpoint.end_date}</td>
+                    <td>{ele.strength}</td>
+                    <td>{ele.weakness}</td>
+                    <td>
+                      {ele.weakness === null &&
+                      ele.performance === null &&
+                      ele.teamwork === null &&
+                      ele.training === null &&
+                      ele.adhere === null
+                        ? "Chưa đánh giá"
+                        : "Đã đánh giá"}
+                    </td>
                   </tr>
                 );
               })}
@@ -101,7 +120,7 @@ function DetailHistory() {
                 type="submit"
                 className="btn btn-default "
               >
-                Cancel
+                Back
               </button>
             </div>
           </div>
