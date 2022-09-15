@@ -19,12 +19,12 @@ function Header() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <NavDropdown title="Reviews" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="/perform">
-                  List reviews
+              <NavDropdown title="My checkpoints" id="collasible-nav-dropdown">
+                <NavDropdown.Item href="/mycheckpoints">
+                  List checkpoints
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/histories">
-                  Review histories
+                  Checkpoint histories
                 </NavDropdown.Item>
               </NavDropdown>
 
@@ -34,8 +34,8 @@ function Header() {
                     <NavDropdown.Item href="/create">
                       Create Checkpoint
                     </NavDropdown.Item>
-                    <NavDropdown.Item href="/checkpoints">
-                      Manage checkpoints
+                    <NavDropdown.Item href="/histories/member">
+                      Member's review histories
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>

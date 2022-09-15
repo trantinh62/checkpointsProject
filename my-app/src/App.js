@@ -11,7 +11,6 @@ import ListPerform from "./Components/Checkpoints/ListPerform";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
-
 import DetailHistory from "./Components/History/DetailHistory";
 import User from "./Components/Users/Users";
 import Invite from "./Components/Invite/Invite";

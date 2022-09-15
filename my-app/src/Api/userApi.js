@@ -28,3 +28,20 @@ export const getProfileApi = (token) =>
   });
 
 export const inviteApi = (data) => axiosClient.post("/api/invite", data);
+
+export const getListReviews = (token, useReviewId, useUserId) =>
+  axiosClient.get("/api/review/list-review", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    params: { useReviewId: useReviewId, useUserId: useUserId },
+  });
+
+export const getAllCheckpoints = (token) =>
+  axiosClient.get("/api/checkpoint/all", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });

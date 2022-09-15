@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import { getListHistories } from "../../Api/userApi";
-import { useNavigate } from "react-router-dom";
+import { getAllCheckpoints } from "../../Api/userApi";
 import { useLocation } from "react-router-dom";
+
 import "./History.css";
 function History() {
-  const navigate = useNavigate();
   const search = useLocation().search;
   const page = new URLSearchParams(search).get("page") || 1;
-  const itemsPerPage = 2;
+  const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
   const [listHistories, setListHistories] = useState([]);
@@ -26,10 +25,11 @@ function History() {
   }, []);
   const fetchData = async () => {
     try {
-      const res = await getListHistories(token);
-      // setNumPages(Math.ceil(res.data.data.assign_review.length / itemsPerPage));
-      // setDataPerPage(res.data.data.assign_review.slice(start, end));
-      // setListHistories(res.data.data.assign_review);
+      const res = await getAllCheckpoints(token);
+      console.log(res);
+      setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
+      setDataPerPage(res.data.data.slice(start, end));
+      setListHistories(res.data.data);
     } catch (err) {}
   };
 
@@ -86,10 +86,11 @@ function History() {
                           style={{ textDecoration: "none" }}
                           href={`/histories/${ele.id}`}
                         >
-                          {ele.name_checkpoint.name}
+                          {ele.name}
                         </a>
                       </td>
-                      <td>{ele.name_checkpoint.end_date}</td>
+                      <td>{ele.start_date}</td>
+                      <td>{ele.end_date}</td>
                     </tr>
                   );
                 })}
