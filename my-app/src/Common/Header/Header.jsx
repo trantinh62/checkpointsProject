@@ -30,12 +30,15 @@ function Header() {
 
               {roleId !== "3" && (
                 <div>
-                  <NavDropdown title="Checkpoints" id="collasible-nav-dropdown">
+                  <NavDropdown
+                    title="Manage checkpoints"
+                    id="collasible-nav-dropdown"
+                  >
                     <NavDropdown.Item href="/create">
-                      Create Checkpoint
+                      Create & assign checkpoint
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/checkpoints">
-                      Manage checkpoints
+                      Member's checkpoint histories
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>
@@ -43,12 +46,15 @@ function Header() {
 
               {roleId !== "3" && (
                 <div>
-                  <NavDropdown title="User" id="collasible-nav-dropdown">
+                  <NavDropdown
+                    title="Manage users"
+                    id="collasible-nav-dropdown"
+                  >
                     <NavDropdown.Item href="/invite">
                       Invite user
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/users">
-                      Manage users
+                      Update users
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>

@@ -29,7 +29,7 @@ function Login() {
       sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
       sessionStorage.setItem("sessionToken", response.data.data.token);
       if (response.data.status === 200) {
-        navigate("/reviews", { replace: true });
+        navigate("/mycheckpoints", { replace: true });
         navigate(0);
         Toast("Đăng nhập thành công!", "success");
       }
@@ -41,7 +41,6 @@ function Login() {
       } else if (err.response.status === 422) {
         Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
       } else Toast(err.response.data.message, "error");
-      Toast(err.response.data.message, "error");
     }
   };
 
