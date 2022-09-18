@@ -33,7 +33,6 @@ function ListReviews() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(dataReview);
       const res = await reviewApi(
         dataReview,
         token,

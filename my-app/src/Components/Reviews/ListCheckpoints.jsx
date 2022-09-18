@@ -27,7 +27,6 @@ function ListReviews() {
   const fetchData = async () => {
     try {
       const res = await getCheckpointsByUserId(token);
-      console.log("res", res);
       const yetReview = res.data.data.filter(
         (item) =>
           item.attitude === null &&

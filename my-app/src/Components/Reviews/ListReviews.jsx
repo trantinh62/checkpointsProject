@@ -50,7 +50,6 @@ function ListReviews() {
       </li>
     );
   }
-  console.log(dataPerPage);
   return (
     <div className="list-reviews-cover">
       <div className="container ">
