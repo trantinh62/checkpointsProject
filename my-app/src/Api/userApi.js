@@ -28,23 +28,16 @@ export const getProfileApi = (token) =>
   });
 
 export const inviteApi = (data) => axiosClient.post("/api/invite", data);
+export const getCheckApi = (token) =>
+  axiosClient.get("/api/checkpoint", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
 
-export const getCheckApi = (token, id) =>
-  axiosClient.get(`/api/checkpoint/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  });
-export const getListUsersApi = (token) =>
-  axiosClient.get("/api/profile", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  });
-export const getCheckedUser = (token, check_id, user_id) =>
-  axiosClient.get(`/api/review/${check_id}/${user_id}`, {
+export const createApi = (data, token) =>
+  axiosClient.post("/api/checkpoint", data, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",

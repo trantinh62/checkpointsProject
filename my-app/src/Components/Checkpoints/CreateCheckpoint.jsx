@@ -1,14 +1,10 @@
-import axiosClient from "../../Api/axiosClient";
-import { useNavigate } from "react-router-dom";
-import "./CreateCheckpoint.css";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { createApi, getCheckApi } from "../../Api/userApi";
 import dayjs from "dayjs";
-import Table from "react-bootstrap/esm/Table";
-import { ToastContainer, toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
-
+import Toast from "../Toast/Toast";
 import "./CreateCheckpoint.css";
-const create_check_url = "/api/checkpoint";
+
 function Checkpoints() {
   const navigate = useNavigate();
   const search = useLocation().search;
@@ -25,9 +21,7 @@ function Checkpoints() {
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
-
   let [numPages, setNumPages] = useState(1, []);
-
   const token = sessionStorage.getItem("sessionToken");
 
   const onChangeInput = (e) => {
@@ -54,52 +48,26 @@ function Checkpoints() {
 
   const fetchData = async () => {
     try {
-      const res = await axiosClient.get("/api/checkpoint", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+      const res = await getCheckApi(token);
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post(
-        create_check_url,
-        dataCheckpoint,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-          },
-        }
-      );
-      console.log(response);
+      const response = await createApi(dataCheckpoint, token);
       navigate(`/assign/${response.data.data.id}`, {
         replace: true,
       });
       navigate(0);
-      toast.success("Đăng nhập thành công!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      Toast("Tạo checkpoint thành công!", "success");
     } catch (err) {
-      console.log("err", err);
+      Toast(err.response.data.message, "error");
     }
   };
-  console.log(numPages);
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
@@ -111,97 +79,112 @@ function Checkpoints() {
     );
   }
   return (
-    <>
-      <div className="container create-check-form">
-        <div className="row">
-          <form onSubmit={handleSubmit}>
-            <nav aria-label="breadcrumb">
-              <ol className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <a href="/perform">Checkpoints</a>
-                </li>
-                <li className="breadcrumb-item active" aria-current="page">
-                  Create Checkpoint
-                </li>
-              </ol>
-            </nav>
-            <div className="input-group mb-3">
-              <div>
-                <h4 className="title-create">Title</h4>
+    <div className="reviews-cover">
+      <div className="container ">
+        <div className="table-wrapper">
+          <div className="table-title">
+            <div className="row">
+              <div className="col-sm-8">
+                <nav aria-label="breadcrumb">
+                  <ol className="breadcrumb">
+                    <li className="breadcrumb-item">
+                      <a href="/create">Checkpoints</a>
+                    </li>
+                    <li className="breadcrumb-item active" aria-current="page">
+                      Create checkpoints
+                    </li>
+                  </ol>
+                </nav>
               </div>
-              <input
-                type="text1"
-                name="name"
-                className="form-control"
-                onChange={onChangeInput}
-                placeholder="Input title of checkpoint"
-              ></input>
-              <div>
-                <h4 className="date-title">Start date</h4>
-              </div>
-              <input
-                type="datetime-local"
-                id="start-date"
-                onChange={onChangeInput}
-                name="start_date"
-              ></input>
-              <div>
-                <h4 className="date-title">End date</h4>
-              </div>
-              <input
-                type="datetime-local"
-                id="end-date"
-                onChange={onChangeInput}
-                name="end_date"
-              ></input>
             </div>
-
-            <div className="btn-save">
-              <button type="submit" className="btn btn-primary btn-save">
+          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="col-md-6">
+              <div className="contact-form">
+                <div className="form-group form2">
+                  <label className="control-label label1 col-sm-2">
+                    Title:
+                  </label>
+                  <div className="col-sm-10">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter title checkpoint"
+                      name="name"
+                      onChange={onChangeInput}
+                      value={dataCheckpoint.name}
+                    ></input>
+                  </div>
+                  <label className="control-label label1 col-sm-2">
+                    Start date:
+                  </label>
+                  <div className="col-sm-4">
+                    <input
+                      type="datetime-local"
+                      className="form-control"
+                      id="start"
+                      name="start_date"
+                      onChange={onChangeInput}
+                      value={dataCheckpoint.start_date}
+                    ></input>
+                  </div>
+                  <label className="control-label label1 col-sm-2">
+                    End date:
+                  </label>
+                  <div className="col-sm-4">
+                    <input
+                      type="datetime-local"
+                      className="form-control"
+                      id="end"
+                      name="end_date"
+                      onChange={onChangeInput}
+                      value={dataCheckpoint.end_date}
+                    ></input>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-12">
+              <button type="submit" className="btn-create">
                 Create checkpoint
               </button>
             </div>
           </form>
+          <table className="table table-bordered text-center">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Title</th>
+                <th>Start date</th>
+                <th>End date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {dataPerPage?.map((ele, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <a
+                        style={{ textDecoration: "none" }}
+                        href={`/assign/${ele.id}`}
+                      >
+                        {ele.name}
+                      </a>
+                    </td>
+                    <td>{ele.start_date}</td>
+                    <td>{ele.end_date}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content-center">{menuItems}</ul>
+          </nav>
         </div>
-        <div>
-          <span>List checkpoints has not been assigned</span>
-        </div>
-        <Table striped bordered hover className="text-center">
-          <thead className="thead-dark">
-            <tr>
-              <th>#</th>
-              <th>Name of the checkpoint</th>
-              <th>Author ID</th>
-              <th>Start date</th>
-              <th>End date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dataPerPage?.map((ele, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>
-                    <a
-                      style={{ textDecoration: "none" }}
-                      href={`/assign/${ele.id}`}
-                    >
-                      {ele.name}
-                    </a>
-                  </td>
-                  <td>{ele.user_id}</td>
-                  <td>{ele.start_date}</td>
-                  <td>{ele.end_date}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-        <nav aria-label="Page navigation example">
-          <ul className="pagination justify-content-center">{menuItems}</ul>
-        </nav>
       </div>
-    </>
+    </div>
   );
 }
 
