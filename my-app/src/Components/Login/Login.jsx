@@ -21,20 +21,29 @@ function Login() {
     e.preventDefault();
     try {
       const response = await loginApi(dataLogin);
-      sessionStorage.setItem("sessionUsername", response.data.data.last_name);
+      sessionStorage.setItem(
+        "sessionUsername",
+        response.data.data.first_name + " " + response.data.data.last_name
+      );
       sessionStorage.setItem("sessionUserId", response.data.data.id);
       sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
       sessionStorage.setItem("sessionToken", response.data.data.token);
       if (response.data.status === 200) {
-        navigate("/perform", { replace: true });
+        navigate("/mycheckpoints", { replace: true });
         navigate(0);
         Toast("Đăng nhập thành công!", "success");
       }
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      if (err.response.status === 403) {
+        Toast("Tài khoản đã bị khóa!", "error");
+      } else if (err.response.status === 400) {
+        Toast("Sai thông tin tài khoản!", "error");
+      } else if (err.response.status === 422) {
+        Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
+      } else Toast(err.response.data.message, "error");
     }
   };
-  require("./Login.css");
+
   return (
     <div className="login-cover">
       <div className="container ">

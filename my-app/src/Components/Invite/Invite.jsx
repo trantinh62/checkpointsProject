@@ -56,6 +56,7 @@ function Invite() {
                       name="email"
                       value={dataInvite.email}
                       onChange={onChangeInput}
+                      value={dataInvite.email}
                     ></input>
                   </div>
                 </div>
