@@ -1,4 +1,5 @@
-.member-his-cover {
+
+.list-checkpoints-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
@@ -10,7 +11,8 @@
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 .table-title {
-    
+    padding-bottom: 10px;
+    margin: 0 0 10px;
 }
 .table-title h2 {
     margin: 6px 0 0;
@@ -81,26 +83,6 @@ table.table .form-control.error {
 table.table td .add {
     display: none;
 }
-.form2{
-    display: flex;
-    align-items: center;
-}
-.label1 {
-    padding-left: 1rem;
-}
-.btn-create{
-    margin: 0.5rem 0 0.5rem auto;
-    background: #ff9b00;
-    color: #fff;
-    font-weight: 600;
-    width: 25%;
-    display: flex;
-    border: none;
-    border-radius: 2.5rem;
-    cursor: pointer;
-    justify-content: center;
-    padding: 0.5rem 0;
-}
-.breadcrumb{
+.breadcrumb {
     text-decoration: none;
 }

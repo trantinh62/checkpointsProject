@@ -55,6 +55,7 @@ function Invite() {
                       placeholder="Enter email"
                       name="email"
                       onChange={onChangeInput}
+                      value={dataInvite.email}
                     ></input>
                   </div>
                 </div>

@@ -87,11 +87,8 @@ function ListMemberHistory() {
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item">
-                      <a href="/create">Checkpoints</a>
-                    </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      List checkpoints
+                      Manage checkpoints: Member's checkpoint histories
                     </li>
                   </ol>
                 </nav>
@@ -167,7 +164,7 @@ function ListMemberHistory() {
                     <td>
                       <a
                         style={{ textDecoration: "none" }}
-                        href={`/histories/member/${ele.id}`}
+                        href={`/histories/member/${ele.id}?title=${ele.name}`}
                       >
                         {ele.name}
                       </a>
