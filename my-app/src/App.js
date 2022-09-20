@@ -5,9 +5,9 @@ import Register from "./Components/Register/Register";
 import Profile from "./Components/Profile/Profile";
 import ForgotPassword from "./Components/ChangePassword/ForgotPassword";
 import ResetPassword from "./Components/ChangePassword/ResetPassword";
-import Review from "./Components/Checkpoints/Checkpoints";
-import PerformCheckpoint from "./Components/Checkpoints/PerformCheckpoint";
-import ListPerform from "./Components/Checkpoints/ListPerform";
+import ListCheckpoints from "./Components/Reviews/ListCheckpoints";
+import ListReviews from "./Components/Reviews/ListReviews";
+import DetailReview from "./Components/Reviews/DetailReview";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import DetailCheck from "./Components/Checkpoints/DetailCheck";
 import Assign from "./Components/Checkpoints/Assign";
@@ -44,13 +44,16 @@ function App() {
           <Route path="/login" element={<Login />}></Route>
           <Route path="/forgot" element={<ForgotPassword />}></Route>
           <Route path="/register" element={<Register />}></Route>
-          <Route path="/resetpassword" element={<ResetPassword />}></Route>
+          <Route path="/reset" element={<ResetPassword />}></Route>
           <Route path="/profile" element={<Login />}></Route>
           <Route path="/invite" element={<Login />}></Route>
           <Route path="/users" element={<Login />}></Route>
-          <Route path="/review" element={<Login />}></Route>
-          <Route path="/perform" element={<Login />}></Route>
-          <Route path="/perform/:id" element={<Login />}></Route>
+          <Route path="/mycheckpoints" element={<Login />}></Route>
+          <Route path="/mycheckpoints/:check_id" element={<Login />}></Route>
+          <Route
+            path="/mycheckpoints/:check_id/reviews/:review_id"
+            element={<Login />}
+          ></Route>
           <Route path="/create" element={<Login />}></Route>
           <Route path="/assign/:id" element={<Login />}></Route>
           <Route path="/histories" element={<Login />}></Route>
@@ -85,10 +88,15 @@ function App() {
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/invite" element={<Invite />}></Route>
         <Route path="/users" element={<User />}></Route>
-        <Route path="/checkpoints" element={<Checkpoint />}></Route>
-        <Route path="/review" element={<Review />}></Route>
-        <Route path="/perform" element={<ListPerform />}></Route>
-        <Route path="/perform/:id" element={<PerformCheckpoint />}></Route>
+        <Route path="/mycheckpoints" element={<ListCheckpoints />}></Route>
+        <Route
+          path="/mycheckpoints/:check_id"
+          element={<ListReviews />}
+        ></Route>
+        <Route
+          path="/mycheckpoints/:check_id/reviews/:review_id"
+          element={<DetailReview />}
+        ></Route>
         <Route path="/create" element={<CreateCheckpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
         <Route path="/histories" element={<History />}></Route>

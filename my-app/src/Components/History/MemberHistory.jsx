@@ -112,7 +112,7 @@ function MemberHistory() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a href="/create">
+                      <a className="breadcrumb" href="/create">
                         Manage checkpoints: Member's review histories
                       </a>
                     </li>
