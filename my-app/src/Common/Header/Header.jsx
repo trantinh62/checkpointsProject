@@ -5,7 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 function Header() {
-  const firstName = sessionStorage.getItem("sessionUsername");
+  const userName = sessionStorage.getItem("sessionUsername");
   const roleId = sessionStorage.getItem("sessionRoleId");
   const token = sessionStorage.getItem("token");
   const handleLogout = async () => {
@@ -61,7 +61,7 @@ function Header() {
               )}
             </Nav>
             <Nav>
-              <NavDropdown title={firstName} id="collasible-nav-dropdown">
+              <NavDropdown title={userName} id="collasible-nav-dropdown">
                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/login" onClick={handleLogout}>
