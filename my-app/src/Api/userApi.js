@@ -53,22 +53,7 @@ export const getCheckpointsByUserId = (token) =>
     },
   });
 
-export const getReviewsByCheckpointIdAndUserId = (
-  token,
-  useReviewId,
-  useUserId
-) =>
-  axiosClient.get(
-    `/api/review/list-review?useReviewId=${useReviewId}&useUserId=${useUserId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    }
-  );
-
-export const getAllCheckpointApi = (token) =>
+export const getListChecksApi = (token) =>
   axiosClient.get("/api/checkpoint", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -76,7 +61,51 @@ export const getAllCheckpointApi = (token) =>
     },
   });
 
-export const getListChecksApi = (token) =>
+export const getCheckApi = (token, id) =>
+  axiosClient.get(`/api/checkpoint/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getListUsersApi = (token) =>
+  axiosClient.get("/api/profile", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getReviewsByCheckpointId = (token, id) =>
+  axiosClient.get(`api/review/${id}/all`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getReviewsByCheckpointIdAndUserId = (
+  token,
+  checkpoint_id,
+  user_id
+) =>
+  axiosClient.get(`api/review/${checkpoint_id}/${user_id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getListUsersByCheckpointId = (token, checkpoint_id) =>
+  axiosClient.get(`api/review/${checkpoint_id}/user`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getAllCheckpointApi = (token) =>
   axiosClient.get("/api/checkpoint", {
     headers: {
       Authorization: `Bearer ${token}`,

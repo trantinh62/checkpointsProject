@@ -13,7 +13,8 @@ import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
 import HistoryDetail from "./Components/History/HistoryDetail";
 import ListMemberHistory from "./Components/History/ListMemberHistory";
-import User from "./Components/Users/Users";
+import MemberHistory from "./Components/History/MemberHistory";
+import User from "./Components/Users/User";
 import Checkpoint from "./Components/Checkpoints/ListCheckpoints";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
@@ -97,6 +98,7 @@ function App() {
         <Route path="/assign/:id" element={<Assign />}></Route>
         <Route path="/histories" element={<History />}></Route>
         <Route path="/histories/member" element={<ListMemberHistory />}></Route>
+        <Route path="/histories/member/:id" element={<MemberHistory />}></Route>
         <Route path="/histories/:id" element={<HistoryDetail />}></Route>
       </Routes>
     </>

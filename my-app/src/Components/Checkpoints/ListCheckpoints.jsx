@@ -27,7 +27,6 @@ function ListCheckpoints() {
   const fetchData = async () => {
     try {
       const res = await getListChecksApi(token);
-      console.log(res);
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
       setListReviews(res.data.data.checkpoints);
