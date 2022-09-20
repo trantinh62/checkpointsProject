@@ -26,7 +26,6 @@ function History() {
   const fetchData = async () => {
     try {
       const res = await getAllCheckpoints(token);
-      console.log(res);
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListHistories(res.data.data);
@@ -53,14 +52,11 @@ function History() {
                 <div className="col-sm-8">
                   <nav aria-label="breadcrumb">
                     <ol className="breadcrumb">
-                      <li className="breadcrumb-item">
-                        <a href="/histories">Histories</a>
-                      </li>
                       <li
                         className="breadcrumb-item active"
                         aria-current="page"
                       >
-                        List Histories
+                        My checkpoints: Checkpoint histories
                       </li>
                     </ol>
                   </nav>
@@ -84,13 +80,13 @@ function History() {
                       <td>
                         <a
                           style={{ textDecoration: "none" }}
-                          href={`/histories/${ele.id}`}
+                          href={`/histories/${ele.name_checkpoint.id}`}
                         >
-                          {ele.name}
+                          {ele.name_checkpoint.name}
                         </a>
                       </td>
-                      <td>{ele.start_date}</td>
-                      <td>{ele.end_date}</td>
+                      <td>{ele.name_checkpoint.start_date}</td>
+                      <td>{ele.name_checkpoint.end_date}</td>
                     </tr>
                   );
                 })}
