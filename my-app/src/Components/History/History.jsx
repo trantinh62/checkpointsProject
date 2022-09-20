@@ -80,13 +80,13 @@ function History() {
                       <td>
                         <a
                           style={{ textDecoration: "none" }}
-                          href={`/histories/${ele.name_checkpoint.id}`}
+                          href={`/histories/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
                         >
-                          {ele.name_checkpoint.name}
+                          {ele.checkpoint.name}
                         </a>
                       </td>
-                      <td>{ele.name_checkpoint.start_date}</td>
-                      <td>{ele.name_checkpoint.end_date}</td>
+                      <td>{ele.checkpoint.start_date}</td>
+                      <td>{ele.checkpoint.end_date}</td>
                     </tr>
                   );
                 })}

@@ -37,7 +37,7 @@ function Header() {
                     <NavDropdown.Item href="/create">
                       Create & assign checkpoint
                     </NavDropdown.Item>
-                    <NavDropdown.Item href="/checkpoints">
+                    <NavDropdown.Item href="/histories/member">
                       Member's checkpoint histories
                     </NavDropdown.Item>
                   </NavDropdown>

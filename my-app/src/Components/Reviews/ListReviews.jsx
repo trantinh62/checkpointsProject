@@ -65,7 +65,7 @@ function ListReviews() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      List reviews: {dataPerPage[0]?.name_checkpoint.name}
+                      List reviews: {dataPerPage[0]?.checkpoint.name}
                     </li>
                   </ol>
                 </nav>
@@ -89,11 +89,11 @@ function ListReviews() {
                     <td>
                       <a
                         style={{ textDecoration: "none" }}
-                        href={`/mycheckpoints/${
-                          ele.name_checkpoint.id
-                        }/reviews/${ele.id}?title=${
-                          ele.name_checkpoint.name
-                        }&user_id=${ele.user_info.id}&username=${
+                        href={`/mycheckpoints/${ele.checkpoint.id}/reviews/${
+                          ele.id
+                        }?title=${ele.checkpoint.name}&user_id=${
+                          ele.user_info.id
+                        }&username=${
                           ele.user_info.first_name !== null &&
                           ele.user_info.first_name !== null
                             ? ele.user_info.first_name +
@@ -116,8 +116,8 @@ function ListReviews() {
                           : ele.user_info.email}
                       </a>
                     </td>
-                    <td>{ele.name_checkpoint.start_date}</td>
-                    <td>{ele.name_checkpoint.end_date}</td>
+                    <td>{ele.checkpoint.start_date}</td>
+                    <td>{ele.checkpoint.end_date}</td>
                   </tr>
                 );
               })}

@@ -75,3 +75,19 @@ export const getAllCheckpoints = (token) =>
       Accept: "application/json",
     },
   });
+
+export const getReviewsByCheckpointId = (token, id) =>
+  axiosClient.get(`api/review/${id}/all`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getAvgByCheckpointId = (token, check_id) =>
+  axiosClient.get(`/api/avg/${check_id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
