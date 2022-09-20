@@ -53,7 +53,7 @@ function ResetPassword() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="password"
+                      type="password reset"
                       className="form-control"
                       id="password"
                       placeholder="Enter password"
@@ -69,7 +69,7 @@ function ResetPassword() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="password"
+                      type="password reset"
                       className="form-control"
                       id="password_confirm"
                       placeholder="Confirm password"
