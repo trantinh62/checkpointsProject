@@ -62,7 +62,7 @@ function ListReviews() {
                     <li className="breadcrumb-item">
                       <a
                         className="breadcrumb"
-                        href={`/mycheckpoints/${params.check_id}`}
+                        href={`/mycheckpoints/${params.check_id}?title=${title}`}
                       >
                         List reviews: {title}
                       </a>
@@ -279,7 +279,7 @@ function ListReviews() {
                     type="submit"
                     className="btn btn-default "
                   >
-                    Cancel
+                    Back
                   </button>
                 </div>
               </div>

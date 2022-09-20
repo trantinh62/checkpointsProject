@@ -8,7 +8,9 @@ import "./CreateCheckpoint.css";
 function Checkpoints() {
   const navigate = useNavigate();
   const search = useLocation().search;
-  const page = new URLSearchParams(search).get("page") || 1;
+  const [page, setPage] = useState(
+    new URLSearchParams(search).get("page") || 1
+  );
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
@@ -36,6 +38,7 @@ function Checkpoints() {
 
   const handleOnClick = (e) => {
     const page = e.target.value;
+    setPage(page);
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
     setDataPerPage(dataListCheck.slice(start, end));
@@ -88,7 +91,9 @@ function Checkpoints() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a href="/create">Checkpoints</a>
+                      <a className="breadcrumb" href="/create">
+                        Manage checkpoints
+                      </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       Create checkpoints
@@ -163,7 +168,7 @@ function Checkpoints() {
               {dataPerPage?.map((ele, index) => {
                 return (
                   <tr key={index}>
-                    <td>{index + 1}</td>
+                    <td>{(page - 1) * itemsPerPage + index + 1}</td>
                     <td>
                       <a
                         style={{ textDecoration: "none" }}

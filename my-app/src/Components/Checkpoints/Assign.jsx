@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./Assign.css";
 import {
-  getCheckApi,
+  getDetailCheckpointApi,
   getCheckedUser,
   getListUsersApi,
 } from "../../Api/userApi";
@@ -44,7 +44,7 @@ function Assgin() {
   const token = sessionStorage.getItem("sessionToken");
   const fetchData = async () => {
     try {
-      const res = await getCheckApi(token, params.id);
+      const res = await getDetailCheckpointApi(token, params.id);
       const resUser = await getListUsersApi(token);
       setDataCheckpoint(res.data.data);
       setDataReview({
@@ -54,7 +54,6 @@ function Assgin() {
       });
       setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
       setDataUser(resUser.data.data);
-      console.log(resUser.data.data);
       setDataFilter(
         resUser.data.data.filter(
           (item) =>
@@ -187,13 +186,17 @@ function Assgin() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a href="/create">Checkpoints</a>
+                      <a className="breadcrumb" href="/create">
+                        Manage checkpoints
+                      </a>
                     </li>
                     <li className="breadcrumb-item">
-                      <a href="/create">Create checkpoints</a>
+                      <a className="breadcrumb" href="/create">
+                        Create checkpoints
+                      </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Assign users
+                      Assign users: {dataCheckpoint.name}
                     </li>
                   </ol>
                 </nav>
@@ -214,7 +217,7 @@ function Assgin() {
                       placeholder="Enter title checkpoint"
                       name="name"
                       onChange={onChangeInput}
-                      defaultValue={dataCheckpoint.name}
+                      value={dataCheckpoint.name}
                       readOnly
                     ></input>
                   </div>

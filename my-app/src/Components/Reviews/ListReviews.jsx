@@ -1,20 +1,30 @@
 import { useState, useEffect } from "react";
 import { getReviewsByCheckpointIdAndUserId } from "../../Api/userApi";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import "./ListReviews.css";
 function ListReviews() {
   const navigate = useNavigate();
   const { search } = useLocation();
   const params = useParams();
-  const page = new URLSearchParams(search).get("page") || 1;
+  const [page, setPage] = useState(
+    new URLSearchParams(search).get("page") || 1
+  );
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
+  const [searchParams] = useSearchParams();
+  const title = searchParams.get("title");
   const [dataYetReview, setDataYetReview] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1, []);
   const handleOnClick = (e) => {
     const page = e.target.value;
+    setPage(page);
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
     setDataPerPage(dataYetReview.slice(start, end));
@@ -65,7 +75,7 @@ function ListReviews() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      List reviews: {dataPerPage[0]?.name_checkpoint.name}
+                      List reviews: {title}
                     </li>
                   </ol>
                 </nav>
@@ -85,7 +95,7 @@ function ListReviews() {
               {dataPerPage?.map((ele, index) => {
                 return (
                   <tr key={index}>
-                    <td>{index + 1}</td>
+                    <td>{(page - 1) * itemsPerPage + index + 1}</td>
                     <td>
                       <a
                         style={{ textDecoration: "none" }}
@@ -123,6 +133,17 @@ function ListReviews() {
               })}
             </tbody>
           </table>
+          <div className="form-group form1">
+            <div className="d-flex btn-group-1">
+              <button
+                onClick={() => navigate(-1)}
+                type="submit"
+                className="btn btn-default "
+              >
+                Back
+              </button>
+            </div>
+          </div>
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>

@@ -32,8 +32,6 @@ function Login() {
         navigate("/mycheckpoints", { replace: true });
         navigate(0);
         Toast("Đăng nhập thành công!", "success");
-        navigate("/perform", { replace: true, showToast: true });
-        navigate(0);
       }
     } catch (err) {
       if (err.response.status === 403) {
