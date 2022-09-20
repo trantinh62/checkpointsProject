@@ -5,7 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
 function Header() {
-  const firstName = sessionStorage.getItem("sessionUsername");
+  const userName = sessionStorage.getItem("sessionUsername");
   const roleId = sessionStorage.getItem("sessionRoleId");
   const token = sessionStorage.getItem("token");
   const handleLogout = async () => {
@@ -19,23 +19,26 @@ function Header() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <NavDropdown title="Reviews" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="/perform">
-                  List reviews
+              <NavDropdown title="My checkpoints" id="collasible-nav-dropdown">
+                <NavDropdown.Item href="/mycheckpoints">
+                  List checkpoints
                 </NavDropdown.Item>
                 <NavDropdown.Item href="/histories">
-                  Review histories
+                  Checkpoint histories
                 </NavDropdown.Item>
               </NavDropdown>
 
-              {roleId !== "3" && (
+              {roleId === "1" && (
                 <div>
-                  <NavDropdown title="Checkpoints" id="collasible-nav-dropdown">
+                  <NavDropdown
+                    title="Manage checkpoints"
+                    id="collasible-nav-dropdown"
+                  >
                     <NavDropdown.Item href="/create">
-                      Create Checkpoint
+                      Create & assign checkpoint
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/checkpoints">
-                      Manage checkpoints
+                      Member's checkpoint histories
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>
@@ -43,19 +46,22 @@ function Header() {
 
               {roleId !== "3" && (
                 <div>
-                  <NavDropdown title="User" id="collasible-nav-dropdown">
+                  <NavDropdown
+                    title="Manage users"
+                    id="collasible-nav-dropdown"
+                  >
                     <NavDropdown.Item href="/invite">
                       Invite user
                     </NavDropdown.Item>
                     <NavDropdown.Item href="/users">
-                      Manage users
+                      Update users
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>
               )}
             </Nav>
             <Nav>
-              <NavDropdown title={firstName} id="collasible-nav-dropdown">
+              <NavDropdown title={userName} id="collasible-nav-dropdown">
                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="/login" onClick={handleLogout}>

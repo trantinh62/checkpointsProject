@@ -7,7 +7,9 @@ import "./User.css";
 function User() {
   const navigate = useNavigate();
   const search = useLocation().search;
-  const page = new URLSearchParams(search).get("page") || 1;
+  const [page, setPage] = useState(
+    new URLSearchParams(search).get("page") || 1
+  );
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
@@ -18,6 +20,7 @@ function User() {
 
   const paginationOnClick = (e) => {
     const page = e.target.value;
+    setPage(page);
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
     setDataPerPage(dataUser.slice(start, end));
@@ -94,11 +97,8 @@ function User() {
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item">
-                      <a href="/users">Users</a>
-                    </li>
-                    <li className="breadcrumb-item active" aria-current="page">
-                      List users
+                    <li className="breadcrumb-item active">
+                      Manage users: Update users
                     </li>
                   </ol>
                 </nav>
@@ -121,7 +121,7 @@ function User() {
                 {dataPerPage.map((ele, index) => {
                   return (
                     <tr key={index}>
-                      <td>{index + 1}</td>
+                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
                       <td>{ele.email}</td>
                       <td>
                         {ele.first_name + " " + ele.last_name !== "null null"
