@@ -27,12 +27,12 @@ function Assgin() {
   let list_id_checked = [];
 
   const [dataCheckpoint, setDataCheckpoint] = useState({
-    id: null,
-    name: null,
+    id: "",
+    name: "",
   });
   const [dataReview, setDataReview] = useState({
-    checkpoint_id: null,
-    user_id: null,
+    checkpoint_id: "",
+    user_id: "",
     review_id: [],
   });
   const [dataUser, setDataUser] = useState([]);
@@ -73,7 +73,7 @@ function Assgin() {
         params.id,
         resUser.data.data[0].id
       );
-      setDataChecked(resChecked.data);
+      setDataChecked(resChecked.data.data);
       setIdAssign(resUser.data.data[0].id);
     } catch (err) {}
   };
@@ -92,7 +92,7 @@ function Assgin() {
         dataUser.filter((item) => item.id !== value).slice(start, end)
       );
       const res = await getCheckedUser(token, params.id, value);
-      setDataChecked(res.data);
+      setDataChecked(res.data.data);
       selectAll.current.checked = false;
     } else if (name === "review_id") {
       value = parseInt(value);
@@ -161,7 +161,7 @@ function Assgin() {
       });
       setDataReview({ ...dataReview, review_id: [] });
       const reschecked = await getCheckedUser(token, params.id, idAssign);
-      setDataChecked(reschecked.data);
+      setDataChecked(reschecked.data.data);
       Toast("Đăng ký người đánh giá thành công!", "success");
     } catch (err) {}
   };
@@ -187,12 +187,7 @@ function Assgin() {
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
                       <a className="breadcrumb" href="/create">
-                        Manage checkpoints
-                      </a>
-                    </li>
-                    <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/create">
-                        Create checkpoints
+                        Manage checkpoints: Create checkpoints
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
@@ -251,76 +246,80 @@ function Assgin() {
                 </div>
               </div>
             </div>
-
-            <Table striped bordered hover className="text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Email</th>
-                  <th>Username</th>
-                  <th>Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataPerPage?.map((ele, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        <input
-                          name="review_id"
-                          onChange={onChangeInput}
-                          type="checkbox"
-                          value={ele.id}
-                          checked={
-                            dataReview.review_id.includes(ele.id) ||
-                            dataChecked.some(
-                              (item) => item.review_id === ele.id
-                            ) ||
-                            false
-                          }
-                          disabled={
-                            dataChecked.some(
-                              (item) => item.review_id === ele.id
-                            ) || false
-                          }
-                        ></input>
-                      </td>
-                      <td>{ele.email}</td>
-                      <td>
-                        {ele.first_name + " " + ele.last_name !== "null null"
-                          ? ele.first_name + " " + ele.last_name
-                          : ""}
-                      </td>
-                      <td>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          disabled
-                          defaultValue={ele.role_id}
-                        >
-                          <option value="1">Group leader</option>
-                          <option value="2">Leader</option>
-                          <option value="3">Member</option>
-                        </select>
-                      </td>
-                    </tr>
-                  );
-                })}
-                <tr>
-                  <td>
-                    <input
-                      type="checkbox"
-                      id="selectall"
-                      className="checkbox-all"
-                      autoComplete="off"
-                      onClick={handleSelectAll}
-                      ref={selectAll}
-                    ></input>
-                  </td>
-                  <td style={{ textAlign: "initial" }}>Select all</td>
-                </tr>
-              </tbody>
-            </Table>
+            {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+              <h3 className="review-notify">There are no users to assign</h3>
+            )}
+            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+              <Table striped bordered hover className="text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataPerPage?.map((ele, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>
+                          <input
+                            name="review_id"
+                            onChange={onChangeInput}
+                            type="checkbox"
+                            defaultValue={ele.id}
+                            checked={
+                              dataReview.review_id.includes(ele.id) ||
+                              dataChecked.some(
+                                (item) => item.review_id === ele.id
+                              ) ||
+                              false
+                            }
+                            disabled={
+                              dataChecked.some(
+                                (item) => item.review_id === ele.id
+                              ) || false
+                            }
+                          ></input>
+                        </td>
+                        <td>{ele.email}</td>
+                        <td>
+                          {ele.first_name + " " + ele.last_name !== "null null"
+                            ? ele.first_name + " " + ele.last_name
+                            : ""}
+                        </td>
+                        <td>
+                          <select
+                            className="form-select"
+                            aria-label="Default select example"
+                            disabled
+                            value={ele.role_id}
+                          >
+                            <option value="1">Group leader</option>
+                            <option value="2">Leader</option>
+                            <option value="3">Member</option>
+                          </select>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr>
+                    <td>
+                      <input
+                        type="checkbox"
+                        id="selectall"
+                        className="checkbox-all"
+                        autoComplete="off"
+                        onClick={handleSelectAll}
+                        ref={selectAll}
+                      ></input>
+                    </td>
+                    <td style={{ textAlign: "initial" }}>Select all</td>
+                  </tr>
+                </tbody>
+              </Table>
+            )}
             <div className="form-group form1">
               <div className="d-flex btn-group-1">
                 <button type="submit" className="btn btn-default ">

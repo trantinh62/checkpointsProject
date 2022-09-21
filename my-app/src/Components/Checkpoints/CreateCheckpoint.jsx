@@ -18,8 +18,8 @@ function Checkpoints() {
   const [dataCheckpoint, setDataCheckpoint] = useState({
     user_id: user_id,
     name: "",
-    start_date: null,
-    end_date: null,
+    start_date: "",
+    end_date: "",
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
@@ -82,7 +82,7 @@ function Checkpoints() {
     );
   }
   return (
-    <div className="reviews-cover">
+    <div className="create-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -90,13 +90,8 @@ function Checkpoints() {
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/create">
-                        Manage checkpoints
-                      </a>
-                    </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Create checkpoints
+                      Manage checkpoints: Create checkpoints
                     </li>
                   </ol>
                 </nav>
@@ -118,6 +113,7 @@ function Checkpoints() {
                       name="name"
                       onChange={onChangeInput}
                       value={dataCheckpoint.name}
+                      required
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
@@ -130,6 +126,7 @@ function Checkpoints() {
                       id="start"
                       name="start_date"
                       onChange={onChangeInput}
+                      required
                       value={dataCheckpoint.start_date}
                     ></input>
                   </div>
@@ -143,6 +140,7 @@ function Checkpoints() {
                       id="end"
                       name="end_date"
                       onChange={onChangeInput}
+                      required
                       value={dataCheckpoint.end_date}
                     ></input>
                   </div>
@@ -155,35 +153,42 @@ function Checkpoints() {
               </button>
             </div>
           </form>
-          <table className="table table-bordered text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Start date</th>
-                <th>End date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPerPage?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{(page - 1) * itemsPerPage + index + 1}</td>
-                    <td>
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={`/assign/${ele.id}`}
-                      >
-                        {ele.name}
-                      </a>
-                    </td>
-                    <td>{ele.start_date}</td>
-                    <td>{ele.end_date}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+            <h3 className="create-notify">
+              No checkpoints have been created yet!
+            </h3>
+          )}
+          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            <table className="table table-bordered text-center">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Start date</th>
+                  <th>End date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataPerPage?.map((ele, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                      <td>
+                        <a
+                          style={{ textDecoration: "none" }}
+                          href={`/assign/${ele.id}`}
+                        >
+                          {ele.name}
+                        </a>
+                      </td>
+                      <td>{ele.start_date}</td>
+                      <td>{ele.end_date}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>

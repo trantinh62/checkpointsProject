@@ -62,35 +62,42 @@ function ListReviews() {
               </div>
             </div>
           </div>
-          <table className="table table-bordered text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Start date</th>
-                <th>End date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPerPage?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{(page - 1) * itemsPerPage + index + 1}</td>
-                    <td>
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={`/mycheckpoints/${ele.name_checkpoint.id}?title=${ele.name_checkpoint.name}`}
-                      >
-                        {ele.name_checkpoint.name}
-                      </a>
-                    </td>
-                    <td>{ele.name_checkpoint.start_date}</td>
-                    <td>{ele.name_checkpoint.end_date}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+            <h3 className="checkpoint-notify">
+              There are no checkpoints to check
+            </h3>
+          )}
+          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            <table className="table table-bordered text-center">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Start date</th>
+                  <th>End date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataPerPage?.map((ele, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                      <td>
+                        <a
+                          style={{ textDecoration: "none" }}
+                          href={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
+                        >
+                          {ele.checkpoint.name}
+                        </a>
+                      </td>
+                      <td>{ele.checkpoint.start_date}</td>
+                      <td>{ele.checkpoint.end_date}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>

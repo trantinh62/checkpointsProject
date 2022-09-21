@@ -1,10 +1,7 @@
-.reviews-cover {
+.create-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
-}
-.review-cover{
-    border-radius: 5px;
 }
 .table-wrapper {
     background: #fff;
@@ -103,4 +100,8 @@ table.table td .add {
     cursor: pointer;
     justify-content: center;
     padding: 0.5rem 0;
+}
+.create-notify{
+    display: flex;
+    justify-content: center;
 }

@@ -121,7 +121,7 @@
 .btn.btn-signin:hover,
 .btn.btn-signin:active,
 .btn.btn-signin:focus {
-    background-color: rgb(12, 97, 33);
+    background-color: -webkit-linear-gradient(left, #3931af, #00c6ff);
 }
 
 .forgot-password {
@@ -135,6 +135,6 @@
 }
 
 .login-cover{
-    background: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
+    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
 }

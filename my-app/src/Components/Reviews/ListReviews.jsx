@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getReviewsByCheckpointIdAndUserId } from "../../Api/userApi";
+import { getReviewsByCheckpointIdAndMyReviewId } from "../../Api/userApi";
 import {
   useParams,
   useNavigate,
@@ -36,8 +36,11 @@ function ListReviews() {
   }, []);
   const fetchData = async () => {
     try {
-      const res = await getReviewsByCheckpointIdAndUserId(token, true, false);
-      const yetReview = res.data.data.assign_review.filter(
+      const res = await getReviewsByCheckpointIdAndMyReviewId(
+        token,
+        params.check_id
+      );
+      const yetReview = res.data.data.filter(
         (item) =>
           item.attitude === null &&
           item.performance === null &&
@@ -47,7 +50,7 @@ function ListReviews() {
       );
       setDataYetReview(yetReview);
       setNumPages(Math.ceil(yetReview.length / itemsPerPage));
-      setDataPerPage(res.data.data.assign_review.slice(start, end));
+      setDataPerPage(yetReview.slice(start, end));
     } catch (err) {}
   };
   let menuItems = [];
@@ -75,70 +78,85 @@ function ListReviews() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      List reviews: {title}
+                      {title}
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-          <table className="table table-bordered text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>User is checked</th>
-                <th>Start date</th>
-                <th>End date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPerPage?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{(page - 1) * itemsPerPage + index + 1}</td>
-                    <td>
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={`/mycheckpoints/${
-                          ele.name_checkpoint.id
-                        }/reviews/${ele.id}?title=${
-                          ele.name_checkpoint.name
-                        }&user_id=${ele.user_info.id}&username=${
-                          ele.user_info.first_name !== null &&
-                          ele.user_info.first_name !== null
-                            ? ele.user_info.first_name +
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+            <h3 className="review-notify">All checkpoints are checked!</h3>
+          )}
+          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            <table className="table table-bordered text-center">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>User is checked</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataPerPage?.map((ele, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                      <td>
+                        <a
+                          style={{ textDecoration: "none" }}
+                          href={`/mycheckpoints/${ele.id}/reviews/${
+                            ele.id
+                          }?title=${title}&user_id=${
+                            ele.userInfo.id
+                          }&username=${
+                            ele.userInfo.first_name !== null &&
+                            ele.userInfo.first_name !== null
+                              ? ele.userInfo.first_name +
+                                " " +
+                                ele.userInfo.last_name +
+                                " (" +
+                                ele.userInfo.email +
+                                " )"
+                              : ele.userInfo.email
+                          }`}
+                        >
+                          {ele.userInfo.first_name !== null &&
+                          ele.userInfo.first_name !== null
+                            ? ele.userInfo.first_name +
                               " " +
-                              ele.user_info.last_name +
+                              ele.userInfo.last_name +
                               " (" +
-                              ele.user_info.email +
+                              ele.userInfo.email +
                               " )"
-                            : ele.user_info.email
-                        }`}
-                      >
-                        {ele.user_info.first_name !== null &&
-                        ele.user_info.first_name !== null
-                          ? ele.user_info.first_name +
-                            " " +
-                            ele.user_info.last_name +
-                            " (" +
-                            ele.user_info.email +
-                            " )"
-                          : ele.user_info.email}
-                      </a>
-                    </td>
-                    <td>{ele.name_checkpoint.start_date}</td>
-                    <td>{ele.name_checkpoint.end_date}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                            : ele.userInfo.email}
+                        </a>
+                      </td>
+                      <td>
+                        <select
+                          className="form-select"
+                          aria-label="Default select example"
+                          value={ele.userInfo.role_id}
+                          id={ele.id}
+                          disabled
+                        >
+                          <option value="1">Group leader</option>
+                          <option value="2">Leader</option>
+                          <option value="3">Member</option>
+                        </select>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
           <div className="form-group form1">
             <div className="d-flex btn-group-1">
               <button
                 onClick={() => navigate(-1)}
                 type="submit"
-                className="btn btn-default "
+                className="btn btn-default"
               >
                 Back
               </button>

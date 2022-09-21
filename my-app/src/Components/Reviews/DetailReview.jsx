@@ -12,11 +12,11 @@ function ListReviews() {
   const title = searchParams.get("title");
   const username = searchParams.get("username");
   const [dataReview, setDataReview] = useState({
-    attitude: 0,
-    performance: 0,
-    teamwork: 0,
-    training: 0,
-    adhere: 0,
+    attitude: null,
+    performance: null,
+    teamwork: null,
+    training: null,
+    adhere: null,
     strength: "",
     weakness: "",
   });
@@ -33,12 +33,7 @@ function ListReviews() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await reviewApi(
-        dataReview,
-        token,
-        params.check_id,
-        searchParams.get("user_id")
-      );
+      const res = await reviewApi(dataReview, token, params.review_id);
       Toast("Review successful!", "success");
     } catch (err) {
       Toast(err.response.data.message, "error");
@@ -94,7 +89,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="attitude"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -126,7 +123,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="performance"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -157,7 +156,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="teamwork"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -191,7 +192,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="training"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -224,7 +227,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="adhere"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -271,13 +276,13 @@ function ListReviews() {
               </div>
               <div className="form-group form1">
                 <div className="d-flex btn-group-1">
-                  <button type="submit" className="btn btn-default ">
+                  <button type="submit" className="btn btn-default">
                     Save
                   </button>
                   <button
+                    type="button"
                     onClick={() => navigate(-1)}
-                    type="submit"
-                    className="btn btn-default "
+                    className="btn btn-default"
                   >
                     Back
                   </button>
