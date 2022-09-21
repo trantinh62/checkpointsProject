@@ -61,8 +61,7 @@ function Assgin() {
 
       setDataUser(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   const onChangeInput = (e) => {
@@ -127,8 +126,7 @@ function Assgin() {
       });
       navigate("/create", { replace: true });
       navigate(0);
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   let menuItems = [];

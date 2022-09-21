@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Toast from "../Toast/Toast";
 import { inviteApi } from "../../Api/userApi";
+import "./Invite.css";
 
 function Invite() {
   const [dataInvite, setDataInvite] = useState({
@@ -26,7 +27,6 @@ function Invite() {
       Toast(err.response.data.message, "error");
     }
   };
-  require("./Invite.css");
   return (
     <div className="invite-cover">
       <div className="container contact">
@@ -54,6 +54,7 @@ function Invite() {
                       id="email"
                       placeholder="Enter email"
                       name="email"
+                      value={dataInvite.email}
                       onChange={onChangeInput}
                       value={dataInvite.email}
                     ></input>

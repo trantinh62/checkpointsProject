@@ -68,5 +68,8 @@ export const getReviewsByCheckpointIdAndUserId = (
     }
   );
 
+export const registerApi = (data, token) =>
+  axiosClient.put("/api/register?token=" + token, data);
+
 export const resetApi = (data, token) =>
   axiosClient.put("/api/reset_password?token=" + token, data);
