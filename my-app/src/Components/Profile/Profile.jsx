@@ -101,7 +101,7 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="first_name"
-                          defaultValue={dataProfile.first_name}
+                          value={dataProfile.first_name}
                           onChange={onChangeInput}
                           placeholder="firstname"
                         ></input>
@@ -115,7 +115,7 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="last_name"
-                          defaultValue={dataProfile.last_name}
+                          value={dataProfile.last_name}
                           onChange={onChangeInput}
                           placeholder="lastname"
                         ></input>
@@ -129,7 +129,7 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="email"
-                          defaultValue={dataProfile.email}
+                          value={dataProfile.email}
                           onChange={onChangeInput}
                           placeholder="email"
                           readOnly
@@ -144,7 +144,7 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="phone"
-                          defaultValue={dataProfile.phone}
+                          value={dataProfile.phone}
                           onChange={onChangeInput}
                           placeholder="phone"
                         ></input>
@@ -158,7 +158,7 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="age"
-                          defaultValue={dataProfile.age}
+                          value={dataProfile.age}
                           onChange={onChangeInput}
                           placeholder="age"
                         ></input>
@@ -172,7 +172,7 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="address"
-                          defaultValue={dataProfile.address}
+                          value={dataProfile.address}
                           onChange={onChangeInput}
                           placeholder="address"
                         ></input>
@@ -226,8 +226,9 @@ const Profile = () => {
                   <div className="col-md-6 col1">
                     <input
                       type="password"
+                      id="profile-pass"
                       name="old_password"
-                      defaultValue={dataPass.old_password}
+                      value={dataPass.old_password}
                       onChange={onChangePass}
                       placeholder="old password"
                     ></input>
@@ -241,7 +242,8 @@ const Profile = () => {
                     <input
                       type="password"
                       name="password"
-                      defaultValue={dataPass.password}
+                      id="profile-pass"
+                      value={dataPass.password}
                       onChange={onChangePass}
                       placeholder="new password"
                     ></input>
@@ -255,7 +257,8 @@ const Profile = () => {
                     <input
                       type="password"
                       name="password_confirm"
-                      defaultValue={dataPass.password_confirm}
+                      id="profile-pass"
+                      value={dataPass.password_confirm}
                       onChange={onChangePass}
                       placeholder="confirm password"
                     ></input>

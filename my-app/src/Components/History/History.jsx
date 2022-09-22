@@ -63,35 +63,40 @@ function History() {
                 </div>
               </div>
             </div>
-            <table className="table table-bordered text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Start date</th>
-                  <th>End date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataPerPage?.map((ele, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>
-                        <a
-                          style={{ textDecoration: "none" }}
-                          href={`/histories/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
-                        >
-                          {ele.checkpoint.name}
-                        </a>
-                      </td>
-                      <td>{ele.checkpoint.start_date}</td>
-                      <td>{ele.checkpoint.end_date}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+              <h3 className="history-notify">No checkpoint history!</h3>
+            )}
+            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+              <table className="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataPerPage?.map((ele, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <a
+                            style={{ textDecoration: "none" }}
+                            href={`/histories/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
+                          >
+                            {ele.checkpoint.name}
+                          </a>
+                        </td>
+                        <td>{ele.checkpoint.start_date}</td>
+                        <td>{ele.checkpoint.end_date}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
             <nav aria-label="Page navigation example">
               <ul className="pagination justify-content-center">{menuItems}</ul>
             </nav>

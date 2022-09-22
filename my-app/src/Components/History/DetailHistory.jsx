@@ -84,64 +84,69 @@ function DetailHistory() {
               </div>
             </div>
           </div>
-          <table className="table table-bordered text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th className="point-table">Attitude</th>
-                <th className="point-table">Performance</th>
-                <th className="point-table">Teamwork</th>
-                <th className="point-table">Training</th>
-                <th className="point-table">Adhere</th>
-                <th className="point-table">Created date</th>
-                <th>Strength</th>
-                <th>Weakness</th>
-                <th className="point-table">Note</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPerPage?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{ele.attitude}</td>
-                    <td>{ele.performance}</td>
-                    <td>{ele.teamwork}</td>
-                    <td>{ele.training}</td>
-                    <td>{ele.adhere}</td>
-                    <td>
-                      {ele.updated_at !== ele.created_at
-                        ? Date(ele.updated_at).toString()
-                        : ""}
-                    </td>
-                    <td>{ele.strength}</td>
-                    <td>{ele.weakness}</td>
-                    <td>
-                      {ele.weakness === null &&
-                      ele.performance === null &&
-                      ele.teamwork === null &&
-                      ele.training === null &&
-                      ele.adhere === null
-                        ? "Chưa đánh giá"
-                        : "Đã đánh giá"}
-                    </td>
-                  </tr>
-                );
-              })}
-              <tr key="Avg">
-                <td>Avg</td>
-                <td>{dataAvg.avg_attitude}</td>
-                <td>{dataAvg.avg_performance}</td>
-                <td>{dataAvg.avg_teamwork}</td>
-                <td>{dataAvg.avg_training}</td>
-                <td>{dataAvg.avg_adhere}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+            <h3 className="history-notify">No checkpoint history!</h3>
+          )}
+          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            <table className="table table-bordered text-center">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th className="point-table">Attitude</th>
+                  <th className="point-table">Performance</th>
+                  <th className="point-table">Teamwork</th>
+                  <th className="point-table">Training</th>
+                  <th className="point-table">Adhere</th>
+                  <th className="point-table">Created date</th>
+                  <th>Strength</th>
+                  <th>Weakness</th>
+                  <th className="point-table">Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataPerPage?.map((ele, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>{ele.attitude}</td>
+                      <td>{ele.performance}</td>
+                      <td>{ele.teamwork}</td>
+                      <td>{ele.training}</td>
+                      <td>{ele.adhere}</td>
+                      <td>
+                        {ele.updated_at !== ele.created_at
+                          ? Date(ele.updated_at).toString()
+                          : ""}
+                      </td>
+                      <td>{ele.strength}</td>
+                      <td>{ele.weakness}</td>
+                      <td>
+                        {ele.weakness === null &&
+                        ele.performance === null &&
+                        ele.teamwork === null &&
+                        ele.training === null &&
+                        ele.adhere === null
+                          ? "Chưa đánh giá"
+                          : "Đã đánh giá"}
+                      </td>
+                    </tr>
+                  );
+                })}
+                <tr key="Avg">
+                  <td>Avg</td>
+                  <td>{dataAvg.avg_attitude}</td>
+                  <td>{dataAvg.avg_performance}</td>
+                  <td>{dataAvg.avg_teamwork}</td>
+                  <td>{dataAvg.avg_training}</td>
+                  <td>{dataAvg.avg_adhere}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          )}
           <div className="form-group">
             <div className="d-flex">
               <button

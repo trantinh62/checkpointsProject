@@ -86,3 +86,7 @@ table.table td .add {
 .breadcrumb{
     text-decoration: none;
 }
+.history-notify{
+    display: flex;
+    justify-content: center;
+}
