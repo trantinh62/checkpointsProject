@@ -104,3 +104,7 @@ table.table td .add {
 .breadcrumb{
     text-decoration: none;
 }
+.list-member-history-notify{
+    display: flex;
+    justify-content: center;
+}

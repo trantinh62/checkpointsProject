@@ -147,35 +147,43 @@ function ListMemberHistory() {
               </button>
             </div>
           </form>
-          <table className="table table-bordered text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Start date</th>
-                <th>End date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPerPage?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={`/histories/member/${ele.id}?title=${ele.name}`}
-                      >
-                        {ele.name}
-                      </a>
-                    </td>
-                    <td>{ele.start_date}</td>
-                    <td>{ele.end_date}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+            <h3 className="list-member-history-notify">
+              No checkpoint history!
+            </h3>
+          )}
+          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            <table className="table table-bordered text-center">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Start date</th>
+                  <th>End date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataPerPage?.map((ele, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{index + 1}</td>
+                      <td>
+                        <a
+                          style={{ textDecoration: "none" }}
+                          href={`/histories/member/${ele.id}?title=${ele.name}`}
+                        >
+                          {ele.name}
+                        </a>
+                      </td>
+                      <td>{ele.start_date}</td>
+                      <td>{ele.end_date}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>

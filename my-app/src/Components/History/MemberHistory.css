@@ -114,3 +114,7 @@ table.table td .add {
 .breadcrumb{
     text-decoration: none;
 }
+.member-history-notify{
+    display: flex;
+    justify-content: center;
+}
