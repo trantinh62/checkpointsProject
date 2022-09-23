@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   useNavigate,
   useParams,
@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import {
-  getCheckApi,
+  getCheckpointByCheckId,
   getCheckedUser,
   getListUsersApi,
   getReviewsByCheckpointIdAndUserId,
@@ -35,7 +35,7 @@ function MemberHistory() {
   });
   const start = (dataPagination.page - 1) * dataPagination.itemsPerPage;
   const end = dataPagination.page * dataPagination.itemsPerPage;
-  let [numPages, setNumPages] = useState(1, []);
+  const [numPages, setNumPages] = useState(1);
   const [dataCheckpoint, setDataCheckpoint] = useState({
     id: null,
     name: "",
@@ -48,12 +48,20 @@ function MemberHistory() {
   }, []);
 
   const token = sessionStorage.getItem("sessionToken");
+  const roleId = sessionStorage.getItem("sessionRoleId");
   const fetchData = async () => {
     try {
-      const resCheck = await getCheckApi(token, params.id);
+      const resCheck = await getCheckpointByCheckId(token, params.id);
       setDataCheckpoint(resCheck.data.data);
-      const resUser = await getListUsersByCheckpointId(token, params.id);
-      setDataUser(resUser.data.data);
+      let resUser = [];
+      if (roleId === "1") {
+        resUser = await getListUsersByCheckpointId(token, params.id);
+        setDataUser(resUser.data.data);
+      }
+      if (roleId === "2") {
+        resUser = await getListUsersByCheckpointId(token, params.id); // mai sua
+        setDataUser(resUser.data.data);
+      }
       const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
         token,
         params.id,
@@ -192,15 +200,15 @@ function MemberHistory() {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th className="point-table">Attitude</th>
-                    <th className="point-table">Performance</th>
-                    <th className="point-table">Teamwork</th>
-                    <th className="point-table">Training</th>
-                    <th className="point-table">Adhere</th>
-                    <th className="point-table">Created date</th>
+                    <th className="point-table-member">Attitude</th>
+                    <th className="point-table-member">Performance</th>
+                    <th className="point-table-member">Teamwork</th>
+                    <th className="point-table-member">Training</th>
+                    <th className="point-table-member">Adhere</th>
+                    <th className="point-table-member">Created date</th>
                     <th>Strength</th>
                     <th>Weakness</th>
-                    <th className="point-table">Note</th>
+                    <th>Note</th>
                   </tr>
                 </thead>
                 <tbody>

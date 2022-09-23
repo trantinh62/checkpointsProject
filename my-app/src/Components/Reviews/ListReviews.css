@@ -86,3 +86,10 @@ table.table td .add {
 .breadcrumb {
     text-decoration: none;
 }
+.review-notify{
+    display: flex;
+    justify-content: center;
+}
+.table.table.role-list{
+    width: 100px;
+}

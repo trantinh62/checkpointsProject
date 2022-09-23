@@ -12,7 +12,7 @@ function ListCheckpoints() {
   const end = page * itemsPerPage;
   const [listReviews, setListReviews] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
-  let [numPages, setNumPages] = useState(1, []);
+  const [numPages, setNumPages] = useState(1);
   const handleOnClick = (e) => {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;

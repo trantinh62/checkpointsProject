@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
-import { getCheckpointsByUserId } from "../../Api/userApi";
+import { getCheckpointsByReviewId } from "../../Api/userApi";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "./ListCheckpoints.css";
 function ListReviews() {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const page = new URLSearchParams(search).get("page") || 1;
+  const [page, setPage] = useState(
+    new URLSearchParams(search).get("page") || 1
+  );
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
-  const [dataYetReview, setDataYetReview] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
-  const [numPages, setNumPages] = useState(1, []);
+  const [listCheckpoints, setListCheckpoints] = useState([]);
+  const [numPages, setNumPages] = useState(1);
   const handleOnClick = (e) => {
     const page = e.target.value;
+    setPage(page);
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
-    setDataPerPage(dataYetReview.slice(start, end));
+    setDataPerPage(listCheckpoints.slice(start, end));
   };
   const token = sessionStorage.getItem("sessionToken");
 
@@ -26,17 +29,9 @@ function ListReviews() {
   }, []);
   const fetchData = async () => {
     try {
-      const res = await getCheckpointsByUserId(token);
-      const yetReview = res.data.data.filter(
-        (item) =>
-          item.attitude === null &&
-          item.performance === null &&
-          item.strength === null &&
-          item.teamwork === null &&
-          item.training === null
-      );
-      setDataYetReview(yetReview);
-      setNumPages(Math.ceil(yetReview.length / itemsPerPage));
+      const res = await getCheckpointsByReviewId(token);
+      setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
+      setListCheckpoints(res.data.data);
       setDataPerPage(res.data.data.slice(start, end));
     } catch (err) {}
   };
@@ -67,35 +62,42 @@ function ListReviews() {
               </div>
             </div>
           </div>
-          <table className="table table-bordered text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Title</th>
-                <th>Start date</th>
-                <th>End date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPerPage?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={`/mycheckpoints/${ele.id}`}
-                      >
-                        {ele.name}
-                      </a>
-                    </td>
-                    <td>{ele.start_date}</td>
-                    <td>{ele.end_date}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
+            <h3 className="checkpoint-notify">
+              There are no checkpoints to check
+            </h3>
+          )}
+          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            <table className="table table-bordered text-center">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Title</th>
+                  <th>Start date</th>
+                  <th>End date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataPerPage?.map((ele, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                      <td>
+                        <a
+                          style={{ textDecoration: "none" }}
+                          href={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
+                        >
+                          {ele.checkpoint.name}
+                        </a>
+                      </td>
+                      <td>{ele.checkpoint.start_date}</td>
+                      <td>{ele.checkpoint.end_date}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>

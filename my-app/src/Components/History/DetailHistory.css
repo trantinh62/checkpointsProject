@@ -1,5 +1,4 @@
-
-.member-his-cover {
+.histories-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
@@ -11,7 +10,8 @@
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 .table-title {
-    
+    padding-bottom: 10px;
+    margin: 0 0 10px;
 }
 .table-title h2 {
     margin: 6px 0 0;
@@ -44,7 +44,7 @@ table.table th i {
 table.table th:last-child {
 }
 table.table th:first-child {
-    width: 100px;
+    width: 3rem;
 }
 table.table td a {
     cursor: pointer;
@@ -82,41 +82,17 @@ table.table .form-control.error {
 table.table td .add {
     display: none;
 }
-.form2{
-    display: flex;
-    padding-bottom: 0.5rem;
-    align-items: center;
+.point-table {
+    width: 8rem;
 }
-.label1 {
-    padding-left: 1rem;
-}
-.form-group button{
-    background: #ff9b00;
+.btn.btn-default{
+   background: #ff9b00;
     color: #fff;
-    width: auto;
-    min-width: 10rem;
+    width: 10rem;
     font-weight: 600;
     display: flex;
     margin-left: auto;
     border-radius: 1.5rem;
     cursor: pointer;
-    margin-left: 10px;
     justify-content: center;
-}
-.form1 {
-    display: flex;
-    padding: 10px;
-}
-.btn-group-1{
-    margin-left: auto;
-}
-.breadcrumb{
-    text-decoration: none;
-}
-.member-history-notify{
-    display: flex;
-    justify-content: center;
-}
-.point-table-member{
-    width: 6rem;
 }

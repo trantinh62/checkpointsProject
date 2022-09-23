@@ -1,0 +1,50 @@
+.gpoint-cover {
+    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    height: 100vh;
+}
+.gpoint{
+    padding: 4%;
+    height: 400px;
+}
+.col-md-3{
+    background: #ff9b00;
+    padding: 4%;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+}
+.gpoint-info{
+    margin-top:10%;
+}
+.gpoint-info img{
+    margin-bottom: 15%;
+}
+.gpoint-info h2{
+    margin-bottom: 10%;
+    color: #fff;
+}
+.col-md-9{
+    background: #fff;
+    padding: 3%;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+.invite-form label{
+    font-gpoint:600;
+}
+.invite-form button{
+    background: #ff9b00;
+    color: #fff;
+    font-gpoint: 600;
+    width: 25%;
+    display: flex;
+    margin-left: auto;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+}
+.invite-form button:focus{
+    box-shadow:none;
+}
+.gpoint-form{
+    padding-left: 6rem;
+}

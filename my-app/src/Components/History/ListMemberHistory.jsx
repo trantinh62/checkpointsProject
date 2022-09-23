@@ -1,6 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { createApi, getAllCheckpointApi } from "../../Api/userApi";
+import {
+  createApi,
+  getAllCheckpointApi,
+  getCheckpointsByReviewId,
+} from "../../Api/userApi";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
 import "./ListMemberHistory.css";
@@ -8,34 +12,66 @@ import "./ListMemberHistory.css";
 function ListMemberHistory() {
   const navigate = useNavigate();
   const search = useLocation().search;
-  const page = new URLSearchParams(search).get("page") || 1;
+  const [page, setPage] = useState(
+    new URLSearchParams(search).get("page") || 1
+  );
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
-  const user_id = sessionStorage.getItem("sessionUserId");
-  const [dataCheckpoint, setDataCheckpoint] = useState({
-    user_id: user_id,
+  const [dataSearch, setDataSearch] = useState({
     name: "",
     start_date: "",
-    end_date: "",
+    end_date: new Date().now,
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
-  let [numPages, setNumPages] = useState(1, []);
+  const [numPages, setNumPages] = useState(1);
   const token = sessionStorage.getItem("sessionToken");
+  const roleId = sessionStorage.getItem("sessionRoleId");
 
   const onChangeInput = (e) => {
     let { name, value } = e.target;
-    if (name === "start_date" || name === "end_date")
-      value = dayjs(value).format("YYYY-MM-DD HH:mm:ss");
-    setDataCheckpoint({
-      ...dataCheckpoint,
+    if (name === "name") {
+      const name_value = value;
+      // let dataFilter = [];
+      // dataFilter = dataListCheck.filter((item) =>
+      //   removeMark(item.name.toLowerCase()).includes(
+      //     removeMark(value.toLowerCase())
+      //   )
+      // );
+      // setDataSearch({
+      //   ...dataSearch,
+      //   [name]: value,
+      // });
+      // const start = (page - 1) * itemsPerPage;
+      // const end = page * itemsPerPage;
+      // setDataPerPage(dataFilter.slice(start, end));
+    }
+    if (name === "start_date") {
+      const start_date_value = value;
+    }
+    if (name === "end_date") {
+    }
+    value = dayjs(value).format("YYYY-MM-DD HH:mm:ss");
+    setDataSearch({
+      ...dataSearch,
       [name]: value,
     });
+    let dataFilter = [];
+    dataFilter = dataListCheck.filter(
+      (item) =>
+        removeMark(item.name.toLowerCase()).includes(
+          removeMark(dataSearch.name.toLowerCase())
+        ) &&
+        new Date(item.start_date) > new Date(value) &&
+        new Date(item.end_date) < new Date(value)
+    );
+    setDataPerPage(dataFilter.slice(start, end));
   };
 
   const handleOnClick = (e) => {
     const page = e.target.value;
+    setPage(page);
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
     setDataPerPage(dataListCheck.slice(start, end));
@@ -48,26 +84,43 @@ function ListMemberHistory() {
 
   const fetchData = async () => {
     try {
-      const res = await getAllCheckpointApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      let res = [];
+      if (roleId === "1") {
+        res = await getAllCheckpointApi(token);
+        setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
+        setDataListCheck(res.data.data.checkpoints);
+        setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      }
+      if (roleId === "2") {
+        res = await getCheckpointsByReviewId(token);
+        setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
+        setDataListCheck(res.data.data.map((item) => item.checkpoint));
+        setDataPerPage(
+          res.data.data.map((item) => item.checkpoint).slice(start, end)
+        );
+      }
     } catch (err) {}
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await createApi(dataCheckpoint, token);
-      navigate(`/assign/${response.data.data.id}`, {
-        replace: true,
-      });
-      navigate(0);
-      Toast("Tạo checkpoint thành công!", "success");
     } catch (err) {
       Toast(err.response.data.message, "error");
     }
   };
+
+  function removeMark(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    return str;
+  }
+
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
@@ -109,7 +162,7 @@ function ListMemberHistory() {
                       placeholder="Enter title checkpoint"
                       name="name"
                       onChange={onChangeInput}
-                      value={dataCheckpoint.name}
+                      value={dataSearch.name}
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
@@ -122,7 +175,7 @@ function ListMemberHistory() {
                       id="start"
                       name="start_date"
                       onChange={onChangeInput}
-                      value={dataCheckpoint.start_date}
+                      value={dataSearch.start_date}
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
@@ -135,7 +188,7 @@ function ListMemberHistory() {
                       id="end"
                       name="end_date"
                       onChange={onChangeInput}
-                      value={dataCheckpoint.end_date}
+                      value={dataSearch.end_date}
                     ></input>
                   </div>
                 </div>
@@ -143,7 +196,7 @@ function ListMemberHistory() {
             </div>
             <div className="col-md-12">
               <button type="submit" className="btn-create">
-                Search
+                Reset search
               </button>
             </div>
           </form>

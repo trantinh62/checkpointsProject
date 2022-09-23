@@ -29,12 +29,12 @@ function Invite() {
   };
   return (
     <div className="invite-cover">
-      <div className="container contact">
+      <div className="container invite">
         <div className="row">
           <div className="col-md-3">
-            <div className="contact-info">
+            <div className="invite-info">
               <img
-                src="https://image.ibb.co/kUASdV/contact-image.png"
+                src="https://image.ibb.co/kUASdV/invite-image.png"
                 alt="image"
               />
               <h2>Invite user</h2>
@@ -42,8 +42,8 @@ function Invite() {
           </div>
           <div className="col-md-9">
             <form onSubmit={handleSubmit}>
-              <div className="contact-form">
-                <div className="form-group">
+              <div className="invite-form">
+                <div className="form-group invite-form">
                   <label className="control-label col-sm-2" htmlFor="email">
                     Email:
                   </label>
@@ -56,11 +56,10 @@ function Invite() {
                       name="email"
                       value={dataInvite.email}
                       onChange={onChangeInput}
-                      value={dataInvite.email}
                     ></input>
                   </div>
                 </div>
-                <div className="form-group">
+                <div className="form-group invite-form">
                   <label className="control-label col-sm-2" htmlFor="role-id">
                     Select role:
                   </label>
@@ -78,9 +77,12 @@ function Invite() {
                     </select>
                   </div>
                 </div>
-                <div className="form-group">
+                <div className="form-group invite-form">
                   <div className="col-sm-offset-2 col-sm-10">
-                    <button type="submit" className="btn btn-default ">
+                    <button
+                      type="submit"
+                      className="btn btn-default btn-invite"
+                    >
                       Invite user
                     </button>
                   </div>
