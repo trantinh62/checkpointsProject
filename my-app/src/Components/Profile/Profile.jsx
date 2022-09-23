@@ -179,13 +179,12 @@ const Profile = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col1 btn-save">
-                    <input
-                      type="submit"
-                      className="profile-edit-btn"
-                      name="btnAddMore"
-                      value="Update Profile"
-                    />
+                  <div className="form-group profile-form">
+                    <div className="d-flex btn-profile">
+                      <button type="submit" className="btn btn-default">
+                        Update profile
+                      </button>
+                    </div>
                   </div>
                   <div
                     className="tab-pane fade"
@@ -201,13 +200,17 @@ const Profile = () => {
         <div className="row">
           <div className="col-md-4">
             <div className="profile-work">
-              <h3>{dataProfile.first_name + " " + dataProfile.last_name}</h3>
+              <h3 className="profile-name">
+                {dataProfile.first_name + " " + dataProfile.last_name}
+              </h3>
               <p>
                 ROLE: {dataProfile.role_id === 1 && "Group leader"}
                 {dataProfile.role_id === 2 && "Tech leader"}
                 {dataProfile.role_id === 3 && "Member"}
               </p>
+              <p>Age: {dataProfile.age}</p>
               <p>STATUS: {dataProfile.status}</p>
+              <p>Address: {dataProfile.address}</p>
               <br />
             </div>
           </div>
@@ -264,13 +267,12 @@ const Profile = () => {
                     ></input>
                   </div>
                 </div>
-                <div className="col-md-6 col1 btn-save">
-                  <input
-                    type="submit"
-                    className="profile-edit-btn"
-                    name="btnAddMore"
-                    value="Change password"
-                  />
+                <div className="form-group">
+                  <div className="d-flex btn-profile">
+                    <button type="submit" className="btn btn-default">
+                      Change password
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>

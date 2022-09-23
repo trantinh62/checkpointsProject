@@ -11,23 +11,25 @@ import DetailReview from "./Components/Reviews/DetailReview";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
-
 import HistoryDetail from "./Components/History/HistoryDetail";
 import User from "./Components/Users/Users";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   let [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
+  useEffect(() => {
+    document.title = "Checkpoints app";
+  });
   if (!token) {
     return (
       <>
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -54,8 +56,8 @@ function App() {
           ></Route>
           <Route path="/create" element={<Login />}></Route>
           <Route path="/assign/:id" element={<Login />}></Route>
-          <Route path="/historys" element={<Login />}></Route>
-          <Route path="/historys/:id" element={<Login />}></Route>
+          <Route path="/histories" element={<Login />}></Route>
+          <Route path="/histories/:id" element={<Login />}></Route>
         </Routes>
       </>
     );
@@ -94,8 +96,8 @@ function App() {
         ></Route>
         <Route path="/create" element={<CreateCheckpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
-        <Route path="/historys" element={<History />}></Route>
-        <Route path="/historys/:id" element={<HistoryDetail />}></Route>
+        <Route path="/histories" element={<History />}></Route>
+        <Route path="/histories/:id" element={<HistoryDetail />}></Route>
       </Routes>
     </>
   );
