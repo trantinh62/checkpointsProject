@@ -11,7 +11,7 @@ import DetailReview from "./Components/Reviews/DetailReview";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
 import History from "./Components/History/History";
-import HistoryDetail from "./Components/History/HistoryDetail";
+import DetailHistory from "./Components/History/DetailHistory";
 import User from "./Components/Users/Users";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
@@ -97,7 +97,7 @@ function App() {
         <Route path="/create" element={<CreateCheckpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
         <Route path="/histories" element={<History />}></Route>
-        <Route path="/histories/:id" element={<HistoryDetail />}></Route>
+        <Route path="/histories/:id" element={<DetailHistory />}></Route>
       </Routes>
     </>
   );
