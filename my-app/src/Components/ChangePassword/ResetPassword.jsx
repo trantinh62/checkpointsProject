@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { resetApi } from "../../Api/userApi";
-import { Toast } from "../Toast/Toast";
+import Toast from "../Toast/Toast";
 function ResetPassword() {
   const navigate = useNavigate();
   const search = useLocation().search;

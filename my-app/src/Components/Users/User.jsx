@@ -14,7 +14,7 @@ function User() {
   const [dataUser, setdataUser] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [dataManage, setDataManage] = useState([]);
-  let [numPages, setNumPages] = useState(1, []);
+  const [numPages, setNumPages] = useState(1);
 
   const paginationOnClick = (e) => {
     const page = e.target.value;

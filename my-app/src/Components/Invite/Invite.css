@@ -28,10 +28,10 @@
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
 }
-.contact-form label{
+.invite-form label{
     font-weight:600;
 }
-.contact-form button{
+.invite-form button{
     background: #ff9b00;
     color: #fff;
     font-weight: 600;
@@ -42,6 +42,6 @@
     cursor: pointer;
     justify-content: center;
 }
-.contact-form button:focus{
+.invite-form button:focus{
     box-shadow:none;
 }

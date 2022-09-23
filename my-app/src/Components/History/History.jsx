@@ -11,7 +11,7 @@ function History() {
   const end = page * itemsPerPage;
   const [listHistories, setListHistories] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
-  let [numPages, setNumPages] = useState(1, []);
+  const [numPages, setNumPages] = useState(1);
   const handleOnClick = (e) => {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;

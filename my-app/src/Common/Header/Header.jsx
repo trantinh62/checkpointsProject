@@ -28,7 +28,7 @@ function Header() {
                 </NavDropdown.Item>
               </NavDropdown>
 
-              {roleId !== "3" && (
+              {roleId === "1" && (
                 <div>
                   <NavDropdown
                     title="Manage checkpoints"
@@ -44,7 +44,7 @@ function Header() {
                 </div>
               )}
 
-              {roleId !== "3" && (
+              {roleId === "1" && (
                 <div>
                   <NavDropdown
                     title="Manage users"
