@@ -112,3 +112,7 @@ table.table td .add {
 .breadcrumb{
     text-decoration: none;
 }
+.user-notify{
+    display: flex;
+    justify-content: center;
+}
