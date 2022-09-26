@@ -5,9 +5,9 @@ import "./Gpoint.css";
 
 function Gpoint() {
   const [dataGpoint, setDataGpoint] = useState({
-    group_leader_g_point: "",
-    leader_g_point: "",
-    member_g_point: "",
+    groupLeader: "",
+    leader: "",
+    member: "",
   });
   const token = sessionStorage.getItem("sessionToken");
   const onChangeInput = (e) => {
@@ -23,7 +23,7 @@ function Gpoint() {
     try {
       const response = await updateGpointApi(dataGpoint, token);
       if (response.data.status === 200) {
-        Toast("Invite user successful!", "success");
+        Toast("Cập nhật trọng số gpoint thành công!", "success");
       }
     } catch (err) {
       Toast(err.response.data.message, "error");
@@ -55,8 +55,8 @@ function Gpoint() {
                       className="form-control"
                       id="email"
                       placeholder="Enter Group leader's gpoint"
-                      name="group_leader_g_point"
-                      value={dataGpoint.group_leader_g_point}
+                      name="groupLeader"
+                      value={dataGpoint.groupLeader}
                       onChange={onChangeInput}
                       required
                     ></input>
@@ -71,8 +71,8 @@ function Gpoint() {
                       type="text"
                       className="form-control"
                       placeholder="Enter Team leader's gpoint"
-                      name="leader_g_point"
-                      value={dataGpoint.leader_g_point}
+                      name="leader"
+                      value={dataGpoint.leader}
                       onChange={onChangeInput}
                       required
                     ></input>
@@ -87,8 +87,8 @@ function Gpoint() {
                       type="text"
                       className="form-control"
                       placeholder="Enter Member's gpoint"
-                      name="member_g_point"
-                      value={dataGpoint.member_g_point}
+                      name="member"
+                      value={dataGpoint.member}
                       onChange={onChangeInput}
                       required
                     ></input>

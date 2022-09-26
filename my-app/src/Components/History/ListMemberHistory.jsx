@@ -20,8 +20,8 @@ function ListMemberHistory() {
   const end = page * itemsPerPage;
   const [dataSearch, setDataSearch] = useState({
     name: "",
-    start_date: "",
-    end_date: new Date().now,
+    start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
+    end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
@@ -31,42 +31,58 @@ function ListMemberHistory() {
 
   const onChangeInput = (e) => {
     let { name, value } = e.target;
+    let name_value = dataSearch.name || "";
+    let start_date_value = dataSearch.start_date || "";
+    let end_date_value = dataSearch.end_date || "";
+    let dataFilter = [];
     if (name === "name") {
-      const name_value = value;
-      // let dataFilter = [];
-      // dataFilter = dataListCheck.filter((item) =>
-      //   removeMark(item.name.toLowerCase()).includes(
-      //     removeMark(value.toLowerCase())
-      //   )
-      // );
-      // setDataSearch({
-      //   ...dataSearch,
-      //   [name]: value,
-      // });
-      // const start = (page - 1) * itemsPerPage;
-      // const end = page * itemsPerPage;
-      // setDataPerPage(dataFilter.slice(start, end));
+      name_value = value;
+      setDataSearch({
+        ...dataSearch,
+        [name]: value,
+      });
+      dataFilter = dataListCheck.filter(
+        (item) =>
+          removeMark(item.name.toLowerCase()).includes(
+            removeMark(name_value.toLowerCase())
+          ) &&
+          new Date(item.start_date) > new Date(start_date_value) &&
+          new Date(item.end_date) < new Date(end_date_value)
+      );
+      setDataPerPage(dataFilter.slice(start, end));
     }
     if (name === "start_date") {
-      const start_date_value = value;
+      start_date_value = value;
+      setDataSearch({
+        ...dataSearch,
+        [name]: value,
+      });
+      dataFilter = dataListCheck.filter(
+        (item) =>
+          removeMark(item.name.toLowerCase()).includes(
+            removeMark(dataSearch.name.toLowerCase())
+          ) &&
+          new Date(item.start_date) > new Date(start_date_value) &&
+          new Date(item.end_date) < new Date(end_date_value)
+      );
+      setDataPerPage(dataFilter.slice(start, end));
     }
     if (name === "end_date") {
+      end_date_value = value;
+      setDataSearch({
+        ...dataSearch,
+        [name]: value,
+      });
+      dataFilter = dataListCheck.filter(
+        (item) =>
+          removeMark(item.name.toLowerCase()).includes(
+            removeMark(dataSearch.name.toLowerCase())
+          ) &&
+          new Date(item.start_date) > new Date(dataSearch.start_date) &&
+          new Date(item.end_date) < new Date(end_date_value)
+      );
+      setDataPerPage(dataFilter.slice(start, end));
     }
-    value = dayjs(value).format("YYYY-MM-DD HH:mm:ss");
-    setDataSearch({
-      ...dataSearch,
-      [name]: value,
-    });
-    let dataFilter = [];
-    dataFilter = dataListCheck.filter(
-      (item) =>
-        removeMark(item.name.toLowerCase()).includes(
-          removeMark(dataSearch.name.toLowerCase())
-        ) &&
-        new Date(item.start_date) > new Date(value) &&
-        new Date(item.end_date) < new Date(value)
-    );
-    setDataPerPage(dataFilter.slice(start, end));
   };
 
   const handleOnClick = (e) => {
@@ -105,9 +121,17 @@ function ListMemberHistory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    } catch (err) {
-      Toast(err.response.data.message, "error");
-    }
+      const page = 1;
+      setPage(page);
+      const start = (page - 1) * itemsPerPage;
+      const end = page * itemsPerPage;
+      setDataSearch({
+        name: "",
+        start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
+        end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
+      });
+      setDataPerPage(dataListCheck.slice(start, end));
+    } catch (err) {}
   };
 
   function removeMark(str) {

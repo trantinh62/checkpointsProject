@@ -196,7 +196,15 @@ export const getAvgByCheckpointId = (token, check_id) =>
   });
 
 export const updateGpointApi = (data, token) =>
-  axiosClient.put("/api/gpoint", data, {
+  axiosClient.put("/api/profile/update-g-point", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const updateAllUserApi = (data, token) =>
+  axiosClient.put("/api/profile/many", data, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
