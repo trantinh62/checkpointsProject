@@ -9,9 +9,6 @@
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
-.table-title {
-    
-}
 .table-title h2 {
     margin: 6px 0 0;
     font-size: 22px;
@@ -39,8 +36,6 @@ table.table th i {
     font-size: 13px;
     margin: 0 5px;
     cursor: pointer;
-}
-table.table th:last-child {
 }
 table.table th:first-child {
     width: 100px;
@@ -104,4 +99,9 @@ table.table td .add {
 .create-notify{
     display: flex;
     justify-content: center;
+}
+.btn-delete-checkpoint{
+    background: none;
+    border: none;
+    size: 10px;
 }

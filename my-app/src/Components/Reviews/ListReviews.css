@@ -42,8 +42,6 @@ table.table th i {
     margin: 0 5px;
     cursor: pointer;
 }
-table.table th:last-child {
-}
 table.table th:first-child {
     width: 100px;
 }
@@ -90,6 +88,6 @@ table.table td .add {
     display: flex;
     justify-content: center;
 }
-.table.table.role-list{
-    width: 100px;
+.role-list{
+    width: 15rem;
 }

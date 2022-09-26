@@ -1,6 +1,8 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { createApi, getCheckApi } from "../../Api/userApi";
+import { createApi, getCheckApi, deleteCheckpoint } from "../../Api/userApi";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
 import "./CreateCheckpoint.css";
@@ -29,7 +31,7 @@ function Checkpoints() {
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (name === "start_date" || name === "end_date")
-      value = dayjs(value).format("YYYY-MM-DD HH:mm:ss");
+      value = dayjs(value).format("YYYY-MM-DDTHH:mm");
     setDataCheckpoint({
       ...dataCheckpoint,
       [name]: value,
@@ -62,15 +64,49 @@ function Checkpoints() {
     e.preventDefault();
     try {
       const response = await createApi(dataCheckpoint, token);
-      navigate(`/assign/${response.data.data.id}`, {
-        replace: true,
-      });
-      navigate(0);
       Toast("Tạo checkpoint thành công!", "success");
+      const res = await getCheckApi(token);
+      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
+      setDataListCheck(res.data.data.checkpoints);
+      setDataPerPage(res.data.data.checkpoints.slice(start, end));
     } catch (err) {
       Toast(err.response.data.message, "error");
     }
   };
+
+  const handleDelete = async (e) => {
+    // e.preventDefault();
+    console.log(e);
+    const { id, value, name } = e.target;
+    console.log("id", id, "value", value, "name", name);
+    try {
+      confirmAlert({
+        title: "Confirm to delete",
+        message: "Are you sure to do this.",
+        buttons: [
+          {
+            label: "Yes",
+            onClick: async () => {
+              const deleteCheck = await deleteCheckpoint(id, token);
+              Toast("Xóa checkpoint thành công!", "success");
+              const res = await getCheckApi(token);
+              setNumPages(
+                Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
+              );
+              setDataListCheck(res.data.data.checkpoints);
+              setDataPerPage(res.data.data.checkpoints.slice(start, end));
+            },
+          },
+          {
+            label: "No",
+          },
+        ],
+      });
+    } catch (err) {
+      Toast(err.response.data.message, "error");
+    }
+  };
+
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
@@ -166,6 +202,7 @@ function Checkpoints() {
                   <th>Title</th>
                   <th>Start date</th>
                   <th>End date</th>
+                  <th>Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -183,6 +220,21 @@ function Checkpoints() {
                       </td>
                       <td>{ele.start_date}</td>
                       <td>{ele.end_date}</td>
+                      <td>
+                        <button
+                          type="submit"
+                          onClick={() => {
+                            window.confirm("Do you want to delete?") &&
+                              handleDelete();
+                          }}
+                          name={ele.id}
+                          id={ele.id}
+                          value={ele.id}
+                          className="btn-delete-checkpoint"
+                        >
+                          <i className="bi bi-trash"></i>
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}

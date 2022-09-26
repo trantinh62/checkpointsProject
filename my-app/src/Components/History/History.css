@@ -42,8 +42,6 @@ table.table th i {
     margin: 0 5px;
     cursor: pointer;
 }
-table.table th:last-child {
-}
 table.table th:first-child {
     width: 100px;
 }

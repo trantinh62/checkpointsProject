@@ -105,7 +105,7 @@ function ListReviews() {
                       <td>
                         <a
                           style={{ textDecoration: "none" }}
-                          href={`/mycheckpoints/${ele.id}/reviews/${
+                          href={`/mycheckpoints/${params.check_id}/reviews/${
                             ele.id
                           }?title=${title}&user_id=${ele.user.id}&username=${
                             ele.user.first_name !== null &&

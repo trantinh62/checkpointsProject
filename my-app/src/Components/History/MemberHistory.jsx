@@ -8,10 +8,9 @@ import {
 import Toast from "../Toast/Toast";
 import {
   getCheckpointByCheckId,
-  getCheckedUser,
-  getListUsersApi,
   getReviewsByCheckpointIdAndUserId,
   getListUsersByCheckpointId,
+  getAvgByCheckpointIdAuthor,
 } from "../../Api/userApi";
 import dayjs from "dayjs";
 import "./MemberHistory.css";
@@ -26,6 +25,7 @@ function MemberHistory() {
     page: new URLSearchParams(search).get("page") || 1,
     itemsPerPage: 10,
   });
+  const [listDataAvg, setListDataAvg] = useState([]);
   const [dataAvg, setDataAvg] = useState({
     avg_attitude: 0,
     avg_performance: 0,
@@ -56,16 +56,16 @@ function MemberHistory() {
       let resUser = [];
       if (roleId === "1") {
         resUser = await getListUsersByCheckpointId(token, params.id);
-        setDataUser(resUser.data.data);
+        setDataUser(resUser.data.data.map((item) => item.user));
       }
       if (roleId === "2") {
         resUser = await getListUsersByCheckpointId(token, params.id); // mai sua
-        setDataUser(resUser.data.data);
+        setDataUser(resUser.data.data.map((item) => item.user));
       }
       const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
         token,
         params.id,
-        resUser.data.data[0]?.id
+        resUser.data.data[0].user?.id
       );
       setDataCheckpointByUser(resMemberHistory.data.data);
       setNumPages(
@@ -74,6 +74,16 @@ function MemberHistory() {
         )
       );
       setDataPerPage(resMemberHistory.data.data.slice(start, end));
+      const resAvg = await getAvgByCheckpointIdAuthor(token, params.id);
+      setListDataAvg(resAvg.data.data);
+      const avgPoint = resAvg.data.data[0].avg_checkpoint.filter(
+        (item) =>
+          item.user_id === parseInt(resUser.data.data[0].avg_checkpoint[0]?.id)
+      );
+      console.log(resAvg.data.data[0].avg_checkpoint);
+      if (avgPoint.length === 1) {
+        setDataAvg(avgPoint[0]);
+      }
     } catch (err) {}
   };
 
@@ -93,6 +103,23 @@ function MemberHistory() {
       );
       setDataCheckpointByUser(resMemberHistory.data.data);
       setDataPerPage(resMemberHistory.data.data.slice(start, end));
+      const resAvg = await getAvgByCheckpointIdAuthor(token, params.id);
+      setListDataAvg(resAvg.data.data);
+      const avgPoint = resAvg.data.data[0].avg_checkpoint.filter(
+        (item) => item.user_id === parseInt(value)
+      );
+      if (avgPoint.length === 1) {
+        setDataAvg(avgPoint[0]);
+      }
+      if (avgPoint.length === 0) {
+        setDataAvg({
+          avg_attitude: 0,
+          avg_performance: 0,
+          avg_teamwork: 0,
+          avg_training: 0,
+          avg_adhere: 0,
+        });
+      }
     }
   };
 
@@ -208,7 +235,8 @@ function MemberHistory() {
                     <th className="point-table-member">Created date</th>
                     <th>Strength</th>
                     <th>Weakness</th>
-                    <th>Note</th>
+                    <th style={{ width: "10rem" }}>Reviewer</th>
+                    <th style={{ width: "6rem" }}>Note</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -234,6 +262,17 @@ function MemberHistory() {
                         <td>{ele.strength}</td>
                         <td>{ele.weakness}</td>
                         <td>
+                          {ele.reviewer.first_name !== null &&
+                          ele.reviewer.last_name !== null
+                            ? ele.reviewer.first_name +
+                              " " +
+                              ele.reviewer.last_name +
+                              " ( " +
+                              ele.reviewer.email +
+                              " )"
+                            : ele.reviewer.email}
+                        </td>
+                        <td>
                           {ele.attitude === null &&
                           ele.performance === null &&
                           ele.teamwork === null &&
@@ -247,15 +286,32 @@ function MemberHistory() {
                   })}
                   <tr key="Avg">
                     <td>Avg</td>
-                    <td>{dataAvg.avg_attitude}</td>
-                    <td>{dataAvg.avg_performance}</td>
-                    <td>{dataAvg.avg_teamwork}</td>
-                    <td>{dataAvg.avg_training}</td>
-                    <td>{dataAvg.avg_adhere}</td>
+                    <td>
+                      {dataAvg.avg_attitude !== 0 && dataAvg.avg_attitude}
+                    </td>
+                    <td>
+                      {dataAvg.avg_performance !== 0 && dataAvg.avg_performance}
+                    </td>
+                    <td>
+                      {dataAvg.avg_teamwork !== 0 && dataAvg.avg_teamwork}
+                    </td>
+                    <td>
+                      {dataAvg.avg_training !== 0 && dataAvg.avg_training}
+                    </td>
+                    <td>{dataAvg.avg_adhere !== 0 && dataAvg.avg_adhere}</td>
+                    <td>{dayjs(dataAvg.created_at).toString()}</td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td>
+                      {dataAvg.avg_attitude === 0 &&
+                      dataAvg.avg_performance === 0 &&
+                      dataAvg.avg_teamwork === 0 &&
+                      dataAvg.avg_training === 0 &&
+                      dataAvg.avg_adhere === 0
+                        ? "Chưa hoàn thành"
+                        : "Đã hoàn thành"}
+                    </td>
                   </tr>
                 </tbody>
               </table>

@@ -1,4 +1,4 @@
-.histories-cover {
+.detail-histories-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
@@ -40,8 +40,6 @@ table.table th i {
     font-size: 13px;
     margin: 0 5px;
     cursor: pointer;
-}
-table.table th:last-child {
 }
 table.table th:first-child {
     width: 3rem;

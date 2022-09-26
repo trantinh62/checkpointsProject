@@ -28,13 +28,9 @@
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
 }
-.invite-form label{
-    font-gpoint:600;
-}
 .invite-form button{
     background: #ff9b00;
     color: #fff;
-    font-gpoint: 600;
     width: 25%;
     display: flex;
     margin-left: auto;

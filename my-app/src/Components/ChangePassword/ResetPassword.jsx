@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { resetApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
+import "./ResetPassword.css";
 function ResetPassword() {
   const navigate = useNavigate();
   const search = useLocation().search;
@@ -30,15 +31,14 @@ function ResetPassword() {
       Toast(err.response.data.message, "error");
     }
   };
-  require("./ResetPassword.css");
   return (
-    <>
-      <div className="container contact">
+    <div className="reset-cover">
+      <div className="container reset">
         <div className="row">
           <div className="col-md-3">
-            <div className="contact-info">
+            <div className="reset-info">
               <img
-                src="https://image.ibb.co/kUASdV/contact-image.png"
+                src="https://image.ibb.co/kUASdV/reset-image.png"
                 alt="image"
               />
               <h2>Reset password</h2>
@@ -46,7 +46,7 @@ function ResetPassword() {
           </div>
           <div className="col-md-9">
             <form onSubmit={handleSubmit}>
-              <div className="contact-form">
+              <div className="reset-form">
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="email">
                     New password:
@@ -92,7 +92,7 @@ function ResetPassword() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

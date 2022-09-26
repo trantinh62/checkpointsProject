@@ -187,8 +187,16 @@ export const getAllCheckpoints = (token) =>
     },
   });
 
-export const getAvgByCheckpointId = (token, check_id) =>
+export const getAvgByCheckpointIdMyHistory = (token, check_id) =>
   axiosClient.get(`/api/avg/${check_id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getAvgByCheckpointIdAuthor = (token, check_id) =>
+  axiosClient.get(`/api/avg/${check_id}/all`, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -205,6 +213,14 @@ export const updateGpointApi = (data, token) =>
 
 export const updateAllUserApi = (data, token) =>
   axiosClient.put("/api/profile/many", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const deleteCheckpoint = (check_id, token) =>
+  axiosClient.delete(`/api/checkpoint/delete/${check_id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",

@@ -33,6 +33,7 @@ function Assgin() {
   const [dataReview, setDataReview] = useState({
     checkpoint_id: "",
     user_id: "",
+    role_id: [],
     review_id: [],
   });
   const [dataUser, setDataUser] = useState([]);
@@ -42,15 +43,31 @@ function Assgin() {
   }, []);
 
   const token = sessionStorage.getItem("sessionToken");
+  const userId = sessionStorage.getItem("sessionUserId");
   const fetchData = async () => {
     try {
       const res = await getDetailCheckpointApi(token, params.id);
       const resUser = await getAllUsersApi(token);
+      const resChecked = await getCheckedUser(
+        token,
+        params.id,
+        resUser.data.data[0].id
+      );
+      setDataChecked(resChecked.data.data);
+
+      const beAssignedRoleId = resUser.data.data
+        .filter((item) => item.id === resUser.data.data[0].id)
+        .map((item) => item.role_id)[0];
+
       setDataCheckpoint(res.data.data);
       setDataReview({
         ...dataReview,
         checkpoint_id: res.data.data.id,
         user_id: resUser.data.data[0].id,
+        role_id: [
+          ...resChecked.data.data.map((item) => item.reviewer.role_id),
+          beAssignedRoleId,
+        ],
       });
       setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
       setDataUser(resUser.data.data);
@@ -68,21 +85,23 @@ function Assgin() {
           )
           .slice(start, end)
       );
-      const resChecked = await getCheckedUser(
-        token,
-        params.id,
-        resUser.data.data[0].id
-      );
-      setDataChecked(resChecked.data.data);
-      setIdAssign(resUser.data.data[0].id);
-    } catch (err) {}
-  };
 
+      setIdAssign(resUser.data.data[0].id);
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+  console.log("review", dataReview);
   const onChangeInput = async (e) => {
-    let { name, value } = e.target;
+    let { name, value, id } = e.target;
     if (name === "user_id") {
+      const resChecked = await getCheckedUser(token, params.id, value);
+      setDataChecked(resChecked.data.data);
       value = parseInt(value);
       setIdAssign(value);
+      const beAssignedRoleId = dataUser
+        .filter((item) => item.id === value)
+        .map((item) => item.role_id)[0];
       setDataFilter(
         dataUser.filter(
           (item) => item.id !== value && item.status !== "disable"
@@ -91,38 +110,41 @@ function Assgin() {
       setDataReview({
         ...dataReview,
         [name]: value,
+        role_id: [
+          ...resChecked.data.data.map((item) => item.reviewer.role_id),
+          beAssignedRoleId,
+        ],
       });
       setDataPerPage(
         dataUser
           .filter((item) => item.id !== value && item.status !== "disable")
           .slice(start, end)
       );
-      const res = await getCheckedUser(token, params.id, value);
-      setDataChecked(res.data.data);
+
       selectAll.current.checked = false;
     } else if (name === "review_id") {
       value = parseInt(value);
-
       if (!dataReview.review_id.includes(value)) {
         setDataReview({
           ...dataReview,
           [name]: [...dataReview.review_id, value],
+          role_id: [...dataReview.role_id, parseInt(id)],
         });
       } else {
+        dataReview.role_id.splice(dataReview.role_id.indexOf(parseInt(id)), 1);
         setDataReview({
           ...dataReview,
           [name]: dataReview.review_id.filter((item) => item !== value),
+          role_id: dataReview.role_id,
         });
       }
-      if (
-        dataReview.review_id.length + dataChecked.length ===
-        dataFilter.length + 1
-      ) {
+      let numCheckedUser =
+        dataChecked.length === 0 ? dataChecked.length : dataChecked.length - 1;
+      if (dataReview.review_id.length + numCheckedUser === dataFilter.length) {
         selectAll.current.checked = false;
       } else if (
         !dataReview.review_id.includes(value) &&
-        dataReview.review_id.push(value) + dataChecked.length ===
-          dataFilter.length + 1
+        dataReview.review_id.push(value) + numCheckedUser === dataFilter.length
       ) {
         selectAll.current.checked = true;
       }
@@ -156,7 +178,14 @@ function Assgin() {
     e.preventDefault();
     try {
       if (dataReview.review_id.length === 0) {
-        Toast("Không có user mới nào được assign thêm!", "warning");
+        Toast("Không có người nào được chọn !", "warning");
+        return;
+      }
+      if (Array.from(new Set(dataReview.role_id)).length < 3) {
+        Toast(
+          "Phải assign đủ 3 role (Group leader, leader, member ) !",
+          "warning"
+        );
         return;
       }
       const res = await axiosClient.post("api/review", dataReview, {
@@ -165,9 +194,13 @@ function Assgin() {
           Accept: "application/json",
         },
       });
-      setDataReview({ ...dataReview, review_id: [] });
       const reschecked = await getCheckedUser(token, params.id, idAssign);
       setDataChecked(reschecked.data.data);
+      setDataReview({
+        ...dataReview,
+        role_id: reschecked.data.data.map((item) => item.reviewer.role_id),
+        review_id: [],
+      });
       Toast("Đăng ký người đánh giá thành công!", "success");
     } catch (err) {}
   };
@@ -183,7 +216,7 @@ function Assgin() {
     );
   }
   return (
-    <div className="reviews-cover">
+    <div className="assign-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -242,8 +275,18 @@ function Assgin() {
                                 ele.last_name +
                                 " (" +
                                 ele.email +
+                                " ) (" +
+                                ((ele.role_id === 1 && "Group leader") ||
+                                  (ele.role_id === 2 && "Leader") ||
+                                  (ele.role_id === 3 && "Member")) +
                                 " )"
-                              : "" + " (" + ele.email + " )"}
+                              : "(" +
+                                ele.email +
+                                " )" +
+                                ((ele.role_id === 1 && "Group leader") ||
+                                  (ele.role_id === 2 && "Leader") ||
+                                  (ele.role_id === 3 && "Member")) +
+                                " )"}
                           </option>
                         );
                       })}
@@ -274,7 +317,8 @@ function Assgin() {
                             name="review_id"
                             onChange={onChangeInput}
                             type="checkbox"
-                            defaultValue={ele.id}
+                            value={ele.id}
+                            id={ele.role_id}
                             checked={
                               dataReview.review_id.includes(ele.id) ||
                               dataChecked.some(

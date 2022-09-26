@@ -156,7 +156,7 @@ function ListMemberHistory() {
     );
   }
   return (
-    <div className="member-his-cover">
+    <div className="list-member-his-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -220,7 +220,7 @@ function ListMemberHistory() {
             </div>
             <div className="col-md-12">
               <button type="submit" className="btn-create">
-                Reset search
+                Reset filter
               </button>
             </div>
           </form>

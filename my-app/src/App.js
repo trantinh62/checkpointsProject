@@ -16,7 +16,6 @@ import DetailHistory from "./Components/History/DetailHistory";
 import ListMemberHistory from "./Components/History/ListMemberHistory";
 import MemberHistory from "./Components/History/MemberHistory";
 import User from "./Components/Users/User";
-import Checkpoint from "./Components/Checkpoints/ListCheckpoints";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
 import { useState, useEffect } from "react";

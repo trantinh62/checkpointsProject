@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import {
-  getAvgByCheckpointId,
+  getAvgByCheckpointIdMyHistory,
   getReviewsByCheckpointId,
 } from "../../Api/userApi";
 import "./DetailHistory.css";
@@ -38,6 +38,7 @@ function DetailHistory() {
     setDataPerPage(listReviews.slice(start, end));
   };
   const token = sessionStorage.getItem("sessionToken");
+  const userId = sessionStorage.getItem("sessionUserId");
 
   useEffect(() => {
     fetchData();
@@ -48,7 +49,10 @@ function DetailHistory() {
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListReviews(res.data.data);
-      const resAvg = await getAvgByCheckpointId(token, params.id);
+      const resAvg = await getAvgByCheckpointIdMyHistory(token, params.id);
+      if (resAvg.data.data[0].avg_checkpoint.length !== 0) {
+        setDataAvg(resAvg.data.data[0].avg_checkpoint[0]);
+      }
     } catch (err) {}
   };
 
@@ -63,7 +67,7 @@ function DetailHistory() {
     );
   }
   return (
-    <div className="histories-cover">
+    <div className="detail-histories-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -134,15 +138,25 @@ function DetailHistory() {
                 })}
                 <tr key="Avg">
                   <td>Avg</td>
-                  <td>{dataAvg.avg_attitude}</td>
-                  <td>{dataAvg.avg_performance}</td>
-                  <td>{dataAvg.avg_teamwork}</td>
-                  <td>{dataAvg.avg_training}</td>
-                  <td>{dataAvg.avg_adhere}</td>
+                  <td>{dataAvg.avg_attitude !== 0 && dataAvg.avg_attitude}</td>
+                  <td>
+                    {dataAvg.avg_performance !== 0 && dataAvg.avg_performance}
+                  </td>
+                  <td>{dataAvg.avg_teamwork !== 0 && dataAvg.avg_teamwork}</td>
+                  <td>{dataAvg.avg_training !== 0 && dataAvg.avg_training}</td>
+                  <td>{dataAvg.avg_adhere !== 0 && dataAvg.avg_adhere}</td>
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td></td>
+                  <td>
+                    {dataAvg.avg_attitude === 0 &&
+                    dataAvg.avg_performance === 0 &&
+                    dataAvg.avg_teamwork === 0 &&
+                    dataAvg.avg_training === 0 &&
+                    dataAvg.avg_adhere === 0
+                      ? "Chưa hoàn thành"
+                      : "Đã hoàn thành"}
+                  </td>
                 </tr>
               </tbody>
             </table>

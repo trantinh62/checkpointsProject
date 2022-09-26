@@ -1,4 +1,4 @@
-.member-his-cover {
+.list-member-his-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
@@ -8,9 +8,6 @@
     padding: 20px;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
-}
-.table-title {
-    
 }
 .table-title h2 {
     margin: 6px 0 0;
@@ -39,8 +36,6 @@ table.table th i {
     font-size: 13px;
     margin: 0 5px;
     cursor: pointer;
-}
-table.table th:last-child {
 }
 table.table th:first-child {
     width: 100px;
