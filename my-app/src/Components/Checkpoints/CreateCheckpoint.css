@@ -105,3 +105,12 @@ table.table td .add {
     border: none;
     size: 10px;
 }
+.assign-delete{
+    width: 12rem;
+}
+.assign-delete.a{
+    background: none;
+}
+.modal-content{
+    margin-top: 40%;
+}

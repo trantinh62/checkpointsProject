@@ -1,14 +1,22 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createApi, getCheckApi, deleteCheckpoint } from "../../Api/userApi";
-import { confirmAlert } from "react-confirm-alert";
-import "react-confirm-alert/src/react-confirm-alert.css";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
 import "./CreateCheckpoint.css";
 
 function Checkpoints() {
   const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = (e) => {
+    const { id } = e.target;
+    setDeleteId(id);
+    setShow(true);
+  };
+
   const search = useLocation().search;
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
@@ -26,6 +34,7 @@ function Checkpoints() {
 
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1);
+  const [deleteId, setDeleteId] = useState(null);
   const token = sessionStorage.getItem("sessionToken");
 
   const onChangeInput = (e) => {
@@ -75,33 +84,15 @@ function Checkpoints() {
   };
 
   const handleDelete = async (e) => {
-    // e.preventDefault();
-    console.log(e);
-    const { id, value, name } = e.target;
-    console.log("id", id, "value", value, "name", name);
+    e.preventDefault();
     try {
-      confirmAlert({
-        title: "Confirm to delete",
-        message: "Are you sure to do this.",
-        buttons: [
-          {
-            label: "Yes",
-            onClick: async () => {
-              const deleteCheck = await deleteCheckpoint(id, token);
-              Toast("Xóa checkpoint thành công!", "success");
-              const res = await getCheckApi(token);
-              setNumPages(
-                Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
-              );
-              setDataListCheck(res.data.data.checkpoints);
-              setDataPerPage(res.data.data.checkpoints.slice(start, end));
-            },
-          },
-          {
-            label: "No",
-          },
-        ],
-      });
+      handleClose();
+      const resDel = await deleteCheckpoint(deleteId, token);
+      Toast("Xóa checkpoint thành công", "success");
+      const res = await getCheckApi(token);
+      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
+      setDataListCheck(res.data.data.checkpoints);
+      setDataPerPage(res.data.data.checkpoints.slice(start, end));
     } catch (err) {
       Toast(err.response.data.message, "error");
     }
@@ -202,7 +193,7 @@ function Checkpoints() {
                   <th>Title</th>
                   <th>Start date</th>
                   <th>End date</th>
-                  <th>Delete</th>
+                  <th>Assign/Delete</th>
                 </tr>
               </thead>
               <tbody>
@@ -210,29 +201,25 @@ function Checkpoints() {
                   return (
                     <tr key={index}>
                       <td>{(page - 1) * itemsPerPage + index + 1}</td>
-                      <td>
-                        <a
-                          style={{ textDecoration: "none" }}
-                          href={`/assign/${ele.id}`}
-                        >
-                          {ele.name}
-                        </a>
-                      </td>
+                      <td>{ele.name}</td>
                       <td>{ele.start_date}</td>
                       <td>{ele.end_date}</td>
-                      <td>
+                      <td className="assign-delete">
+                        <a href={`/assign/${ele.id}`}>
+                          <button
+                            variant="primary"
+                            className="btn-delete-checkpoint"
+                          >
+                            <i class="bi bi-pen"></i>
+                          </button>
+                        </a>
+                        <span>|</span>
                         <button
-                          type="submit"
-                          onClick={() => {
-                            window.confirm("Do you want to delete?") &&
-                              handleDelete();
-                          }}
-                          name={ele.id}
-                          id={ele.id}
-                          value={ele.id}
+                          variant="primary"
+                          onClick={handleShow}
                           className="btn-delete-checkpoint"
                         >
-                          <i className="bi bi-trash"></i>
+                          <i id={ele.id} className="bi bi-trash"></i>
                         </button>
                       </td>
                     </tr>
@@ -244,6 +231,23 @@ function Checkpoints() {
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">{menuItems}</ul>
           </nav>
+
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirm delete checkpoint!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Do you really want to delete this checkpoint?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button variant="danger" onClick={handleDelete}>
+                Delete
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </div>
     </div>

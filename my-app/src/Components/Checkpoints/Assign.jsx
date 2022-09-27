@@ -183,7 +183,7 @@ function Assgin() {
       }
       if (Array.from(new Set(dataReview.role_id)).length < 3) {
         Toast(
-          "Phải assign đủ 3 role (Group leader, leader, member ) !",
+          "Phải assign đủ 3 role (Group leader, Team leader, Member ) !",
           "warning"
         );
         return;
@@ -277,14 +277,14 @@ function Assgin() {
                                 ele.email +
                                 " ) (" +
                                 ((ele.role_id === 1 && "Group leader") ||
-                                  (ele.role_id === 2 && "Leader") ||
+                                  (ele.role_id === 2 && "Team Leader") ||
                                   (ele.role_id === 3 && "Member")) +
                                 " )"
                               : "(" +
                                 ele.email +
                                 " )" +
                                 ((ele.role_id === 1 && "Group leader") ||
-                                  (ele.role_id === 2 && "Leader") ||
+                                  (ele.role_id === 2 && "Team Leader") ||
                                   (ele.role_id === 3 && "Member")) +
                                 " )"}
                           </option>
@@ -326,11 +326,11 @@ function Assgin() {
                               ) ||
                               false
                             }
-                            disabled={
-                              dataChecked.some(
-                                (item) => item.review_id === ele.id
-                              ) || false
-                            }
+                            // disabled={
+                            //   dataChecked.some(
+                            //     (item) => item.review_id === ele.id
+                            //   ) || false
+                            // }
                           ></input>
                         </td>
                         <td>{ele.email}</td>

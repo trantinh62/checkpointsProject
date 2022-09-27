@@ -35,7 +35,7 @@ function Header() {
                   >
                     {roleId === "1" && (
                       <NavDropdown.Item href="/create">
-                        Create & assign checkpoint
+                        Create/assign/delete checkpoint
                       </NavDropdown.Item>
                     )}
                     {roleId === "1" && (
