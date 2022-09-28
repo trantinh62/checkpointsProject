@@ -91,3 +91,11 @@ table.table td .add {
 .role-list{
     width: 15rem;
 }
+.view-review{
+    width: 12rem;
+}
+.btn-list-review{
+    background: none;
+    border: none;
+    size: 10px;
+}

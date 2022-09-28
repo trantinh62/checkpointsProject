@@ -88,3 +88,11 @@ table.table td .add {
     display: flex;
     justify-content: center;
 }
+.view-history{
+    width: 12rem;
+}
+.btn-list-history{
+    background: none;
+    border: none;
+    size: 10px;
+}

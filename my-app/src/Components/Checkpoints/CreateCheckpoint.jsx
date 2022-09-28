@@ -34,6 +34,7 @@ function Checkpoints() {
 
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const token = sessionStorage.getItem("sessionToken");
 
@@ -66,12 +67,19 @@ function Checkpoints() {
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      setLoading(true);
     } catch (err) {}
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (
+        new Date(dataCheckpoint.start_date) >= new Date(dataCheckpoint.end_date)
+      ) {
+        Toast("Ngày kết thúc phải được chọn sau ngày bắt đầu!", "warning");
+        return;
+      }
       const response = await createApi(dataCheckpoint, token);
       Toast("Tạo checkpoint thành công!", "success");
       const res = await getCheckApi(token);
@@ -180,57 +188,67 @@ function Checkpoints() {
               </button>
             </div>
           </form>
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
-            <h3 className="create-notify">
-              No checkpoints have been created yet!
+          {loading === false && (
+            <h3 className="review-notify">
+              Waiting for loading data checkpoint!
             </h3>
           )}
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+            loading === true && (
+              <h3 className="create-notify">
+                No checkpoints have been created yet!
+              </h3>
+            )}
           {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
-            <table className="table table-bordered text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Start date</th>
-                  <th>End date</th>
-                  <th>Assign/Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataPerPage?.map((ele, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
-                      <td>{ele.name}</td>
-                      <td>{ele.start_date}</td>
-                      <td>{ele.end_date}</td>
-                      <td className="assign-delete">
-                        <a href={`/assign/${ele.id}`}>
+            <div>
+              <table className="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th>Assign/Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataPerPage?.map((ele, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>{ele.name}</td>
+                        <td>{ele.start_date}</td>
+                        <td>{ele.end_date}</td>
+                        <td className="assign-delete">
+                          <a href={`/assign/${ele.id}`}>
+                            <button
+                              variant="primary"
+                              className="btn-delete-checkpoint"
+                            >
+                              <i className="bi bi-pen"></i>
+                            </button>
+                          </a>
+                          <span>|</span>
                           <button
                             variant="primary"
+                            onClick={handleShow}
                             className="btn-delete-checkpoint"
                           >
-                            <i class="bi bi-pen"></i>
+                            <i id={ele.id} className="bi bi-trash"></i>
                           </button>
-                        </a>
-                        <span>|</span>
-                        <button
-                          variant="primary"
-                          onClick={handleShow}
-                          className="btn-delete-checkpoint"
-                        >
-                          <i id={ele.id} className="bi bi-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <nav aria-label="Page navigation example">
+                <ul className="pagination justify-content-center">
+                  {menuItems}
+                </ul>
+              </nav>
+            </div>
           )}
-          <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">{menuItems}</ul>
-          </nav>
 
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>

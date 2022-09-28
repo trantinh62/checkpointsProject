@@ -5,7 +5,6 @@ import {
   useLocation,
   useSearchParams,
 } from "react-router-dom";
-import Toast from "../Toast/Toast";
 import {
   getCheckpointByCheckId,
   getReviewsByCheckpointIdAndUserId,
@@ -36,6 +35,7 @@ function MemberHistory() {
   const start = (dataPagination.page - 1) * dataPagination.itemsPerPage;
   const end = dataPagination.page * dataPagination.itemsPerPage;
   const [numPages, setNumPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [dataCheckpoint, setDataCheckpoint] = useState({
     id: null,
     name: "",
@@ -78,12 +78,12 @@ function MemberHistory() {
       setListDataAvg(resAvg.data.data);
       const avgPoint = resAvg.data.data[0].avg_checkpoint.filter(
         (item) =>
-          item.user_id === parseInt(resUser.data.data[0].avg_checkpoint[0]?.id)
+          item.user_id === parseInt(resAvg.data.data[0].avg_checkpoint[0]?.id)
       );
-      console.log(resAvg.data.data[0].avg_checkpoint);
       if (avgPoint.length === 1) {
         setDataAvg(avgPoint[0]);
       }
+      setLoading(true);
     } catch (err) {}
   };
 
@@ -103,9 +103,7 @@ function MemberHistory() {
       );
       setDataCheckpointByUser(resMemberHistory.data.data);
       setDataPerPage(resMemberHistory.data.data.slice(start, end));
-      const resAvg = await getAvgByCheckpointIdAuthor(token, params.id);
-      setListDataAvg(resAvg.data.data);
-      const avgPoint = resAvg.data.data[0].avg_checkpoint.filter(
+      const avgPoint = listDataAvg[0].avg_checkpoint.filter(
         (item) => item.user_id === parseInt(value)
       );
       if (avgPoint.length === 1) {
@@ -118,6 +116,7 @@ function MemberHistory() {
           avg_teamwork: 0,
           avg_training: 0,
           avg_adhere: 0,
+          created_at: null,
         });
       }
     }
@@ -219,118 +218,122 @@ function MemberHistory() {
                 </div>
               </div>
             </div>
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
-              <h3 className="member-history-notify">No checkpoint history!</h3>
+            {loading === false && (
+              <h3 className="review-notify">Waiting for loading data!</h3>
             )}
+            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+              loading === true && (
+                <h3 className="member-history-notify">
+                  No checkpoint history!
+                </h3>
+              )}
             {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
-              <table className="table table-bordered text-center">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th className="point-table-member">Attitude</th>
-                    <th className="point-table-member">Performance</th>
-                    <th className="point-table-member">Teamwork</th>
-                    <th className="point-table-member">Training</th>
-                    <th className="point-table-member">Adhere</th>
-                    <th className="point-table-member">Created date</th>
-                    <th>Strength</th>
-                    <th>Weakness</th>
-                    <th style={{ width: "10rem" }}>Reviewer</th>
-                    <th style={{ width: "6rem" }}>Note</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataPerPage?.map((ele, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>
-                          {(dataPagination.page - 1) *
-                            dataPagination.itemsPerPage +
-                            index +
-                            1}
-                        </td>
-                        <td>{ele.attitude}</td>
-                        <td>{ele.performance}</td>
-                        <td>{ele.teamwork}</td>
-                        <td>{ele.training}</td>
-                        <td>{ele.adhere}</td>
-                        <td>
-                          {ele.updated_at !== ele.created_at
-                            ? dayjs(ele.updated_at).toString()
-                            : ""}
-                        </td>
-                        <td>{ele.strength}</td>
-                        <td>{ele.weakness}</td>
-                        <td>
-                          {ele.reviewer.first_name !== null &&
-                          ele.reviewer.last_name !== null
-                            ? ele.reviewer.first_name +
-                              " " +
-                              ele.reviewer.last_name +
-                              " ( " +
-                              ele.reviewer.email +
-                              " )"
-                            : ele.reviewer.email}
-                        </td>
-                        <td>
-                          {ele.attitude === null &&
-                          ele.performance === null &&
-                          ele.teamwork === null &&
-                          ele.training === null &&
-                          ele.adhere === null
-                            ? "Chưa đánh giá"
-                            : "Đã đánh giá"}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  <tr key="Avg">
-                    <td>Avg</td>
-                    <td>
-                      {dataAvg.avg_attitude !== 0 && dataAvg.avg_attitude}
-                    </td>
-                    <td>
-                      {dataAvg.avg_performance !== 0 && dataAvg.avg_performance}
-                    </td>
-                    <td>
-                      {dataAvg.avg_teamwork !== 0 && dataAvg.avg_teamwork}
-                    </td>
-                    <td>
-                      {dataAvg.avg_training !== 0 && dataAvg.avg_training}
-                    </td>
-                    <td>{dataAvg.avg_adhere !== 0 && dataAvg.avg_adhere}</td>
-                    <td>{dayjs(dataAvg.created_at).toString()}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                      {dataAvg.avg_attitude === 0 &&
-                      dataAvg.avg_performance === 0 &&
-                      dataAvg.avg_teamwork === 0 &&
-                      dataAvg.avg_training === 0 &&
-                      dataAvg.avg_adhere === 0
-                        ? "Chưa hoàn thành"
-                        : "Đã hoàn thành"}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            )}
-            <div className="form-group form1">
-              <div className="d-flex btn-group-1">
-                <button
-                  onClick={() => navigate(-1)}
-                  type="submit"
-                  className="btn btn-default "
-                >
-                  Back
-                </button>
+              <div>
+                <table className="table table-bordered text-center">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th className="point-table-member">Attitude</th>
+                      <th className="point-table-member">Performance</th>
+                      <th className="point-table-member">Teamwork</th>
+                      <th className="point-table-member">Training</th>
+                      <th className="point-table-member">Adhere</th>
+                      <th>Strength</th>
+                      <th>Weakness</th>
+                      <th style={{ width: "12rem" }}>Reviewer</th>
+                      <th style={{ width: "6rem" }}>Note</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataPerPage?.map((ele, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>
+                            {(dataPagination.page - 1) *
+                              dataPagination.itemsPerPage +
+                              index +
+                              1}
+                          </td>
+                          <td>{ele.attitude}</td>
+                          <td>{ele.performance}</td>
+                          <td>{ele.teamwork}</td>
+                          <td>{ele.training}</td>
+                          <td>{ele.adhere}</td>
+                          <td>{ele.strength}</td>
+                          <td>{ele.weakness}</td>
+                          <td>
+                            {ele.reviewer.first_name !== null &&
+                            ele.reviewer.last_name !== null
+                              ? ele.reviewer.first_name +
+                                " " +
+                                ele.reviewer.last_name +
+                                " ( " +
+                                ele.reviewer.email +
+                                " )"
+                              : ele.reviewer.email}
+                          </td>
+                          <td>
+                            {ele.attitude === null &&
+                            ele.performance === null &&
+                            ele.teamwork === null &&
+                            ele.training === null &&
+                            ele.adhere === null
+                              ? "Chưa đánh giá"
+                              : "Đã đánh giá"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    <tr key="Avg">
+                      <td>Avg</td>
+                      <td>
+                        {dataAvg.avg_attitude !== 0 && dataAvg.avg_attitude}
+                      </td>
+                      <td>
+                        {dataAvg.avg_performance !== 0 &&
+                          dataAvg.avg_performance}
+                      </td>
+                      <td>
+                        {dataAvg.avg_teamwork !== 0 && dataAvg.avg_teamwork}
+                      </td>
+                      <td>
+                        {dataAvg.avg_training !== 0 && dataAvg.avg_training}
+                      </td>
+                      <td>{dataAvg.avg_adhere !== 0 && dataAvg.avg_adhere}</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        {dataAvg.avg_attitude === 0 &&
+                        dataAvg.avg_performance === 0 &&
+                        dataAvg.avg_teamwork === 0 &&
+                        dataAvg.avg_training === 0 &&
+                        dataAvg.avg_adhere === 0
+                          ? "Chưa hoàn thành"
+                          : "Đã hoàn thành"}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="form-group form1">
+                  <div className="d-flex btn-group-1">
+                    <button
+                      onClick={() => navigate(-1)}
+                      type="submit"
+                      className="btn btn-default "
+                    >
+                      Back
+                    </button>
+                  </div>
+                </div>
+                <nav aria-label="Page navigation example">
+                  <ul className="pagination justify-content-center">
+                    {menuItems}
+                  </ul>
+                </nav>
               </div>
-            </div>
+            )}
           </form>
-          <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">{menuItems}</ul>
-          </nav>
         </div>
       </div>
     </div>

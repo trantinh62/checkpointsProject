@@ -226,3 +226,11 @@ export const deleteCheckpoint = (check_id, token) =>
       Accept: "application/json",
     },
   });
+
+export const createAndDeleteReview = (data, token) =>
+  axiosClient.post("/api/review", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
