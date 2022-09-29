@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "./ForgotPassword.css";
 function ForgotPassword() {
   const navigate = useNavigate();
-
   const [dataEmail, setDataEmail] = useState({
     email: "",
   });
@@ -22,12 +21,10 @@ function ForgotPassword() {
     try {
       const response = await forgotApi(dataEmail);
       if (response.data.status === 200) {
-        navigate("/login", { replace: true });
-        navigate(0);
-        Toast("Gửi yêu cầu reset password thành công!", "success");
+        Toast("Send reset password request successfully!", "success");
       }
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Send reset password request failed!", "error");
     }
   };
   return (

@@ -45,7 +45,9 @@ const Profile = () => {
     try {
       const res = await getProfileApi(token);
       setDataProfile(res.data.data);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -55,7 +57,7 @@ const Profile = () => {
       sessionStorage.setItem("sessionUser", response.data.data.first_name);
       Toast("Update profile successful!", "success");
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Update profile failed!", "error");
     }
   };
   const handleChange = async (e) => {
@@ -64,7 +66,7 @@ const Profile = () => {
       const response = await passApi(dataPass, token);
       Toast("Update password successful!", "success");
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Update password failed!", "error");
     }
   };
   return (
@@ -101,9 +103,10 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="first_name"
-                          defaultValue={dataProfile.first_name}
+                          value={dataProfile.first_name}
                           onChange={onChangeInput}
                           placeholder="firstname"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -115,9 +118,10 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="last_name"
-                          defaultValue={dataProfile.last_name}
+                          value={dataProfile.last_name}
                           onChange={onChangeInput}
                           placeholder="lastname"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -129,7 +133,7 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="email"
-                          defaultValue={dataProfile.email}
+                          value={dataProfile.email}
                           onChange={onChangeInput}
                           placeholder="email"
                           readOnly
@@ -144,9 +148,10 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="phone"
-                          defaultValue={dataProfile.phone}
+                          value={dataProfile.phone}
                           onChange={onChangeInput}
                           placeholder="phone"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -158,9 +163,10 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="age"
-                          defaultValue={dataProfile.age}
+                          value={dataProfile.age}
                           onChange={onChangeInput}
                           placeholder="age"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -172,20 +178,20 @@ const Profile = () => {
                         <input
                           type="text-form"
                           name="address"
-                          defaultValue={dataProfile.address}
+                          value={dataProfile.address}
                           onChange={onChangeInput}
                           placeholder="address"
+                          required
                         ></input>
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col1 btn-save">
-                    <input
-                      type="submit"
-                      className="profile-edit-btn"
-                      name="btnAddMore"
-                      value="Update Profile"
-                    />
+                  <div className="form-group profile-form">
+                    <div className="d-flex btn-profile">
+                      <button type="submit" className="btn btn-default">
+                        Update profile
+                      </button>
+                    </div>
                   </div>
                   <div
                     className="tab-pane fade"
@@ -201,13 +207,17 @@ const Profile = () => {
         <div className="row">
           <div className="col-md-4">
             <div className="profile-work">
-              <h3>{dataProfile.first_name + " " + dataProfile.last_name}</h3>
+              <h3 className="profile-name">
+                {dataProfile.first_name + " " + dataProfile.last_name}
+              </h3>
               <p>
                 ROLE: {dataProfile.role_id === 1 && "Group leader"}
                 {dataProfile.role_id === 2 && "Tech leader"}
                 {dataProfile.role_id === 3 && "Member"}
               </p>
+              <p>Age: {dataProfile.age}</p>
               <p>STATUS: {dataProfile.status}</p>
+              <p>Address: {dataProfile.address}</p>
               <br />
             </div>
           </div>
@@ -226,10 +236,12 @@ const Profile = () => {
                   <div className="col-md-6 col1">
                     <input
                       type="password"
+                      id="profile-pass"
                       name="old_password"
-                      defaultValue={dataPass.old_password}
+                      value={dataPass.old_password}
                       onChange={onChangePass}
                       placeholder="old password"
+                      required
                     ></input>
                   </div>
                 </div>
@@ -241,9 +253,11 @@ const Profile = () => {
                     <input
                       type="password"
                       name="password"
-                      defaultValue={dataPass.password}
+                      id="profile-pass"
+                      value={dataPass.password}
                       onChange={onChangePass}
                       placeholder="new password"
+                      required
                     ></input>
                   </div>
                 </div>
@@ -255,19 +269,20 @@ const Profile = () => {
                     <input
                       type="password"
                       name="password_confirm"
-                      defaultValue={dataPass.password_confirm}
+                      id="profile-pass"
+                      value={dataPass.password_confirm}
                       onChange={onChangePass}
                       placeholder="confirm password"
+                      required
                     ></input>
                   </div>
                 </div>
-                <div className="col-md-6 col1 btn-save">
-                  <input
-                    type="submit"
-                    className="profile-edit-btn"
-                    name="btnAddMore"
-                    value="Change password"
-                  />
+                <div className="form-group">
+                  <div className="d-flex btn-profile">
+                    <button type="submit" className="btn btn-default">
+                      Change password
+                    </button>
+                  </div>
                 </div>
               </div>
             </form>

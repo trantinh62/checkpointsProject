@@ -1,20 +1,32 @@
 import { useState, useEffect } from "react";
-import { getReviewsByCheckpointIdAndUserId } from "../../Api/userApi";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { getReviewsByCheckpointIdAndMyReviewId } from "../../Api/userApi";
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
+import Toast from "../Toast/Toast";
 import "./ListReviews.css";
 function ListReviews() {
   const navigate = useNavigate();
   const { search } = useLocation();
   const params = useParams();
-  const page = new URLSearchParams(search).get("page") || 1;
+  const [page, setPage] = useState(
+    new URLSearchParams(search).get("page") || 1
+  );
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
+  const [searchParams] = useSearchParams();
+  const title = searchParams.get("title");
   const [dataYetReview, setDataYetReview] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1, []);
+  const [loading, setLoading] = useState(false);
   const handleOnClick = (e) => {
     const page = e.target.value;
+    setPage(page);
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
     setDataPerPage(dataYetReview.slice(start, end));
@@ -26,8 +38,11 @@ function ListReviews() {
   }, []);
   const fetchData = async () => {
     try {
-      const res = await getReviewsByCheckpointIdAndUserId(token, true, false);
-      const yetReview = res.data.data.assign_review.filter(
+      const res = await getReviewsByCheckpointIdAndMyReviewId(
+        token,
+        params.check_id
+      );
+      const yetReview = res.data.data.filter(
         (item) =>
           item.attitude === null &&
           item.performance === null &&
@@ -37,8 +52,11 @@ function ListReviews() {
       );
       setDataYetReview(yetReview);
       setNumPages(Math.ceil(yetReview.length / itemsPerPage));
-      setDataPerPage(res.data.data.assign_review.slice(start, end));
-    } catch (err) {}
+      setDataPerPage(yetReview.slice(start, end));
+      setLoading(true);
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
@@ -65,67 +83,109 @@ function ListReviews() {
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      List reviews: {dataPerPage[0]?.name_checkpoint.name}
+                      {title}
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-          <table className="table table-bordered text-center">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>User is checked</th>
-                <th>Start date</th>
-                <th>End date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dataPerPage?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>
-                      <a
-                        style={{ textDecoration: "none" }}
-                        href={`/mycheckpoints/${
-                          ele.name_checkpoint.id
-                        }/reviews/${ele.id}?title=${
-                          ele.name_checkpoint.name
-                        }&user_id=${ele.user_info.id}&username=${
-                          ele.user_info.first_name !== null &&
-                          ele.user_info.first_name !== null
-                            ? ele.user_info.first_name +
-                              " " +
-                              ele.user_info.last_name +
-                              " (" +
-                              ele.user_info.email +
-                              " )"
-                            : ele.user_info.email
-                        }`}
-                      >
-                        {ele.user_info.first_name !== null &&
-                        ele.user_info.first_name !== null
-                          ? ele.user_info.first_name +
-                            " " +
-                            ele.user_info.last_name +
-                            " (" +
-                            ele.user_info.email +
-                            " )"
-                          : ele.user_info.email}
-                      </a>
-                    </td>
-                    <td>{ele.name_checkpoint.start_date}</td>
-                    <td>{ele.name_checkpoint.end_date}</td>
+          {loading === false && (
+            <h3 className="review-notify">Waiting for loading data!</h3>
+          )}
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+            loading === true && (
+              <h3 className="review-notify">All checkpoints are checked!</h3>
+            )}
+          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            <div>
+              <table className="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>User is checked</th>
+                    <th className="role-list">Role</th>
+                    <th className="view-review">Check</th>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-          <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">{menuItems}</ul>
-          </nav>
+                </thead>
+                <tbody>
+                  {dataPerPage?.map((ele, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          <a style={{ textDecoration: "none" }}>
+                            {ele.user.first_name !== null &&
+                            ele.user.first_name !== null
+                              ? ele.user.first_name +
+                                " " +
+                                ele.user.last_name +
+                                " (" +
+                                ele.user.email +
+                                " )"
+                              : ele.user.email}
+                          </a>
+                        </td>
+                        <td>
+                          <select
+                            className="form-select list-reviews"
+                            aria-label="Default select example"
+                            value={ele.user.role_id}
+                            id={ele.id}
+                            disabled
+                          >
+                            <option value="1">Group leader</option>
+                            <option value="2">Leader</option>
+                            <option value="3">Member</option>
+                          </select>
+                        </td>
+                        <td>
+                          <a
+                            href={`/mycheckpoints/${params.check_id}/reviews/${
+                              ele.id
+                            }?title=${title}&user_id=${ele.user.id}&username=${
+                              ele.user.first_name !== null &&
+                              ele.user.first_name !== null
+                                ? ele.user.first_name +
+                                  " " +
+                                  ele.user.last_name +
+                                  " (" +
+                                  ele.user.email +
+                                  " )"
+                                : ele.user.email
+                            }`}
+                          >
+                            <button
+                              variant="primary"
+                              className="btn-list-review"
+                            >
+                              <i className="bi bi-arrow-right-circle"></i>
+                            </button>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <nav aria-label="Page navigation example">
+                <ul className="pagination justify-content-center">
+                  {menuItems}
+                </ul>
+              </nav>
+            </div>
+          )}
+          <div className="form-group form1">
+            <div className="d-flex btn-group-1">
+              <button
+                onClick={() => navigate(-1)}
+                type="submit"
+                className="btn btn-default"
+              >
+                Back
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

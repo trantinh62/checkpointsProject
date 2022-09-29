@@ -31,15 +31,15 @@ function Login() {
       if (response.data.status === 200) {
         navigate("/mycheckpoints", { replace: true });
         navigate(0);
-        Toast("Đăng nhập thành công!", "success");
       }
     } catch (err) {
+      console.log(err.response);
       if (err.response.status === 403) {
-        Toast("Tài khoản đã bị khóa!", "error");
+        Toast("This account is locked", "error");
       } else if (err.response.status === 400) {
-        Toast("Sai thông tin tài khoản!", "error");
+        Toast("Wrong account information!", "error");
       } else if (err.response.status === 422) {
-        Toast("Mật khẩu phải dài hơn 8 ký tự!", "warning");
+        Toast("Password must be longer than 8 characters!", "warning");
       } else Toast(err.response.data.message, "error");
     }
   };

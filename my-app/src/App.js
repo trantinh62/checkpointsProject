@@ -10,9 +10,11 @@ import ListReviews from "./Components/Reviews/ListReviews";
 import DetailReview from "./Components/Reviews/DetailReview";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
+import Gpoint from "./Components/Checkpoints/Gpoint";
 import History from "./Components/History/History";
-
-import HistoryDetail from "./Components/History/HistoryDetail";
+import DetailHistory from "./Components/History/DetailHistory";
+import ListMemberHistory from "./Components/History/ListMemberHistory";
+import MemberHistory from "./Components/History/MemberHistory";
 import User from "./Components/Users/User";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
@@ -21,13 +23,13 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  let [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
+  const [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
   if (!token) {
     return (
       <>
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -53,9 +55,12 @@ function App() {
             element={<Login />}
           ></Route>
           <Route path="/create" element={<Login />}></Route>
+          <Route path="/gpoint" element={<Login />}></Route>
           <Route path="/assign/:id" element={<Login />}></Route>
-          <Route path="/historys" element={<Login />}></Route>
-          <Route path="/historys/:id" element={<Login />}></Route>
+          <Route path="/histories" element={<Login />}></Route>
+          <Route path="/histories/member" element={<Login />}></Route>
+          <Route path="/histories/member/:id" element={<Login />}></Route>
+          <Route path="/histories/:id" element={<Login />}></Route>
         </Routes>
       </>
     );
@@ -66,7 +71,7 @@ function App() {
       <div>
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick
@@ -93,9 +98,12 @@ function App() {
           element={<DetailReview />}
         ></Route>
         <Route path="/create" element={<CreateCheckpoint />}></Route>
+        <Route path="/gpoint" element={<Gpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
-        <Route path="/historys" element={<History />}></Route>
-        <Route path="/historys/:id" element={<HistoryDetail />}></Route>
+        <Route path="/histories" element={<History />}></Route>
+        <Route path="/histories/member" element={<ListMemberHistory />}></Route>
+        <Route path="/histories/member/:id" element={<MemberHistory />}></Route>
+        <Route path="/histories/:id" element={<DetailHistory />}></Route>
       </Routes>
     </>
   );
