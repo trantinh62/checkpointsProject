@@ -1,22 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { createApi, getCheckApi, deleteCheckpoint } from "../../Api/userApi";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+import {
+  createApi,
+  getAllCheckpointApi,
+  getCheckpointsByReviewId,
+} from "../../Api/userApi";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
-import "./CreateCheckpoint.css";
+import "./ListMemberHistory.css";
 
-function Checkpoints() {
+function ListMemberHistory() {
   const navigate = useNavigate();
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = (e) => {
-    const { id } = e.target;
-    setDeleteId(id);
-    setShow(true);
-  };
-
   const search = useLocation().search;
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
@@ -24,28 +18,72 @@ function Checkpoints() {
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
-  const user_id = sessionStorage.getItem("sessionUserId");
-  const [dataCheckpoint, setDataCheckpoint] = useState({
-    user_id: user_id,
+  const [dataSearch, setDataSearch] = useState({
     name: "",
-    start_date: "",
-    end_date: "",
+    start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
+    end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
   const token = sessionStorage.getItem("sessionToken");
+  const roleId = sessionStorage.getItem("sessionRoleId");
 
   const onChangeInput = (e) => {
     let { name, value } = e.target;
-    if (name === "start_date" || name === "end_date")
-      value = dayjs(value).format("YYYY-MM-DDTHH:mm");
-    setDataCheckpoint({
-      ...dataCheckpoint,
-      [name]: value,
-    });
+    let name_value = dataSearch.name || "";
+    let start_date_value = dataSearch.start_date || "";
+    let end_date_value = dataSearch.end_date || "";
+    let dataFilter = [];
+    if (name === "name") {
+      name_value = value;
+      setDataSearch({
+        ...dataSearch,
+        [name]: value,
+      });
+      dataFilter = dataListCheck.filter(
+        (item) =>
+          removeMark(item.name.toLowerCase()).includes(
+            removeMark(name_value.toLowerCase())
+          ) &&
+          new Date(item.start_date) > new Date(start_date_value) &&
+          new Date(item.end_date) < new Date(end_date_value)
+      );
+      setDataPerPage(dataFilter.slice(start, end));
+    }
+    if (name === "start_date") {
+      start_date_value = value;
+      setDataSearch({
+        ...dataSearch,
+        [name]: value,
+      });
+      dataFilter = dataListCheck.filter(
+        (item) =>
+          removeMark(item.name.toLowerCase()).includes(
+            removeMark(dataSearch.name.toLowerCase())
+          ) &&
+          new Date(item.start_date) > new Date(start_date_value) &&
+          new Date(item.end_date) < new Date(end_date_value)
+      );
+      setDataPerPage(dataFilter.slice(start, end));
+    }
+    if (name === "end_date") {
+      end_date_value = value;
+      setDataSearch({
+        ...dataSearch,
+        [name]: value,
+      });
+      dataFilter = dataListCheck.filter(
+        (item) =>
+          removeMark(item.name.toLowerCase()).includes(
+            removeMark(dataSearch.name.toLowerCase())
+          ) &&
+          new Date(item.start_date) > new Date(dataSearch.start_date) &&
+          new Date(item.end_date) < new Date(end_date_value)
+      );
+      setDataPerPage(dataFilter.slice(start, end));
+    }
   };
 
   const handleOnClick = (e) => {
@@ -63,48 +101,52 @@ function Checkpoints() {
 
   const fetchData = async () => {
     try {
-      const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
-      setLoading(true);
+      let res = [];
+      if (roleId === "1") {
+        res = await getAllCheckpointApi(token);
+        setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
+        setDataListCheck(res.data.data.checkpoints);
+        setDataPerPage(res.data.data.checkpoints.slice(start, end));
+        setLoading(true);
+      }
+      if (roleId === "2") {
+        res = await getCheckpointsByReviewId(token);
+        setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
+        setDataListCheck(res.data.data.map((item) => item.checkpoint));
+        setDataPerPage(
+          res.data.data.map((item) => item.checkpoint).slice(start, end)
+        );
+        setLoading(true);
+      }
     } catch (err) {}
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (
-        new Date(dataCheckpoint.start_date) >= new Date(dataCheckpoint.end_date)
-      ) {
-        Toast("Ngày kết thúc phải được chọn sau ngày bắt đầu!", "warning");
-        return;
-      }
-      const response = await createApi(dataCheckpoint, token);
-      Toast("Tạo checkpoint thành công!", "success");
-      const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
-    } catch (err) {
-      Toast(err.response.data.message, "error");
-    }
+      const page = 1;
+      setPage(page);
+      const start = (page - 1) * itemsPerPage;
+      const end = page * itemsPerPage;
+      setDataSearch({
+        name: "",
+        start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
+        end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
+      });
+      setDataPerPage(dataListCheck.slice(start, end));
+    } catch (err) {}
   };
 
-  const handleDelete = async (e) => {
-    e.preventDefault();
-    try {
-      handleClose();
-      const resDel = await deleteCheckpoint(deleteId, token);
-      Toast("Xóa checkpoint thành công", "success");
-      const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
-    } catch (err) {
-      Toast(err.response.data.message, "error");
-    }
-  };
+  function removeMark(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    return str;
+  }
 
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
@@ -117,7 +159,7 @@ function Checkpoints() {
     );
   }
   return (
-    <div className="create-cover">
+    <div className="list-member-his-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -126,7 +168,7 @@ function Checkpoints() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item active" aria-current="page">
-                      Manage checkpoints: Create checkpoints
+                      Manage checkpoints: Member's checkpoint histories
                     </li>
                   </ol>
                 </nav>
@@ -147,8 +189,7 @@ function Checkpoints() {
                       placeholder="Enter title checkpoint"
                       name="name"
                       onChange={onChangeInput}
-                      value={dataCheckpoint.name}
-                      required
+                      value={dataSearch.name}
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
@@ -161,8 +202,7 @@ function Checkpoints() {
                       id="start"
                       name="start_date"
                       onChange={onChangeInput}
-                      required
-                      value={dataCheckpoint.start_date}
+                      value={dataSearch.start_date}
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
@@ -175,8 +215,7 @@ function Checkpoints() {
                       id="end"
                       name="end_date"
                       onChange={onChangeInput}
-                      required
-                      value={dataCheckpoint.end_date}
+                      value={dataSearch.end_date}
                     ></input>
                   </div>
                 </div>
@@ -184,19 +223,17 @@ function Checkpoints() {
             </div>
             <div className="col-md-12">
               <button type="submit" className="btn-create">
-                Create checkpoint
+                Reset filter
               </button>
             </div>
           </form>
           {loading === false && (
-            <h3 className="review-notify">
-              Waiting for loading data checkpoint!
-            </h3>
+            <h3 className="review-notify">Waiting for loading data!</h3>
           )}
           {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
             loading === true && (
-              <h3 className="create-notify">
-                No checkpoints have been created yet!
+              <h3 className="list-member-history-notify">
+                No checkpoint history!
               </h3>
             )}
           {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
@@ -208,34 +245,28 @@ function Checkpoints() {
                     <th>Title</th>
                     <th>Start date</th>
                     <th>End date</th>
-                    <th>Assign/Delete</th>
+                    <th className="view-list-member-history">View</th>
                   </tr>
                 </thead>
                 <tbody>
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>{index + 1}</td>
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
-                        <td className="assign-delete">
-                          <a href={`/assign/${ele.id}`}>
+                        <td>
+                          <a
+                            href={`/histories/member/${ele.id}?title=${ele.name}`}
+                          >
                             <button
                               variant="primary"
-                              className="btn-delete-checkpoint"
+                              className="btn-list-member-history"
                             >
-                              <i className="bi bi-pen"></i>
+                              <i className="bi bi-arrow-right-circle"></i>
                             </button>
                           </a>
-                          <span>|</span>
-                          <button
-                            variant="primary"
-                            onClick={handleShow}
-                            className="btn-delete-checkpoint"
-                          >
-                            <i id={ele.id} className="bi bi-trash"></i>
-                          </button>
                         </td>
                       </tr>
                     );
@@ -249,27 +280,10 @@ function Checkpoints() {
               </nav>
             </div>
           )}
-
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Confirm delete checkpoint!</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Do you really want to delete this checkpoint?
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Cancel
-              </Button>
-              <Button variant="danger" onClick={handleDelete}>
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </div>
       </div>
     </div>
   );
 }
 
-export default Checkpoints;
+export default ListMemberHistory;

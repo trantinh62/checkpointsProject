@@ -42,8 +42,6 @@ table.table th i {
     margin: 0 5px;
     cursor: pointer;
 }
-table.table th:last-child {
-}
 table.table th:first-child {
     width: 100px;
 }
@@ -89,4 +87,12 @@ table.table td .add {
 .history-notify{
     display: flex;
     justify-content: center;
+}
+.view-history{
+    width: 12rem;
+}
+.btn-list-history{
+    background: none;
+    border: none;
+    size: 10px;
 }

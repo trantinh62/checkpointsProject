@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react";
-import axiosClient from "../../Api/axiosClient";
 import Table from "react-bootstrap/Table";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import "./Assign.css";
 import {
   getDetailCheckpointApi,
   getCheckedUser,
-  getListUsersApi,
+  getAllUsersApi,
+  createAndDeleteReview,
 } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
 
@@ -20,10 +20,12 @@ function Assgin() {
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
-  let [numPages, setNumPages] = useState(1, []);
-  let [idAssign, setIdAssign] = useState(null, []);
-  let [dataFilter, setDataFilter] = useState([]);
-  let [dataChecked, setDataChecked] = useState([]);
+  const [numPages, setNumPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [idAssign, setIdAssign] = useState(null);
+  const [dataFilter, setDataFilter] = useState([]);
+  const [dataChecked, setDataChecked] = useState([]);
+  const [copyChecked, setCopyChecked] = useState([]);
   let list_id_checked = [];
 
   const [dataCheckpoint, setDataCheckpoint] = useState({
@@ -33,27 +35,49 @@ function Assgin() {
   const [dataReview, setDataReview] = useState({
     checkpoint_id: "",
     user_id: "",
-    review_id: [],
+    role_id: [],
+    new_reviewers: [],
+    remove_reviewers: [],
   });
   const [dataUser, setDataUser] = useState([]);
+  const [dataUserEnable, setDataUserEnable] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   useEffect(() => {
     fetchData();
   }, []);
 
   const token = sessionStorage.getItem("sessionToken");
+  const userId = sessionStorage.getItem("sessionUserId");
   const fetchData = async () => {
     try {
       const res = await getDetailCheckpointApi(token, params.id);
-      const resUser = await getListUsersApi(token);
+      const resUser = await getAllUsersApi(token);
+      const resChecked = await getCheckedUser(
+        token,
+        params.id,
+        resUser.data.data[0].id
+      );
+      setDataChecked(resChecked.data.data);
+      setCopyChecked(resChecked.data.data);
+      const beAssignedRoleId = resUser.data.data
+        .filter((item) => item.id === resUser.data.data[0].id)
+        .map((item) => item.role_id)[0];
+
       setDataCheckpoint(res.data.data);
       setDataReview({
         ...dataReview,
         checkpoint_id: res.data.data.id,
         user_id: resUser.data.data[0].id,
+        role_id: [
+          ...resChecked.data.data.map((item) => item.reviewer.role_id),
+          beAssignedRoleId,
+        ],
       });
       setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
       setDataUser(resUser.data.data);
+      setDataUserEnable(
+        resUser.data.data.filter((item) => item.status !== "disable")
+      );
       setDataFilter(
         resUser.data.data.filter(
           (item) =>
@@ -68,54 +92,105 @@ function Assgin() {
           )
           .slice(start, end)
       );
-      const resChecked = await getCheckedUser(
-        token,
-        params.id,
-        resUser.data.data[0].id
-      );
-      setDataChecked(resChecked.data.data);
       setIdAssign(resUser.data.data[0].id);
+      setLoading(true);
     } catch (err) {}
   };
-
   const onChangeInput = async (e) => {
-    let { name, value } = e.target;
+    let { name, value, id } = e.target;
     if (name === "user_id") {
+      const resChecked = await getCheckedUser(token, params.id, value);
+      setDataChecked(resChecked.data.data);
+      setCopyChecked(resChecked.data.data);
       value = parseInt(value);
       setIdAssign(value);
-      setDataFilter(dataUser.filter((item) => item.id !== value));
+      const beAssignedRoleId = dataUser
+        .filter((item) => item.id === value)
+        .map((item) => item.role_id)[0];
+      setDataFilter(
+        dataUser.filter(
+          (item) => item.id !== value && item.status !== "disable"
+        )
+      );
       setDataReview({
         ...dataReview,
+        new_reviewers: [],
+        remove_reviewers: [],
         [name]: value,
+        role_id: [
+          ...resChecked.data.data.map((item) => item.reviewer.role_id),
+          beAssignedRoleId,
+        ],
       });
       setDataPerPage(
-        dataUser.filter((item) => item.id !== value).slice(start, end)
+        dataUser
+          .filter((item) => item.id !== value && item.status !== "disable")
+          .slice(start, end)
       );
-      const res = await getCheckedUser(token, params.id, value);
-      setDataChecked(res.data.data);
-      selectAll.current.checked = false;
-    } else if (name === "review_id") {
-      value = parseInt(value);
 
-      if (!dataReview.review_id.includes(value)) {
+      selectAll.current.checked = false;
+    } else if (name === "new_reviewers") {
+      value = parseInt(value);
+      if (copyChecked.filter((item) => item.review_id === value).length > 0) {
+        if (!dataReview.remove_reviewers.includes(value)) {
+          dataReview.role_id.splice(
+            dataReview.role_id.indexOf(parseInt(id)),
+            1
+          );
+          setDataReview({
+            ...dataReview,
+            remove_reviewers: [...dataReview.remove_reviewers, value],
+            role_id: dataReview.role_id,
+          });
+          setDataChecked(
+            dataChecked.filter((item) => item.review_id !== value)
+          );
+          return;
+        }
+        dataReview.remove_reviewers.splice(
+          dataReview.remove_reviewers.indexOf(value),
+          1
+        );
         setDataReview({
           ...dataReview,
-          [name]: [...dataReview.review_id, value],
+          remove_reviewers: dataReview.remove_reviewers,
+          role_id: [
+            ...dataReview.role_id,
+            ...dataUser
+              .filter((item) => item.id === value)
+              .map((item) => item.role_id),
+          ],
+        });
+        setDataChecked([
+          ...dataChecked,
+          ...copyChecked.filter((item) => item.review_id === value),
+        ]);
+        return;
+      }
+      if (!dataReview.new_reviewers.includes(value)) {
+        setDataReview({
+          ...dataReview,
+          [name]: [...dataReview.new_reviewers, value],
+          role_id: [...dataReview.role_id, parseInt(id)],
         });
       } else {
+        dataReview.role_id.splice(dataReview.role_id.indexOf(parseInt(id)), 1);
         setDataReview({
           ...dataReview,
-          [name]: dataReview.review_id.filter((item) => item !== value),
+          [name]: dataReview.new_reviewers.filter((item) => item !== value),
+          role_id: dataReview.role_id,
         });
       }
+      let numCheckedUser =
+        dataChecked.length === 0 ? dataChecked.length : dataChecked.length - 1;
       if (
-        dataReview.review_id.length + dataChecked.length ===
+        dataReview.new_reviewers.length + numCheckedUser ===
         dataFilter.length
       ) {
         selectAll.current.checked = false;
       } else if (
-        !dataReview.review_id.includes(value) &&
-        dataReview.review_id.push(value) + dataChecked.length ===
+        !dataReview.new_reviewers.includes(value) &&
+        dataReview.new_reviewers.push(value) + numCheckedUser ===
           dataFilter.length
       ) {
         selectAll.current.checked = true;
@@ -131,38 +206,69 @@ function Assgin() {
   };
   const handleSelectAll = async (e) => {
     if (e.target.checked) {
-      list_id_checked = dataChecked.map((item) => item.review_id);
+      list_id_checked = copyChecked.map((item) => item.review_id);
+      const beAssignedRoleId = dataUser
+        .filter((item) => item.id === idAssign)
+        .map((item) => item.role_id)[0];
       setDataReview({
         ...dataReview,
-        review_id: dataFilter
+        new_reviewers: dataFilter
           .filter((item) => !list_id_checked.includes(item.id))
           .map((item) => item.id),
+        remove_reviewers: [],
+        role_id: [beAssignedRoleId, ...dataUser.map((item) => item.role_id)],
       });
+      setDataChecked(copyChecked);
     } else {
+      list_id_checked = dataChecked.map((item) => item.review_id);
+      const beAssignedRoleId = dataUser
+        .filter((item) => item.id === idAssign)
+        .map((item) => item.role_id)[0];
       setDataReview({
         ...dataReview,
-        review_id: [],
+        new_reviewers: [],
+        remove_reviewers: [...list_id_checked],
+        role_id: [beAssignedRoleId],
       });
+      setDataChecked([]);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (dataReview.review_id.length === 0) {
-        Toast("Không có user mới nào được assign thêm!", "warning");
+      if (
+        dataReview.new_reviewers.length === 0 &&
+        dataReview.remove_reviewers.length === 0
+      ) {
+        Toast("Không có sự thay đổi nào !", "warning");
         return;
       }
-      const res = await axiosClient.post("api/review", dataReview, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-      setDataReview({ ...dataReview, review_id: [] });
+      if (Array.from(new Set(dataReview.role_id)).length < 3) {
+        Toast(
+          "Phải assign đủ 3 role (Group leader, Team leader, Member ) !",
+          "warning"
+        );
+        return;
+      }
+      const res = await createAndDeleteReview(dataReview, token);
       const reschecked = await getCheckedUser(token, params.id, idAssign);
+
+      const beAssignedRoleId = dataUser
+        .filter((item) => item.id === idAssign)
+        .map((item) => item.role_id)[0];
+      setDataReview({
+        ...dataReview,
+        role_id: [
+          ...reschecked.data.data.map((item) => item.reviewer.role_id),
+          beAssignedRoleId,
+        ],
+        new_reviewers: [],
+        remove_reviewers: [],
+      });
       setDataChecked(reschecked.data.data);
-      Toast("Đăng ký người đánh giá thành công!", "success");
+      setCopyChecked(reschecked.data.data);
+      Toast("Cập nhật người đánh giá thành công!", "success");
     } catch (err) {}
   };
 
@@ -177,7 +283,7 @@ function Assgin() {
     );
   }
   return (
-    <div className="reviews-cover">
+    <div className="assign-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -226,7 +332,7 @@ function Assgin() {
                       onChange={onChangeInput}
                       aria-label="Default select example"
                     >
-                      {dataUser?.map((ele, index) => {
+                      {dataUserEnable?.map((ele, index) => {
                         return (
                           <option key={index} value={ele.id}>
                             {ele.first_name + " " + ele.last_name !==
@@ -236,8 +342,18 @@ function Assgin() {
                                 ele.last_name +
                                 " (" +
                                 ele.email +
+                                " ) (" +
+                                ((ele.role_id === 1 && "Group leader") ||
+                                  (ele.role_id === 2 && "Team Leader") ||
+                                  (ele.role_id === 3 && "Member")) +
                                 " )"
-                              : "" + " (" + ele.email + " )"}
+                              : "(" +
+                                ele.email +
+                                " )" +
+                                ((ele.role_id === 1 && "Group leader") ||
+                                  (ele.role_id === 2 && "Team Leader") ||
+                                  (ele.role_id === 3 && "Member")) +
+                                " )"}
                           </option>
                         );
                       })}
@@ -246,98 +362,105 @@ function Assgin() {
                 </div>
               </div>
             </div>
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
-              <h3 className="review-notify">There are no users to assign</h3>
+            {loading === false && (
+              <h3 className="review-notify">
+                Waiting for loading data checkpoint!
+              </h3>
             )}
+            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+              loading === true && (
+                <h3 className="review-notify">There are no users to assign</h3>
+              )}
             {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
-              <Table striped bordered hover className="text-center">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Email</th>
-                    <th>Username</th>
-                    <th>Role</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataPerPage?.map((ele, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>
-                          <input
-                            name="review_id"
-                            onChange={onChangeInput}
-                            type="checkbox"
-                            defaultValue={ele.id}
-                            checked={
-                              dataReview.review_id.includes(ele.id) ||
-                              dataChecked.some(
-                                (item) => item.review_id === ele.id
-                              ) ||
-                              false
-                            }
-                            disabled={
-                              dataChecked.some(
-                                (item) => item.review_id === ele.id
-                              ) || false
-                            }
-                          ></input>
-                        </td>
-                        <td>{ele.email}</td>
-                        <td>
-                          {ele.first_name + " " + ele.last_name !== "null null"
-                            ? ele.first_name + " " + ele.last_name
-                            : ""}
-                        </td>
-                        <td>
-                          <select
-                            className="form-select"
-                            aria-label="Default select example"
-                            disabled
-                            value={ele.role_id}
-                          >
-                            <option value="1">Group leader</option>
-                            <option value="2">Leader</option>
-                            <option value="3">Member</option>
-                          </select>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  <tr>
-                    <td>
-                      <input
-                        type="checkbox"
-                        id="selectall"
-                        className="checkbox-all"
-                        autoComplete="off"
-                        onClick={handleSelectAll}
-                        ref={selectAll}
-                      ></input>
-                    </td>
-                    <td style={{ textAlign: "initial" }}>Select all</td>
-                  </tr>
-                </tbody>
-              </Table>
-            )}
-            <div className="form-group form1">
-              <div className="d-flex btn-group-1">
-                <button type="submit" className="btn btn-default ">
-                  Assign users
-                </button>
-                <button
-                  onClick={() => navigate(-1)}
-                  type="submit"
-                  className="btn btn-default "
-                >
-                  Cancel
-                </button>
+              <div>
+                <Table striped bordered hover className="text-center">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Email</th>
+                      <th>Username</th>
+                      <th>Role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataPerPage?.map((ele, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>
+                            <input
+                              name="new_reviewers"
+                              onChange={onChangeInput}
+                              type="checkbox"
+                              value={ele.id}
+                              id={ele.role_id}
+                              checked={
+                                dataReview.new_reviewers.includes(ele.id) ||
+                                dataChecked.some(
+                                  (item) => item.review_id === ele.id
+                                ) ||
+                                false
+                              }
+                            ></input>
+                          </td>
+                          <td>{ele.email}</td>
+                          <td>
+                            {ele.first_name + " " + ele.last_name !==
+                            "null null"
+                              ? ele.first_name + " " + ele.last_name
+                              : ""}
+                          </td>
+                          <td>
+                            <select
+                              className="form-select"
+                              aria-label="Default select example"
+                              disabled
+                              value={ele.role_id}
+                            >
+                              <option value="1">Group leader</option>
+                              <option value="2">Leader</option>
+                              <option value="3">Member</option>
+                            </select>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    <tr>
+                      <td>
+                        <input
+                          type="checkbox"
+                          id="selectall"
+                          className="checkbox-all"
+                          autoComplete="off"
+                          onClick={handleSelectAll}
+                          ref={selectAll}
+                        ></input>
+                      </td>
+                      <td style={{ textAlign: "initial" }}>Select all</td>
+                    </tr>
+                  </tbody>
+                </Table>
+                <div className="form-group form1">
+                  <div className="d-flex btn-group-1">
+                    <button type="submit" className="btn btn-default ">
+                      Assign users
+                    </button>
+                    <button
+                      onClick={() => navigate(-1)}
+                      type="submit"
+                      className="btn btn-default "
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+                <nav aria-label="Page navigation example">
+                  <ul className="pagination justify-content-center">
+                    {menuItems}
+                  </ul>
+                </nav>
               </div>
-            </div>
+            )}
           </form>
-          <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">{menuItems}</ul>
-          </nav>
         </div>
       </div>
     </div>

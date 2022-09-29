@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -7,7 +6,7 @@ import Toast from "../Toast/Toast";
 import "./Register.css";
 function Register() {
   const navigate = useNavigate();
-  const {search} = useLocation();
+  const { search } = useLocation();
   const token = new URLSearchParams(search).get("token");
 
   const [dataRegister, setdataRegister] = useState({
@@ -39,12 +38,12 @@ function Register() {
   };
   return (
     <div className="register-cover">
-      <div className="container contact">
+      <div className="container register">
         <div className="row">
           <div className="col-md-3">
-            <div className="contact-info">
+            <div className="register-info">
               <img
-                src="https://image.ibb.co/kUASdV/contact-image.png"
+                src="https://image.ibb.co/kUASdV/register-image.png"
                 alt="image"
               />
               <h2>Register</h2>
@@ -52,7 +51,7 @@ function Register() {
           </div>
           <div className="col-md-9">
             <form onSubmit={handleSubmit}>
-              <div className="contact-form">
+              <div className="register-form">
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="firstname">
                     Firstname:

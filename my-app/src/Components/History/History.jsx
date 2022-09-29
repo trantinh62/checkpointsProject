@@ -12,6 +12,7 @@ function History() {
   const [listHistories, setListHistories] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const handleOnClick = (e) => {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;
@@ -29,6 +30,7 @@ function History() {
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListHistories(res.data.data);
+      setLoading(true);
     } catch (err) {}
   };
 
@@ -63,43 +65,57 @@ function History() {
                 </div>
               </div>
             </div>
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
-              <h3 className="history-notify">No checkpoint history!</h3>
+            {loading === false && (
+              <h3 className="review-notify">Waiting for loading data!</h3>
             )}
+            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+              loading === true && (
+                <h3 className="history-notify">No checkpoint history!</h3>
+              )}
             {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
-              <table className="table table-bordered text-center">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataPerPage?.map((ele, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <a
-                            style={{ textDecoration: "none" }}
-                            href={`/histories/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
-                          >
-                            {ele.checkpoint.name}
-                          </a>
-                        </td>
-                        <td>{ele.checkpoint.start_date}</td>
-                        <td>{ele.checkpoint.end_date}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div>
+                <table className="table table-bordered text-center">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Title</th>
+                      <th>Start date</th>
+                      <th>End date</th>
+                      <th className="view-history">View</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataPerPage?.map((ele, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{ele.checkpoint.name}</td>
+                          <td>{ele.checkpoint.start_date}</td>
+                          <td>{ele.checkpoint.end_date}</td>
+                          <td>
+                            <a
+                              href={`/histories/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
+                            >
+                              <button
+                                variant="primary"
+                                className="btn-list-history"
+                              >
+                                <i className="bi bi-arrow-right-circle"></i>
+                              </button>
+                            </a>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <nav aria-label="Page navigation example">
+                  <ul className="pagination justify-content-center">
+                    {menuItems}
+                  </ul>
+                </nav>
+              </div>
             )}
-            <nav aria-label="Page navigation example">
-              <ul className="pagination justify-content-center">{menuItems}</ul>
-            </nav>
           </div>
         </div>
       </div>

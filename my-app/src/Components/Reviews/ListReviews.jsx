@@ -22,6 +22,7 @@ function ListReviews() {
   const [dataYetReview, setDataYetReview] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1, []);
+  const [loading, setLoading] = useState(false);
   const handleOnClick = (e) => {
     const page = e.target.value;
     setPage(page);
@@ -51,6 +52,7 @@ function ListReviews() {
       setDataYetReview(yetReview);
       setNumPages(Math.ceil(yetReview.length / itemsPerPage));
       setDataPerPage(yetReview.slice(start, end));
+      setLoading(true);
     } catch (err) {}
   };
   let menuItems = [];
@@ -85,86 +87,102 @@ function ListReviews() {
               </div>
             </div>
           </div>
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
-            <h3 className="review-notify">All checkpoints are checked!</h3>
+          {loading === false && (
+            <h3 className="review-notify">Waiting for loading data!</h3>
           )}
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+            loading === true && (
+              <h3 className="review-notify">All checkpoints are checked!</h3>
+            )}
           {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
-            <table className="table table-bordered text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>User is checked</th>
-                  <th>Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataPerPage?.map((ele, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
-                      <td>
-                        <a
-                          style={{ textDecoration: "none" }}
-                          href={`/mycheckpoints/${ele.id}/reviews/${
-                            ele.id
-                          }?title=${title}&user_id=${
-                            ele.userInfo.id
-                          }&username=${
-                            ele.userInfo.first_name !== null &&
-                            ele.userInfo.first_name !== null
-                              ? ele.userInfo.first_name +
+            <div>
+              <table className="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>User is checked</th>
+                    <th className="role-list">Role</th>
+                    <th className="view-review">Check</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataPerPage?.map((ele, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          <a style={{ textDecoration: "none" }}>
+                            {ele.user.first_name !== null &&
+                            ele.user.first_name !== null
+                              ? ele.user.first_name +
                                 " " +
-                                ele.userInfo.last_name +
+                                ele.user.last_name +
                                 " (" +
-                                ele.userInfo.email +
+                                ele.user.email +
                                 " )"
-                              : ele.userInfo.email
-                          }`}
-                        >
-                          {ele.userInfo.first_name !== null &&
-                          ele.userInfo.first_name !== null
-                            ? ele.userInfo.first_name +
-                              " " +
-                              ele.userInfo.last_name +
-                              " (" +
-                              ele.userInfo.email +
-                              " )"
-                            : ele.userInfo.email}
-                        </a>
-                      </td>
-                      <td>
-                        <select
-                          className="form-select"
-                          aria-label="Default select example"
-                          value={ele.userInfo.role_id}
-                          id={ele.id}
-                          disabled
-                        >
-                          <option value="1">Group leader</option>
-                          <option value="2">Leader</option>
-                          <option value="3">Member</option>
-                        </select>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-          <div className="form-group form1">
-            <div className="d-flex btn-group-1">
-              <button
-                onClick={() => navigate(-1)}
-                type="submit"
-                className="btn btn-default"
-              >
-                Back
-              </button>
+                              : ele.user.email}
+                          </a>
+                        </td>
+                        <td>
+                          <select
+                            className="form-select list-reviews"
+                            aria-label="Default select example"
+                            value={ele.user.role_id}
+                            id={ele.id}
+                            disabled
+                          >
+                            <option value="1">Group leader</option>
+                            <option value="2">Leader</option>
+                            <option value="3">Member</option>
+                          </select>
+                        </td>
+                        <td>
+                          <a
+                            href={`/mycheckpoints/${params.check_id}/reviews/${
+                              ele.id
+                            }?title=${title}&user_id=${ele.user.id}&username=${
+                              ele.user.first_name !== null &&
+                              ele.user.first_name !== null
+                                ? ele.user.first_name +
+                                  " " +
+                                  ele.user.last_name +
+                                  " (" +
+                                  ele.user.email +
+                                  " )"
+                                : ele.user.email
+                            }`}
+                          >
+                            <button
+                              variant="primary"
+                              className="btn-list-review"
+                            >
+                              <i className="bi bi-arrow-right-circle"></i>
+                            </button>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div className="form-group form1">
+                <div className="d-flex btn-group-1">
+                  <button
+                    onClick={() => navigate(-1)}
+                    type="submit"
+                    className="btn btn-default"
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+              <nav aria-label="Page navigation example">
+                <ul className="pagination justify-content-center">
+                  {menuItems}
+                </ul>
+              </nav>
             </div>
-          </div>
-          <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">{menuItems}</ul>
-          </nav>
+          )}
         </div>
       </div>
     </div>

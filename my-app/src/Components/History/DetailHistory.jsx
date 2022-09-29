@@ -6,7 +6,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import {
-  getAvgByCheckpointId,
+  getAvgByCheckpointIdMyHistory,
   getReviewsByCheckpointId,
 } from "../../Api/userApi";
 import "./DetailHistory.css";
@@ -31,6 +31,7 @@ function DetailHistory() {
     avg_adhere: 0,
   });
   const [numPages, setNumPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const handleOnClick = (e) => {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;
@@ -38,6 +39,7 @@ function DetailHistory() {
     setDataPerPage(listReviews.slice(start, end));
   };
   const token = sessionStorage.getItem("sessionToken");
+  const userId = sessionStorage.getItem("sessionUserId");
 
   useEffect(() => {
     fetchData();
@@ -48,7 +50,11 @@ function DetailHistory() {
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListReviews(res.data.data);
-      const resAvg = await getAvgByCheckpointId(token, params.id);
+      const resAvg = await getAvgByCheckpointIdMyHistory(token, params.id);
+      setLoading(true);
+      if (resAvg.data.data[0].avg_checkpoint.length !== 0) {
+        setDataAvg(resAvg.data.data[0].avg_checkpoint[0]);
+      }
     } catch (err) {}
   };
 
@@ -63,7 +69,7 @@ function DetailHistory() {
     );
   }
   return (
-    <div className="histories-cover">
+    <div className="detail-histories-cover">
       <div className="container ">
         <div className="table-wrapper">
           <div className="table-title">
@@ -84,83 +90,113 @@ function DetailHistory() {
               </div>
             </div>
           </div>
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
-            <h3 className="history-notify">No checkpoint history!</h3>
+          {loading === false && (
+            <h3 className="review-notify">Waiting for loading data!</h3>
           )}
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+            loading == true && (
+              <h3 className="history-notify">No checkpoint history!</h3>
+            )}
           {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
-            <table className="table table-bordered text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th className="point-table">Attitude</th>
-                  <th className="point-table">Performance</th>
-                  <th className="point-table">Teamwork</th>
-                  <th className="point-table">Training</th>
-                  <th className="point-table">Adhere</th>
-                  <th className="point-table">Created date</th>
-                  <th>Strength</th>
-                  <th>Weakness</th>
-                  <th className="point-table">Note</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataPerPage?.map((ele, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{ele.attitude}</td>
-                      <td>{ele.performance}</td>
-                      <td>{ele.teamwork}</td>
-                      <td>{ele.training}</td>
-                      <td>{ele.adhere}</td>
-                      <td>
-                        {ele.updated_at !== ele.created_at
-                          ? Date(ele.updated_at).toString()
-                          : ""}
-                      </td>
-                      <td>{ele.strength}</td>
-                      <td>{ele.weakness}</td>
-                      <td>
-                        {ele.weakness === null &&
-                        ele.performance === null &&
-                        ele.teamwork === null &&
-                        ele.training === null &&
-                        ele.adhere === null
-                          ? "Chưa đánh giá"
-                          : "Đã đánh giá"}
-                      </td>
-                    </tr>
-                  );
-                })}
-                <tr key="Avg">
-                  <td>Avg</td>
-                  <td>{dataAvg.avg_attitude}</td>
-                  <td>{dataAvg.avg_performance}</td>
-                  <td>{dataAvg.avg_teamwork}</td>
-                  <td>{dataAvg.avg_training}</td>
-                  <td>{dataAvg.avg_adhere}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          )}
-          <div className="form-group">
-            <div className="d-flex">
-              <button
-                onClick={() => navigate(-1)}
-                type="submit"
-                className="btn btn-default "
-              >
-                Back
-              </button>
+            <div>
+              <table className="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th className="point-table">Attitude</th>
+                    <th className="point-table">Performance</th>
+                    <th className="point-table">Teamwork</th>
+                    <th className="point-table">Training</th>
+                    <th className="point-table">Adhere</th>
+                    <th>Strength</th>
+                    <th>Weakness</th>
+                    <th style={{ width: "12rem" }}>Reviewer</th>
+                    <th style={{ width: "6rem" }}>Note</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataPerPage?.map((ele, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{ele.attitude}</td>
+                        <td>{ele.performance}</td>
+                        <td>{ele.teamwork}</td>
+                        <td>{ele.training}</td>
+                        <td>{ele.adhere}</td>
+                        <td>{ele.strength}</td>
+                        <td>{ele.weakness}</td>
+                        <td>
+                          {ele.reviewer.first_name !== null &&
+                          ele.reviewer.last_name !== null
+                            ? ele.reviewer.first_name +
+                              " " +
+                              ele.reviewer.last_name +
+                              " ( " +
+                              ele.reviewer.email +
+                              " )"
+                            : ele.reviewer.email}
+                        </td>
+                        <td>
+                          {ele.weakness === null &&
+                          ele.performance === null &&
+                          ele.teamwork === null &&
+                          ele.training === null &&
+                          ele.adhere === null
+                            ? "Chưa đánh giá"
+                            : "Đã đánh giá"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr key="Avg">
+                    <td>Avg</td>
+                    <td>
+                      {dataAvg.avg_attitude !== 0 && dataAvg.avg_attitude}
+                    </td>
+                    <td>
+                      {dataAvg.avg_performance !== 0 && dataAvg.avg_performance}
+                    </td>
+                    <td>
+                      {dataAvg.avg_teamwork !== 0 && dataAvg.avg_teamwork}
+                    </td>
+                    <td>
+                      {dataAvg.avg_training !== 0 && dataAvg.avg_training}
+                    </td>
+                    <td>{dataAvg.avg_adhere !== 0 && dataAvg.avg_adhere}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                      {dataAvg.avg_attitude === 0 &&
+                      dataAvg.avg_performance === 0 &&
+                      dataAvg.avg_teamwork === 0 &&
+                      dataAvg.avg_training === 0 &&
+                      dataAvg.avg_adhere === 0
+                        ? "Chưa hoàn thành"
+                        : "Đã hoàn thành"}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div className="form-group">
+                <div className="d-flex">
+                  <button
+                    onClick={() => navigate(-1)}
+                    type="submit"
+                    className="btn btn-default "
+                  >
+                    Back
+                  </button>
+                </div>
+              </div>
+              <nav aria-label="Page navigation example">
+                <ul className="pagination justify-content-center">
+                  {menuItems}
+                </ul>
+              </nav>
             </div>
-          </div>
-          <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">{menuItems}</ul>
-          </nav>
+          )}
         </div>
       </div>
     </div>

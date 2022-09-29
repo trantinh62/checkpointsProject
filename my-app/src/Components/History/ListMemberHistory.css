@@ -1,5 +1,4 @@
-
-.assign-cover {
+.list-member-his-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
@@ -79,28 +78,36 @@ table.table td .add {
 }
 .form2{
     display: flex;
-    padding-bottom: 0.5rem;
     align-items: center;
 }
 .label1 {
     padding-left: 1rem;
 }
-.form-group button{
+.btn-create{
+    margin: 0.5rem 0 0.5rem auto;
     background: #ff9b00;
     color: #fff;
-    width: 10rem;
     font-weight: 600;
+    width: 25%;
     display: flex;
-    margin-left: auto;
-    border-radius: 1.5rem;
+    border: none;
+    border-radius: 2.5rem;
     cursor: pointer;
-    margin-left: 10px;
+    justify-content: center;
+    padding: 0.5rem 0;
+}
+.breadcrumb{
+    text-decoration: none;
+}
+.list-member-history-notify{
+    display: flex;
     justify-content: center;
 }
-.form1 {
-    display: flex;
-    padding: 10px;
+.view-list-member-history{
+    width: 12rem;
 }
-.btn-group-1{
-    margin-left: auto;
+.btn-list-member-history{
+    background: none;
+    border: none;
+    size: 10px;
 }
