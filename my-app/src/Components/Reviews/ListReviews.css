@@ -42,8 +42,6 @@ table.table th i {
     margin: 0 5px;
     cursor: pointer;
 }
-table.table th:last-child {
-}
 table.table th:first-child {
     width: 100px;
 }
@@ -89,4 +87,15 @@ table.table td .add {
 .review-notify{
     display: flex;
     justify-content: center;
+}
+.role-list{
+    width: 15rem;
+}
+.view-review{
+    width: 12rem;
+}
+.btn-list-review{
+    background: none;
+    border: none;
+    size: 10px;
 }

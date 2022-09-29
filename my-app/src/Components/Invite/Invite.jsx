@@ -29,12 +29,12 @@ function Invite() {
   };
   return (
     <div className="invite-cover">
-      <div className="container contact">
+      <div className="container invite">
         <div className="row">
           <div className="col-md-3">
-            <div className="contact-info">
+            <div className="invite-info">
               <img
-                src="https://image.ibb.co/kUASdV/contact-image.png"
+                src="https://image.ibb.co/kUASdV/invite-image.png"
                 alt="image"
               />
               <h2>Invite user</h2>
@@ -42,7 +42,7 @@ function Invite() {
           </div>
           <div className="col-md-9">
             <form onSubmit={handleSubmit}>
-              <div className="contact-form">
+              <div className="invite-form">
                 <div className="form-group invite-form">
                   <label className="control-label col-sm-2" htmlFor="email">
                     Email:

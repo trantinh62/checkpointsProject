@@ -44,6 +44,7 @@ export const reviewApi = (data, token, review_id) =>
     },
   });
 export const inviteApi = (data) => axiosClient.post("/api/invite", data);
+
 export const getCheckApi = (token) =>
   axiosClient.get("/api/checkpoint", {
     headers: {
@@ -61,6 +62,14 @@ export const createApi = (data, token) =>
   });
 
 export const getCheckpointsByUserId = (token) =>
+  axiosClient.get("/api/checkpoint/all", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getCheckpointsByReviewId = (token) =>
   axiosClient.get("/api/checkpoint/all-review-id", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -68,20 +77,65 @@ export const getCheckpointsByUserId = (token) =>
     },
   });
 
-export const getReviewsByCheckpointIdAndReviewIdOrUserId = (
+export const getListChecksApi = (token) =>
+  axiosClient.get("/api/checkpoint", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getCheckpointByCheckId = (token, id) =>
+  axiosClient.get(`/api/checkpoint/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getAllUsersApi = (token) =>
+  axiosClient.get("/api/profile", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getReviewsByCheckpointId = (token, id) =>
+  axiosClient.get(`api/review/${id}/all`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getReviewsByCheckpointIdAndUserId = (
   token,
-  useReviewId,
-  useUserId
+  checkpoint_id,
+  user_id
 ) =>
-  axiosClient.get(
-    `/api/review/list-review?useReviewId=${useReviewId}&useUserId=${useUserId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    }
-  );
+  axiosClient.get(`api/review/${checkpoint_id}/${user_id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getListUsersByCheckpointId = (token, checkpoint_id) =>
+  axiosClient.get(`api/review/${checkpoint_id}/user`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const getAllCheckpointApi = (token) =>
+  axiosClient.get("/api/checkpoint", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
 
 export const getDetailCheckpointApi = (token, id) =>
   axiosClient.get(`/api/checkpoint/${id}`, {
@@ -90,13 +144,7 @@ export const getDetailCheckpointApi = (token, id) =>
       Accept: "application/json",
     },
   });
-export const getListUsersApi = (token) =>
-  axiosClient.get("/api/profile", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
-    },
-  });
+
 export const getCheckedUser = (token, check_id, user_id) =>
   axiosClient.get(`/api/review/${check_id}/${user_id}`, {
     headers: {
@@ -139,16 +187,48 @@ export const getAllCheckpoints = (token) =>
     },
   });
 
-export const getReviewsByCheckpointId = (token, id) =>
-  axiosClient.get(`api/review/${id}/all`, {
+export const getAvgByCheckpointIdMyHistory = (token, check_id) =>
+  axiosClient.get(`/api/avg/${check_id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
     },
   });
 
-export const getAvgByCheckpointId = (token, check_id) =>
-  axiosClient.get(`/api/avg/${check_id}`, {
+export const getAvgByCheckpointIdAuthor = (token, check_id) =>
+  axiosClient.get(`/api/avg/${check_id}/all`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const updateGpointApi = (data, token) =>
+  axiosClient.put("/api/profile/update-g-point", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const updateAllUserApi = (data, token) =>
+  axiosClient.put("/api/profile/many", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const deleteCheckpoint = (check_id, token) =>
+  axiosClient.delete(`/api/checkpoint/delete/${check_id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
+
+export const createAndDeleteReview = (data, token) =>
+  axiosClient.post("/api/review", data, {
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",

@@ -9,8 +9,10 @@ function ListReviews() {
   const navigate = useNavigate();
   const params = useParams();
   const [searchParams] = useSearchParams();
+  const check_id = params.check_id;
   const title = searchParams.get("title");
   const username = searchParams.get("username");
+  const user_id = searchParams.get("user_id");
   const [dataReview, setDataReview] = useState({
     attitude: null,
     performance: null,
@@ -19,6 +21,8 @@ function ListReviews() {
     adhere: null,
     strength: "",
     weakness: "",
+    checkpoint_id: check_id,
+    user_id: user_id,
   });
   const token = sessionStorage.getItem("sessionToken");
 
@@ -34,7 +38,7 @@ function ListReviews() {
     e.preventDefault();
     try {
       const res = await reviewApi(dataReview, token, params.review_id);
-      Toast("Review successful!", "success");
+      Toast("Đánh giá thành công!", "success");
     } catch (err) {
       Toast(err.response.data.message, "error");
     }
@@ -71,7 +75,7 @@ function ListReviews() {
             </div>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="contact-form">
+            <div className="detail-review-form">
               <div className="form-group form1">
                 <label className="control-label col-sm-3" htmlFor="email">
                   Question 1: THÁI ĐỘ TRÁCH NHIỆM

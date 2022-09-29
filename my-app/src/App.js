@@ -10,9 +10,12 @@ import ListReviews from "./Components/Reviews/ListReviews";
 import DetailReview from "./Components/Reviews/DetailReview";
 import CreateCheckpoint from "./Components/Checkpoints/CreateCheckpoint";
 import Assign from "./Components/Checkpoints/Assign";
+import Gpoint from "./Components/Checkpoints/Gpoint";
 import History from "./Components/History/History";
 import DetailHistory from "./Components/History/DetailHistory";
-import User from "./Components/Users/Users";
+import ListMemberHistory from "./Components/History/ListMemberHistory";
+import MemberHistory from "./Components/History/MemberHistory";
+import User from "./Components/Users/User";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
 import { useState, useEffect } from "react";
@@ -55,8 +58,11 @@ function App() {
             element={<Login />}
           ></Route>
           <Route path="/create" element={<Login />}></Route>
+          <Route path="/gpoint" element={<Login />}></Route>
           <Route path="/assign/:id" element={<Login />}></Route>
           <Route path="/histories" element={<Login />}></Route>
+          <Route path="/histories/member" element={<Login />}></Route>
+          <Route path="/histories/member/:id" element={<Login />}></Route>
           <Route path="/histories/:id" element={<Login />}></Route>
         </Routes>
       </>
@@ -95,8 +101,11 @@ function App() {
           element={<DetailReview />}
         ></Route>
         <Route path="/create" element={<CreateCheckpoint />}></Route>
+        <Route path="/gpoint" element={<Gpoint />}></Route>
         <Route path="/assign/:id" element={<Assign />}></Route>
         <Route path="/histories" element={<History />}></Route>
+        <Route path="/histories/member" element={<ListMemberHistory />}></Route>
+        <Route path="/histories/member/:id" element={<MemberHistory />}></Route>
         <Route path="/histories/:id" element={<DetailHistory />}></Route>
       </Routes>
     </>

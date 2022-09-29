@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getCheckpointsByUserId } from "../../Api/userApi";
+import { getCheckpointsByReviewId } from "../../Api/userApi";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "./ListCheckpoints.css";
@@ -14,7 +14,8 @@ function ListReviews() {
   const end = page * itemsPerPage;
   const [dataPerPage, setDataPerPage] = useState([]);
   const [listCheckpoints, setListCheckpoints] = useState([]);
-  const [numPages, setNumPages] = useState(1, []);
+  const [numPages, setNumPages] = useState(1);
+  const [loading, setLoading] = useState(false);
   const handleOnClick = (e) => {
     const page = e.target.value;
     setPage(page);
@@ -29,10 +30,11 @@ function ListReviews() {
   }, []);
   const fetchData = async () => {
     try {
-      const res = await getCheckpointsByUserId(token);
+      const res = await getCheckpointsByReviewId(token);
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setListCheckpoints(res.data.data);
       setDataPerPage(res.data.data.slice(start, end));
+      setLoading(true);
     } catch (err) {}
   };
   let menuItems = [];
@@ -62,45 +64,59 @@ function ListReviews() {
               </div>
             </div>
           </div>
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) && (
-            <h3 className="checkpoint-notify">
-              There are no checkpoints to check
-            </h3>
+          {loading === false && (
+            <h3 className="review-notify">Waiting for loading data!</h3>
           )}
+          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
+            loading === true && (
+              <h3 className="checkpoint-notify">
+                There are no checkpoints to check
+              </h3>
+            )}
           {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
-            <table className="table table-bordered text-center">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Title</th>
-                  <th>Start date</th>
-                  <th>End date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataPerPage?.map((ele, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>{(page - 1) * itemsPerPage + index + 1}</td>
-                      <td>
-                        <a
-                          style={{ textDecoration: "none" }}
-                          href={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
-                        >
-                          {ele.checkpoint.name}
-                        </a>
-                      </td>
-                      <td>{ele.checkpoint.start_date}</td>
-                      <td>{ele.checkpoint.end_date}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div>
+              <table className="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                    <th className="view-checkpoint">View</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataPerPage?.map((ele, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>{ele.checkpoint.name}</td>
+                        <td>{ele.checkpoint.start_date}</td>
+                        <td>{ele.checkpoint.end_date}</td>
+                        <td>
+                          <a
+                            href={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
+                          >
+                            <button
+                              variant="primary"
+                              className="btn-list-checkpoint"
+                            >
+                              <i className="bi bi-arrow-right-circle"></i>
+                            </button>
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <nav aria-label="Page navigation example">
+                <ul className="pagination justify-content-center">
+                  {menuItems}
+                </ul>
+              </nav>
+            </div>
           )}
-          <nav aria-label="Page navigation example">
-            <ul className="pagination justify-content-center">{menuItems}</ul>
-          </nav>
         </div>
       </div>
     </div>
