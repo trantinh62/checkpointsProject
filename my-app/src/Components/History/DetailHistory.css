@@ -1,4 +1,4 @@
-.histories-cover {
+.detail-histories-cover {
     padding-top: 40px;
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
     height: 100vh;
@@ -41,8 +41,6 @@ table.table th i {
     margin: 0 5px;
     cursor: pointer;
 }
-table.table th:last-child {
-}
 table.table th:first-child {
     width: 3rem;
 }
@@ -83,7 +81,7 @@ table.table td .add {
     display: none;
 }
 .point-table {
-    width: 8rem;
+    width: 5rem;
 }
 .btn.btn-default{
    background: #ff9b00;

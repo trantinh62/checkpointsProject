@@ -9,16 +9,20 @@ function ListReviews() {
   const navigate = useNavigate();
   const params = useParams();
   const [searchParams] = useSearchParams();
+  const check_id = params.check_id;
   const title = searchParams.get("title");
   const username = searchParams.get("username");
+  const user_id = searchParams.get("user_id");
   const [dataReview, setDataReview] = useState({
-    attitude: 0,
-    performance: 0,
-    teamwork: 0,
-    training: 0,
-    adhere: 0,
+    attitude: null,
+    performance: null,
+    teamwork: null,
+    training: null,
+    adhere: null,
     strength: "",
     weakness: "",
+    checkpoint_id: check_id,
+    user_id: user_id,
   });
   const token = sessionStorage.getItem("sessionToken");
 
@@ -33,15 +37,10 @@ function ListReviews() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await reviewApi(
-        dataReview,
-        token,
-        params.check_id,
-        searchParams.get("user_id")
-      );
-      Toast("Review successful!", "success");
+      const res = await reviewApi(dataReview, token, params.review_id);
+      Toast("Check checpoint successful!", "success");
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Check checpoint failed!", "error");
     }
   };
 
@@ -62,7 +61,7 @@ function ListReviews() {
                     <li className="breadcrumb-item">
                       <a
                         className="breadcrumb"
-                        href={`/mycheckpoints/${params.check_id}`}
+                        href={`/mycheckpoints/${params.check_id}?title=${title}`}
                       >
                         List reviews: {title}
                       </a>
@@ -76,7 +75,7 @@ function ListReviews() {
             </div>
           </div>
           <form onSubmit={handleSubmit}>
-            <div className="contact-form">
+            <div className="detail-review-form">
               <div className="form-group form1">
                 <label className="control-label col-sm-3" htmlFor="email">
                   Question 1: THÁI ĐỘ TRÁCH NHIỆM
@@ -94,7 +93,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="attitude"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -126,7 +127,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="performance"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -157,7 +160,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="teamwork"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -191,7 +196,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="training"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -224,7 +231,9 @@ function ListReviews() {
                     onChange={onChangeInput}
                     name="adhere"
                     aria-label="Default select example"
+                    required
                   >
+                    <option value="">Select point</option>
                     <option value={0}>0</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
@@ -271,15 +280,15 @@ function ListReviews() {
               </div>
               <div className="form-group form1">
                 <div className="d-flex btn-group-1">
-                  <button type="submit" className="btn btn-default ">
+                  <button type="submit" className="btn btn-default">
                     Save
                   </button>
                   <button
+                    type="button"
                     onClick={() => navigate(-1)}
-                    type="submit"
-                    className="btn btn-default "
+                    className="btn btn-default"
                   >
-                    Cancel
+                    Back
                   </button>
                 </div>
               </div>

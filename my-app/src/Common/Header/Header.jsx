@@ -15,7 +15,6 @@ function Header() {
     <>
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
-          {/* <Navbar.Brand href="/">Checkpoints</Navbar.Brand> */}
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
@@ -28,23 +27,30 @@ function Header() {
                 </NavDropdown.Item>
               </NavDropdown>
 
-              {roleId === "1" && (
+              {roleId !== "3" && (
                 <div>
                   <NavDropdown
                     title="Manage checkpoints"
                     id="collasible-nav-dropdown"
                   >
-                    <NavDropdown.Item href="/create">
-                      Create & assign checkpoint
-                    </NavDropdown.Item>
-                    <NavDropdown.Item href="/checkpoints">
+                    {roleId === "1" && (
+                      <NavDropdown.Item href="/create">
+                        Create/assign/delete checkpoint
+                      </NavDropdown.Item>
+                    )}
+                    {roleId === "1" && (
+                      <NavDropdown.Item href="/gpoint">
+                        Update gpoint
+                      </NavDropdown.Item>
+                    )}
+                    <NavDropdown.Item href="/histories/member">
                       Member's checkpoint histories
                     </NavDropdown.Item>
                   </NavDropdown>
                 </div>
               )}
 
-              {roleId !== "3" && (
+              {roleId === "1" && (
                 <div>
                   <NavDropdown
                     title="Manage users"

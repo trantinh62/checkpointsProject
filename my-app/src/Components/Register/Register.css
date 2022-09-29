@@ -4,7 +4,7 @@
     background: -webkit-linear-gradient(left, #3931af, #00c6ff);
 
 }
-.contact{
+.register{
     padding: 2rem;
 }
 .col-md-3{
@@ -13,13 +13,13 @@
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
 }
-.contact-info{
+.register-info{
     margin-top:10%;
 }
-.contact-info img{
+.register-info img{
     margin-bottom: 15%;
 }
-.contact-info h2{
+.register-info h2{
     margin-bottom: 10%;
     color: #fff;
 }
@@ -29,10 +29,10 @@
     border-top-right-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
 }
-.contact-form label{
+.register-form label{
     font-weight:600;
 }
-.contact-form button{
+.register-form button{
     background: #0e3476;
     color: #fff;
     font-weight: 600;
@@ -43,6 +43,9 @@
     cursor: pointer;
     justify-content: center;
 }
-.contact-form button:focus{
+.register-form button:focus{
     box-shadow:none;
+}
+.register-form {
+    padding-left: 3rem;
 }

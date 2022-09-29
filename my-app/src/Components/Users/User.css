@@ -41,9 +41,6 @@ table.table th i {
     margin: 0 5px;
     cursor: pointer;
 }
-table.table th:last-child {
-    width: 7%;  
-}
 table.table th:first-child {
     width: 7%;  
 }
@@ -115,4 +112,7 @@ table.table td .add {
 .user-notify{
     display: flex;
     justify-content: center;
+}
+.status-col{
+    width: 5rem;
 }

@@ -39,19 +39,25 @@ function User() {
       setdataUser(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
       setLoading(true);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data", "error");
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (JSON.stringify(dataManage) === JSON.stringify([])) {
+        Toast("There is no change in order to update users!", "warning");
+        return;
+      }
       const res = await updateAllUserApi({ data: dataManage }, token);
       const resUser = await getAllUsersApi(token);
       setdataUser(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
       setDataManage([]);
-      Toast("Cập nhật user thành công!", "success");
+      Toast("Update users successful!", "success");
     } catch (err) {
-      Toast("Cập nhật user thất bại!", "error");
+      Toast("Update users failed!", "error");
     }
   };
 
@@ -123,7 +129,7 @@ function User() {
                       <th>Username</th>
                       <th>Phone</th>
                       <th>Role</th>
-                      <th>Status</th>
+                      <th className="status-col">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -176,23 +182,6 @@ function User() {
                     })}
                   </tbody>
                 </table>
-                <div className="form-group form1">
-                  <div className="d-flex btn-group-1">
-                    <button
-                      type="submit"
-                      className="btn btn-default btn-user-save"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => navigate(-1)}
-                      type="submit"
-                      className="btn btn-default btn-user-save"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-center">
                     {menuItems}
@@ -200,6 +189,25 @@ function User() {
                 </nav>
               </div>
             )}
+            <div className="form-group form1">
+              <div className="d-flex btn-group-1">
+                {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+                  <button
+                    type="submit"
+                    className="btn btn-default btn-user-save"
+                  >
+                    Save
+                  </button>
+                )}
+                <button
+                  onClick={() => navigate(-1)}
+                  type="submit"
+                  className="btn btn-default btn-user-save"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>
