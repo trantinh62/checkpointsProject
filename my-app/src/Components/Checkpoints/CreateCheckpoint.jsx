@@ -68,7 +68,9 @@ function Checkpoints() {
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
       setLoading(true);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -77,17 +79,17 @@ function Checkpoints() {
       if (
         new Date(dataCheckpoint.start_date) >= new Date(dataCheckpoint.end_date)
       ) {
-        Toast("Ngày kết thúc phải được chọn sau ngày bắt đầu!", "warning");
+        Toast("The end date must be chosen after the start date!", "warning");
         return;
       }
       const response = await createApi(dataCheckpoint, token);
-      Toast("Tạo checkpoint thành công!", "success");
+      Toast("Create checkpoint successful!", "success");
       const res = await getCheckApi(token);
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Create checkpoint failed!", "error");
     }
   };
 
@@ -96,13 +98,13 @@ function Checkpoints() {
     try {
       handleClose();
       const resDel = await deleteCheckpoint(deleteId, token);
-      Toast("Xóa checkpoint thành công", "success");
+      Toast("Delete checkpoint successful!", "success");
       const res = await getCheckApi(token);
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Delete checkpoint failed!", "error");
     }
   };
 
@@ -208,7 +210,7 @@ function Checkpoints() {
                     <th>Title</th>
                     <th>Start date</th>
                     <th>End date</th>
-                    <th>Assign/Delete</th>
+                    <th className="assign-delete">Assign/Delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -219,7 +221,7 @@ function Checkpoints() {
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
-                        <td className="assign-delete">
+                        <td>
                           <a href={`/assign/${ele.id}`}>
                             <button
                               variant="primary"

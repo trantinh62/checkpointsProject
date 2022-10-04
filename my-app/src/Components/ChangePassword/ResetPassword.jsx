@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { resetApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
 import "./ResetPassword.css";
@@ -24,11 +23,10 @@ function ResetPassword() {
     e.preventDefault();
     try {
       const response = await resetApi(dataPass, token);
-      Toast("Reset password successful!", "success");
       navigate("/login", { replace: true });
       navigate(0);
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Reset password failed!", "error");
     }
   };
   return (
@@ -60,6 +58,7 @@ function ResetPassword() {
                       name="password"
                       onChange={onChangeInput}
                       value={dataPass.password}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -76,6 +75,7 @@ function ResetPassword() {
                       name="password_confirm"
                       onChange={onChangeInput}
                       value={dataPass.password_confirm}
+                      required
                     ></input>
                   </div>
                 </div>

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { reviewApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
 import "./DetailReview.css";
@@ -38,9 +37,9 @@ function ListReviews() {
     e.preventDefault();
     try {
       const res = await reviewApi(dataReview, token, params.review_id);
-      Toast("Đánh giá thành công!", "success");
+      Toast("Check checpoint successful!", "success");
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Check checpoint failed!", "error");
     }
   };
 

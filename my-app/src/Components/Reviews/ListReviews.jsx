@@ -6,6 +6,7 @@ import {
   useLocation,
   useSearchParams,
 } from "react-router-dom";
+import Toast from "../Toast/Toast";
 import "./ListReviews.css";
 function ListReviews() {
   const navigate = useNavigate();
@@ -53,7 +54,9 @@ function ListReviews() {
       setNumPages(Math.ceil(yetReview.length / itemsPerPage));
       setDataPerPage(yetReview.slice(start, end));
       setLoading(true);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
@@ -165,17 +168,6 @@ function ListReviews() {
                   })}
                 </tbody>
               </table>
-              <div className="form-group form1">
-                <div className="d-flex btn-group-1">
-                  <button
-                    onClick={() => navigate(-1)}
-                    type="submit"
-                    className="btn btn-default"
-                  >
-                    Back
-                  </button>
-                </div>
-              </div>
               <nav aria-label="Page navigation example">
                 <ul className="pagination justify-content-center">
                   {menuItems}
@@ -183,6 +175,17 @@ function ListReviews() {
               </nav>
             </div>
           )}
+          <div className="form-group form1">
+            <div className="d-flex btn-group-1">
+              <button
+                onClick={() => navigate(-1)}
+                type="submit"
+                className="btn btn-default"
+              >
+                Back
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

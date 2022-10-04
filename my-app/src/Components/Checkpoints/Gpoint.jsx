@@ -23,10 +23,10 @@ function Gpoint() {
     try {
       const response = await updateGpointApi(dataGpoint, token);
       if (response.data.status === 200) {
-        Toast("Cập nhật trọng số gpoint thành công!", "success");
+        Toast("Update gpoint successful!", "success");
       }
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Update gpoint failed!", "error");
     }
   };
   return (

@@ -9,6 +9,7 @@ import {
   getAvgByCheckpointIdMyHistory,
   getReviewsByCheckpointId,
 } from "../../Api/userApi";
+import Toast from "../Toast/Toast";
 import "./DetailHistory.css";
 function DetailHistory() {
   const navigate = useNavigate();
@@ -55,7 +56,9 @@ function DetailHistory() {
       if (resAvg.data.data[0].avg_checkpoint.length !== 0) {
         setDataAvg(resAvg.data.data[0].avg_checkpoint[0]);
       }
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
 
   let menuItems = [];
@@ -118,7 +121,7 @@ function DetailHistory() {
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{index + 1}</td>
+                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
                         <td>{ele.attitude}</td>
                         <td>{ele.performance}</td>
                         <td>{ele.teamwork}</td>
@@ -132,9 +135,9 @@ function DetailHistory() {
                             ? ele.reviewer.first_name +
                               " " +
                               ele.reviewer.last_name +
-                              " ( " +
+                              " (" +
                               ele.reviewer.email +
-                              " )"
+                              ")"
                             : ele.reviewer.email}
                         </td>
                         <td>
@@ -179,17 +182,6 @@ function DetailHistory() {
                   </tr>
                 </tbody>
               </table>
-              <div className="form-group">
-                <div className="d-flex">
-                  <button
-                    onClick={() => navigate(-1)}
-                    type="submit"
-                    className="btn btn-default "
-                  >
-                    Back
-                  </button>
-                </div>
-              </div>
               <nav aria-label="Page navigation example">
                 <ul className="pagination justify-content-center">
                   {menuItems}
@@ -197,6 +189,17 @@ function DetailHistory() {
               </nav>
             </div>
           )}
+          <div className="form-group">
+            <div className="d-flex">
+              <button
+                onClick={() => navigate(-1)}
+                type="submit"
+                className="btn btn-default "
+              >
+                Back
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
