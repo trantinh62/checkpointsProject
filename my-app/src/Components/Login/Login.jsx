@@ -33,7 +33,6 @@ function Login() {
         navigate(0);
       }
     } catch (err) {
-      console.log(err.response);
       if (err.response.status === 403) {
         Toast("This account is locked", "error");
       } else if (err.response.status === 400) {

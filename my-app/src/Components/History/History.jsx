@@ -90,7 +90,7 @@ function History() {
                     {dataPerPage?.map((ele, index) => {
                       return (
                         <tr key={index}>
-                          <td>{index + 1}</td>
+                          <td>{(page - 1) * itemsPerPage + index + 1}</td>
                           <td>{ele.checkpoint.name}</td>
                           <td>{ele.checkpoint.start_date}</td>
                           <td>{ele.checkpoint.end_date}</td>

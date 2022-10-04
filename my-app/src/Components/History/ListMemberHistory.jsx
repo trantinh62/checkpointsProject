@@ -1,7 +1,6 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
-  createApi,
   getAllCheckpointApi,
   getCheckpointsByReviewId,
 } from "../../Api/userApi";
@@ -10,7 +9,6 @@ import Toast from "../Toast/Toast";
 import "./ListMemberHistory.css";
 
 function ListMemberHistory() {
-  const navigate = useNavigate();
   const search = useLocation().search;
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
@@ -254,7 +252,7 @@ function ListMemberHistory() {
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{index + 1}</td>
+                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>

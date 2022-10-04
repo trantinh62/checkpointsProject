@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { reviewApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
 import "./DetailReview.css";

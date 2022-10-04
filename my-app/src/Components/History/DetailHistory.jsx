@@ -121,7 +121,7 @@ function DetailHistory() {
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{index + 1}</td>
+                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
                         <td>{ele.attitude}</td>
                         <td>{ele.performance}</td>
                         <td>{ele.teamwork}</td>

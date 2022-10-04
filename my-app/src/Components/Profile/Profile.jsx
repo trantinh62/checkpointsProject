@@ -5,7 +5,6 @@ import "./Profile.css";
 const Profile = () => {
   const [dataProfile, setDataProfile] = useState({
     id: null,
-    age: null,
     email: "",
     role_id: null,
     last_name: "",

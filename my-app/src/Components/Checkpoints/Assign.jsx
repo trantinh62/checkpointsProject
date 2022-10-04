@@ -285,7 +285,6 @@ function Assgin() {
       </li>
     );
   }
-  console.log("dataReview", dataReview);
   return (
     <div className="assign-cover">
       <div className="container ">

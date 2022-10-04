@@ -32,11 +32,11 @@ function ForgotPassword() {
       <div className="container">
         <div className="card card-container">
           <img
-            id="profile-img"
-            className="profile-img-card"
+            id="forgot-img"
+            className="forgot-img-card"
             src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
           />
-          <p id="profile-name" className="profile-name-card"></p>
+          <p id="forgot-name" className="forgot-name-card"></p>
           <form className="form-signin" onSubmit={handleSubmit}>
             <span id="reauth-email" className="reauth-email"></span>
             <p>Forgot password</p>

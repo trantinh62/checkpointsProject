@@ -11,7 +11,6 @@ import {
   getListUsersByCheckpointId,
   getAvgByCheckpointIdAuthor,
 } from "../../Api/userApi";
-import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
 import "./MemberHistory.css";
 

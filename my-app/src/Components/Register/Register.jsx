@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { registerApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
 import "./Register.css";
