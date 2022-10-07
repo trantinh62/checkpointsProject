@@ -39,7 +39,7 @@ function Register() {
     <div className="register-cover">
       <div className="container register">
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-3 register">
             <div className="register-info">
               <img
                 src="https://image.ibb.co/kUASdV/register-image.png"
@@ -165,7 +165,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <div className="col-sm-offset-2 col-sm-10 mt-2">
-                    <button type="submit" className="btn btn-default">
+                    <button type="submit" className="btn btn-default register">
                       Register
                     </button>
                   </div>

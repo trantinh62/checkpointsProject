@@ -37,6 +37,7 @@ function App() {
           pauseOnFocusLoss
           draggable
           pauseOnHover
+          style={{ zIndex: 9999999999 }}
         />
         <ToastContainer />
         <Routes>
@@ -68,22 +69,20 @@ function App() {
 
   return (
     <>
-      <div>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <ToastContainer />
-        <Header></Header>
-      </div>
-
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        style={{ zIndex: 9999999999 }}
+      />
+      <ToastContainer />
+      <Header></Header>
       <Routes>
         <Route path="/profile" element={<Profile />}></Route>
         <Route path="/invite" element={<Invite />}></Route>

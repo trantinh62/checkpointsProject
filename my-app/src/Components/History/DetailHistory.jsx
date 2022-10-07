@@ -105,7 +105,7 @@ function DetailHistory() {
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
-                    <th>#</th>
+                    <th style={{ width: "5%" }}>#</th>
                     <th className="point-table">Attitude</th>
                     <th className="point-table">Performance</th>
                     <th className="point-table">Teamwork</th>
@@ -113,8 +113,8 @@ function DetailHistory() {
                     <th className="point-table">Adhere</th>
                     <th>Strength</th>
                     <th>Weakness</th>
-                    <th style={{ width: "12rem" }}>Reviewer</th>
-                    <th style={{ width: "6rem" }}>Note</th>
+                    <th style={{ width: "15%" }}>Reviewer</th>
+                    <th style={{ width: "6%" }}>Note</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,7 +194,7 @@ function DetailHistory() {
               <button
                 onClick={() => navigate(-1)}
                 type="submit"
-                className="btn btn-default "
+                className="btn btn-default btn-detail-history"
               >
                 Back
               </button>

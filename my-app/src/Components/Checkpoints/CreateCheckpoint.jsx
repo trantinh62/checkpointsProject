@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createApi, getCheckApi, deleteCheckpoint } from "../../Api/userApi";
 import Modal from "react-bootstrap/Modal";
@@ -8,7 +8,6 @@ import Toast from "../Toast/Toast";
 import "./CreateCheckpoint.css";
 
 function Checkpoints() {
-  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = (e) => {
@@ -112,7 +111,12 @@ function Checkpoints() {
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={i + 1}
+          onClick={handleOnClick}
+        >
           {i + 1}
         </button>
       </li>
@@ -185,7 +189,7 @@ function Checkpoints() {
               </div>
             </div>
             <div className="col-md-12">
-              <button type="submit" className="btn-create">
+              <button type="submit" className="btn btn-default btn-create">
                 Create checkpoint
               </button>
             </div>

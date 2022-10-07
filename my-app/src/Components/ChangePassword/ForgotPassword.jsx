@@ -1,11 +1,9 @@
 import { useState } from "react";
 import Toast from "../Toast/Toast";
-import { useNavigate } from "react-router-dom";
 import { forgotApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
 import "./ForgotPassword.css";
 function ForgotPassword() {
-  const navigate = useNavigate();
   const [dataEmail, setDataEmail] = useState({
     email: "",
   });
@@ -50,7 +48,7 @@ function ForgotPassword() {
               onChange={onChangeInput}
             ></input>
             <button
-              className="btn btn-lg btn-primary btn-block btn-signin"
+              className="btn btn-lg btn-primary btn-block btn-forgot"
               type="submit"
             >
               Reset

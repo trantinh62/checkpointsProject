@@ -187,7 +187,10 @@ const Profile = () => {
                   </div>
                   <div className="form-group profile-form">
                     <div className="d-flex btn-profile">
-                      <button type="submit" className="btn btn-default">
+                      <button
+                        type="submit"
+                        className="btn btn-default btn-profile"
+                      >
                         Update profile
                       </button>
                     </div>
@@ -278,7 +281,10 @@ const Profile = () => {
                 </div>
                 <div className="form-group">
                   <div className="d-flex btn-profile">
-                    <button type="submit" className="btn btn-default">
+                    <button
+                      type="submit"
+                      className="btn btn-default btn-profile"
+                    >
                       Change password
                     </button>
                   </div>

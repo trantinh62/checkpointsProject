@@ -1,13 +1,12 @@
 .gpoint-cover {
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    padding-top: 40px;
+    background-color: #5dabc3;
+    height: -webkit-fill-available;
+    width: 100%;
+    position: absolute;
 }
-.gpoint{
-    padding: 4%;
-    height: 400px;
-}
-.col-md-3{
-    background: #ff9b00;
+.col-md-3.gpoint{
+    background: #40869b;
     padding: 4%;
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
@@ -43,4 +42,20 @@
 }
 .gpoint-form{
     padding-left: 6rem;
+}
+.btn.btn-default.btn-gpoint{
+    background: #5dabc3;
+    color: #fff;
+    width: 10rem;
+    font-weight: 600;
+    display: flex;
+    margin-top: 1rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+}
+.btn.btn-default.btn-gpoint:hover{
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
 }
