@@ -1,7 +1,9 @@
 .create-cover {
     padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    background-color: #5dabc3;
+    height: -webkit-fill-available;
+    width: 100%;
+    position: absolute;
 }
 .table-wrapper {
     background: #fff;
@@ -83,18 +85,21 @@ table.table td .add {
 .label1 {
     padding-left: 1rem;
 }
-.btn-create{
-    margin: 0.5rem 0 0.5rem auto;
-    background: #ff9b00;
+.btn.btn-default.btn-create{
+    background: #5dabc3;
     color: #fff;
+    width: 10rem;
     font-weight: 600;
-    width: 25%;
     display: flex;
-    border: none;
-    border-radius: 2.5rem;
+    margin: 0.5rem 0 0.5rem auto;
+    border-radius: 1.5rem;
     cursor: pointer;
     justify-content: center;
-    padding: 0.5rem 0;
+}
+.btn.btn-default.btn-create:hover {
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
 }
 .create-notify{
     display: flex;
@@ -113,4 +118,10 @@ table.table td .add {
 }
 .modal-content{
     margin-top: 40%;
+}
+.bi.bi-trash{
+    color: red;
+}
+.bi.bi-pen{
+    color: #FFC107;
 }

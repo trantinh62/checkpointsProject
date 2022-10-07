@@ -1,8 +1,10 @@
 
 .list-checkpoints-cover {
     padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    background-color: #5dabc3;
+    height: -webkit-fill-available;
+    width: 100%;
+    position: absolute;
 }
 .table-wrapper {
     background: #fff;
@@ -89,10 +91,13 @@ table.table td .add {
     justify-content: center;
 }
 .view-checkpoint{
-    width: 12rem;
+    width: 6%;
 }
 .btn-list-checkpoint{
     background: none;
     border: none;
     size: 10px;
+}
+.review-notify{
+    text-align: center;
 }

@@ -1,8 +1,10 @@
 
 .profile-cover{
-    padding-top: 50px;
-    height: 100vh;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    padding-top: 40px;
+    background-color: #5dabc3;
+    height: -webkit-fill-available;
+    width: 100%;
+    position: absolute;
 }
 .emp-profile{
     padding: 3%;
@@ -77,6 +79,7 @@
     color: #818182;
     font-weight: 600;
     margin-top: 2%;
+    font-size: 1rem;
 }
 .profile-work a{
     text-decoration: none;
@@ -118,5 +121,21 @@ input[type=password][id=profile-pass] {
 }
 .btn-profile{
     float: right;
+}
+.btn.btn-default.btn-profile{
+    background: #5dabc3;
+    color: #fff;
+    width: 10rem;
+    font-weight: 600;
+    display: flex;
+    margin-left: auto;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
     margin: 0 6rem 1rem 0;
+}
+.btn.btn-default.btn-profile:hover{
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
 }

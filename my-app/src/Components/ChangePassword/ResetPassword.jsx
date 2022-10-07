@@ -33,7 +33,7 @@ function ResetPassword() {
     <div className="reset-cover">
       <div className="container reset">
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-3 reset">
             <div className="reset-info">
               <img
                 src="https://image.ibb.co/kUASdV/reset-image.png"
@@ -82,7 +82,7 @@ function ResetPassword() {
 
                 <div className="form-group">
                   <div className="col-sm-offset-2 col-sm-10 mt-2">
-                    <button type="submit" className="btn btn-default ">
+                    <button type="submit" className="btn btn-default btn-reset">
                       Reset
                     </button>
                   </div>

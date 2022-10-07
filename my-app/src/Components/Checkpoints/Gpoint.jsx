@@ -33,7 +33,7 @@ function Gpoint() {
     <div className="gpoint-cover">
       <div className="container gpoint">
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-3 gpoint">
             <div className="gpoint-info">
               <img
                 src="https://image.ibb.co/kUASdV/gpoint-image.png"

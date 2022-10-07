@@ -19,7 +19,7 @@ function ListMemberHistory() {
   const [dataSearch, setDataSearch] = useState({
     name: "",
     start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
-    end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
+    end_date: dayjs(new Date("2025-12-31")).format("YYYY-MM-DDTHH:mm"),
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
@@ -152,7 +152,12 @@ function ListMemberHistory() {
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={i + 1}
+          onClick={handleOnClick}
+        >
           {i + 1}
         </button>
       </li>
@@ -161,8 +166,8 @@ function ListMemberHistory() {
   return (
     <div className="list-member-his-cover">
       <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+        <div className="table-wrapper list-mem-history">
+          <div className="table-title list-mem-history">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
@@ -222,7 +227,7 @@ function ListMemberHistory() {
               </div>
             </div>
             <div className="col-md-12">
-              <button type="submit" className="btn-create">
+              <button type="submit" className="btn btn-default btn-filter">
                 Reset filter
               </button>
             </div>

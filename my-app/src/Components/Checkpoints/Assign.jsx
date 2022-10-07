@@ -47,7 +47,6 @@ function Assgin() {
   }, []);
 
   const token = sessionStorage.getItem("sessionToken");
-  const userId = sessionStorage.getItem("sessionUserId");
   const fetchData = async () => {
     try {
       const res = await getDetailCheckpointApi(token, params.id);
@@ -279,7 +278,12 @@ function Assgin() {
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={i + 1}
+          onClick={handleOnClick}
+        >
           {i + 1}
         </button>
       </li>
@@ -288,8 +292,8 @@ function Assgin() {
   return (
     <div className="assign-cover">
       <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+        <div className="table-wrapper assign">
+          <div className="table-title assign">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
@@ -442,25 +446,28 @@ function Assgin() {
                     </tr>
                   </tbody>
                 </Table>
-                <div className="form-group form1">
-                  <div className="d-flex btn-group-1">
-                    <button type="submit" className="btn btn-default ">
-                      Assign users
-                    </button>
-                    <button
-                      onClick={() => navigate(-1)}
-                      type="submit"
-                      className="btn btn-default "
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-center">
                     {menuItems}
                   </ul>
                 </nav>
+                <div className="form-group form1">
+                  <div className="d-flex btn-group-1">
+                    <button
+                      type="submit"
+                      className="btn btn-default btn-assign"
+                    >
+                      Assign users
+                    </button>
+                    <button
+                      onClick={() => navigate(-1)}
+                      type="submit"
+                      className="btn btn-default btn-assign"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </form>

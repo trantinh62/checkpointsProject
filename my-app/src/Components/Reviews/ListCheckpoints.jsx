@@ -42,7 +42,12 @@ function ListReviews() {
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={i + 1}
+          onClick={handleOnClick}
+        >
           {i + 1}
         </button>
       </li>

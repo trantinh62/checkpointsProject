@@ -31,7 +31,7 @@ function Invite() {
     <div className="invite-cover">
       <div className="container invite">
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-3 invite">
             <div className="invite-info">
               <img
                 src="https://image.ibb.co/kUASdV/invite-image.png"

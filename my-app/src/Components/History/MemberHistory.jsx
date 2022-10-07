@@ -154,8 +154,8 @@ function MemberHistory() {
   return (
     <div className="member-his-cover">
       <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+        <div className="table-wrapper mem-history">
+          <div className="table-title mem-history">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
@@ -329,7 +329,7 @@ function MemberHistory() {
                 <button
                   onClick={() => navigate(-1)}
                   type="submit"
-                  className="btn btn-default "
+                  className="btn btn-default mem-history"
                 >
                   Back
                 </button>

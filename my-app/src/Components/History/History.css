@@ -1,8 +1,10 @@
 
 .histories-cover {
     padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    background-color: #5dabc3;
+    height: -webkit-fill-available;
+    width: 100%;
+    position: absolute;
 }
 .table-wrapper {
     background: #fff;
