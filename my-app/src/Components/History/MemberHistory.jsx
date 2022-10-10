@@ -11,10 +11,12 @@ import {
   getListUsersByCheckpointId,
   getAvgByCheckpointIdAuthor,
 } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
 import "./MemberHistory.css";
 
 function MemberHistory() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const search = useLocation().search;
@@ -85,7 +87,7 @@ function MemberHistory() {
       }
       setLoading(true);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
 
@@ -135,12 +137,6 @@ function MemberHistory() {
     setDataPerPage(dataCheckpointByUser.slice(start, end));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-    } catch (err) {}
-  };
-
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
@@ -162,23 +158,23 @@ function MemberHistory() {
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
                       <a className="breadcrumb" href="/histories/member">
-                        Manage checkpoints: Member's checkpoint histories
+                        {t("listMemberHistory.memberHistory")}
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Title: {title}
+                      {title}
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="col-md-6">
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -191,7 +187,7 @@ function MemberHistory() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    Be assigned:
+                    {t("beChecked")}
                   </label>
                   <div className="col-sm-10">
                     <select
@@ -221,29 +217,28 @@ function MemberHistory() {
               </div>
             </div>
             {loading === false && (
-              <h3 className="review-notify">Waiting for loading data!</h3>
+              <h3 className="review-notify">{t("waitingData")}</h3>
             )}
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-              loading === true && (
-                <h3 className="member-history-notify">
-                  No checkpoint history!
-                </h3>
-              )}
-            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            {dataPerPage.length === 0 && loading === true && (
+              <h3 className="member-history-notify">
+                {t("memberHistory.noCheckpoints")}
+              </h3>
+            )}
+            {dataPerPage.length > 0 && (
               <div>
                 <table className="table table-bordered text-center">
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th className="point-table-member">Attitude</th>
-                      <th className="point-table-member">Performance</th>
-                      <th className="point-table-member">Teamwork</th>
-                      <th className="point-table-member">Training</th>
-                      <th className="point-table-member">Adhere</th>
-                      <th>Strength</th>
-                      <th>Weakness</th>
-                      <th style={{ width: "12rem" }}>Reviewer</th>
-                      <th style={{ width: "6rem" }}>Note</th>
+                      <th className="point-table-member">{t("Attitude")}</th>
+                      <th className="point-table-member">{t("Performance")}</th>
+                      <th className="point-table-member">{t("Teamwork")}</th>
+                      <th className="point-table-member">{t("Training")}</th>
+                      <th className="point-table-member">{t("Adhere")}</th>
+                      <th>{t("Strength")}</th>
+                      <th>{t("Weakness")}</th>
+                      <th style={{ width: "12rem" }}>{t("Reviewer")}</th>
+                      <th style={{ width: "6rem" }}>{t("Note")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -327,11 +322,14 @@ function MemberHistory() {
             <div className="form-group form1">
               <div className="d-flex btn-group-1">
                 <button
-                  onClick={() => navigate(-1)}
+                  onClick={() => {
+                    navigate("/histories/member", { replace: true });
+                    navigate(0);
+                  }}
                   type="submit"
                   className="btn btn-default mem-history"
                 >
-                  Back
+                  {t("btnBack")}
                 </button>
               </div>
             </div>

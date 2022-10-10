@@ -18,6 +18,7 @@ import MemberHistory from "./Components/History/MemberHistory";
 import User from "./Components/Users/User";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
+import Footer from "./Common/Footer/Footer";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -104,6 +105,7 @@ function App() {
         <Route path="/histories/member/:id" element={<MemberHistory />}></Route>
         <Route path="/histories/:id" element={<DetailHistory />}></Route>
       </Routes>
+      <Footer></Footer>
     </>
   );
 }

@@ -1,21 +1,25 @@
 .create-cover {
     padding-top: 40px;
     background-color: #5dabc3;
-    height: -webkit-fill-available;
+    min-height: calc(100% - 80px);
     width: 100%;
     position: absolute;
 }
-.table-wrapper {
+.table-wrapper.create {
     background: #fff;
     padding: 20px;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
-.table-title h2 {
+.table-title.create{
+    padding-bottom: 0;
+    margin: 0 ;
+}
+.table-title.create h2 {
     margin: 6px 0 0;
     font-size: 22px;
 }
-.table-title .add-new {
+.table-title.create .add-new {
     float: right;
     height: 30px;
     font-weight: bold;
@@ -25,7 +29,7 @@
     border-radius: 50px;
     line-height: 13px;
 }
-.table-title .add-new i {
+.table-title.create .add-new i {
     margin-right: 4px;
 }
 table.table {

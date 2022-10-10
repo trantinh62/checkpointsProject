@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import Toast from "../Toast/Toast";
 import { profileApi, passApi, getProfileApi } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
 import "./Profile.css";
 const Profile = () => {
+  const { t } = useTranslation();
   const [dataProfile, setDataProfile] = useState({
     id: null,
     email: "",
@@ -45,7 +47,7 @@ const Profile = () => {
       const res = await getProfileApi(token);
       setDataProfile(res.data.data);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
 
@@ -53,19 +55,22 @@ const Profile = () => {
     e.preventDefault();
     try {
       const response = await profileApi(dataProfile, token);
-      sessionStorage.setItem("sessionUser", response.data.data.first_name);
-      Toast("Update profile successful!", "success");
+      sessionStorage.setItem(
+        "sessionUsername",
+        response.data.data.first_name + " " + response.data.data.last_name
+      );
+      Toast(t("updateSuccess"), "success");
     } catch (err) {
-      Toast("Update profile failed!", "error");
+      Toast(t("updateFailed"), "error");
     }
   };
   const handleChange = async (e) => {
     e.preventDefault();
     try {
       const response = await passApi(dataPass, token);
-      Toast("Update password successful!", "success");
+      Toast(t("updatePassSuccess"), "success");
     } catch (err) {
-      Toast("Update password failed!", "error");
+      Toast(t("updatePassFailed"), "error");
     }
   };
   return (
@@ -80,7 +85,7 @@ const Profile = () => {
               />
               <div className="file btn btn-lg btn-primary">
                 Change Photo
-                <input type="file" name="file" />
+                <input type="file" name="file" disabled />
               </div>
             </div>
           </div>
@@ -96,7 +101,7 @@ const Profile = () => {
                   >
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Firstname:</label>
+                        <label>{t("profile.firstname")}</label>
                       </div>
                       <div className="col-md-6 col1">
                         <input
@@ -111,7 +116,7 @@ const Profile = () => {
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Lastname:</label>
+                        <label>{t("profile.lastname")}</label>
                       </div>
                       <div className="col-md-6 col1">
                         <input
@@ -141,7 +146,7 @@ const Profile = () => {
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Phone:</label>
+                        <label>{t("profile.phone")}</label>
                       </div>
                       <div className="col-md-6 col1">
                         <input
@@ -156,7 +161,7 @@ const Profile = () => {
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Age:</label>
+                        <label>{t("profile.age")}</label>
                       </div>
                       <div className="col-md-6 col1">
                         <input
@@ -171,7 +176,7 @@ const Profile = () => {
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Address:</label>
+                        <label>{t("profile.address")}</label>
                       </div>
                       <div className="col-md-6 col1">
                         <input
@@ -191,7 +196,7 @@ const Profile = () => {
                         type="submit"
                         className="btn btn-default btn-profile"
                       >
-                        Update profile
+                        {t("profile.btnUp")}
                       </button>
                     </div>
                   </div>
@@ -213,13 +218,19 @@ const Profile = () => {
                 {dataProfile.first_name + " " + dataProfile.last_name}
               </h3>
               <p>
-                ROLE: {dataProfile.role_id === 1 && "Group leader"}
+                {t("role")} {dataProfile.role_id === 1 && "Group leader"}
                 {dataProfile.role_id === 2 && "Tech leader"}
                 {dataProfile.role_id === 3 && "Member"}
               </p>
-              <p>Age: {dataProfile.age}</p>
-              <p>STATUS: {dataProfile.status}</p>
-              <p>Address: {dataProfile.address}</p>
+              <p>
+                {t("age")} {dataProfile.age}
+              </p>
+              <p>
+                {t("status")} {dataProfile.status}
+              </p>
+              <p>
+                {t("address")} {dataProfile.address}
+              </p>
               <br />
             </div>
           </div>
@@ -233,12 +244,12 @@ const Profile = () => {
               >
                 <div className="row">
                   <div className="col-md-6 col1">
-                    <label>Old password:</label>
+                    <label>{t("profile.oldPass")}</label>
                   </div>
                   <div className="col-md-6 col1">
                     <input
                       type="password"
-                      id="profile-pass"
+                      className="profile-pass"
                       name="old_password"
                       value={dataPass.old_password}
                       onChange={onChangePass}
@@ -249,13 +260,13 @@ const Profile = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-6 col1">
-                    <label>New password:</label>
+                    <label>{t("profile.newPass")}</label>
                   </div>
                   <div className="col-md-6 col1">
                     <input
                       type="password"
                       name="password"
-                      id="profile-pass"
+                      className="profile-pass"
                       value={dataPass.password}
                       onChange={onChangePass}
                       placeholder="new password"
@@ -265,13 +276,13 @@ const Profile = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-6 col1">
-                    <label>Confirm password:</label>
+                    <label>{t("profile.confirmPass")}</label>
                   </div>
                   <div className="col-md-6 col1">
                     <input
                       type="password"
                       name="password_confirm"
-                      id="profile-pass"
+                      className="profile-pass"
                       value={dataPass.password_confirm}
                       onChange={onChangePass}
                       placeholder="confirm password"
@@ -285,7 +296,7 @@ const Profile = () => {
                       type="submit"
                       className="btn btn-default btn-profile"
                     >
-                      Change password
+                      {t("profile.btnChange")}
                     </button>
                   </div>
                 </div>

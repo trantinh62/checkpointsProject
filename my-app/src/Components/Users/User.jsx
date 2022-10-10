@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getAllUsersApi, updateAllUserApi } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
+import removeMark from "../../Helper/removeMark";
 import Toast from "../Toast/Toast";
 import "./User.css";
 
 function User() {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
   const search = useLocation().search;
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
@@ -46,14 +48,14 @@ function User() {
       setDataPerPage(resUser.data.data.slice(start, end));
       setLoading(true);
     } catch (err) {
-      Toast("An error occurred while loading data", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (JSON.stringify(dataManage) === JSON.stringify([])) {
-        Toast("There is no change in order to update users!", "warning");
+        Toast(t("user.noChangeWarning"), "warning");
         return;
       }
       const res = await updateAllUserApi({ data: dataManage }, token);
@@ -99,9 +101,9 @@ function User() {
           dataFilter.length > 10 ? dataFilter.slice(start, end) : dataFilter
         );
       }
-      Toast("Update users successful!", "success");
+      Toast(t("user.updateSuccess"), "success");
     } catch (err) {
-      Toast("Update users failed!", "error");
+      Toast(t("user.updateFailed"), "error");
     }
   };
 
@@ -242,17 +244,6 @@ function User() {
     }
   };
 
-  function removeMark(str) {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-    str = str.replace(/đ/g, "d");
-    return str;
-  }
-
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
@@ -277,9 +268,7 @@ function User() {
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
-                    <li className="breadcrumb-item active">
-                      Manage users: Update users
-                    </li>
+                    <li className="breadcrumb-item active">{t("user.user")}</li>
                   </ol>
                 </nav>
               </div>
@@ -290,13 +279,13 @@ function User() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Enter username or email to filter"
+                      placeholder={t("user.inputUsername")}
                       name="name"
                       onChange={onChangeInput}
                       value={dataSearch.name}
@@ -309,7 +298,7 @@ function User() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Roles:
+                    {t("role")}
                   </label>
                   <div className="col-sm-4">
                     <select
@@ -320,7 +309,7 @@ function User() {
                       value={dataSearch.role_id}
                       style={{ backgroundColor: "#5dabc3", color: "white" }}
                     >
-                      <option value="">Select role</option>
+                      <option value="">{t("user.selectRole")}</option>
                       <option value="1">Group leader</option>
                       <option value="2">Team Leader</option>
                       <option value="3">Member</option>
@@ -331,7 +320,7 @@ function User() {
                       type="submit"
                       className="btn btn-default btn-filter-user"
                     >
-                      Reset filter
+                      {t("user.resetbtn")}
                     </button>
                   </div>
                 </div>
@@ -340,21 +329,22 @@ function User() {
           </form>
           <form onSubmit={handleSubmit}>
             {loading === false && (
-              <h3 className="user-notify">Waiting for loading data!</h3>
+              <h3 className="user-notify">{t("waitingData")}</h3>
             )}
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-              loading === true && <h3 className="user-notify">No data!</h3>}
-            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            {dataPerPage.length === 0 && loading === true && (
+              <h3 className="user-notify">{t("user.noUsers")}</h3>
+            )}
+            {dataPerPage.length > 0 && (
               <div>
                 <table className="table table-bordered text-center">
                   <thead>
                     <tr>
                       <th>#</th>
                       <th>Email</th>
-                      <th>Username</th>
-                      <th>Phone</th>
-                      <th>Role</th>
-                      <th className="status-col">Status</th>
+                      <th>{t("username")}</th>
+                      <th>{t("phone")}</th>
+                      <th>{t("role")}</th>
+                      <th className="status-col">{t("status")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -418,16 +408,9 @@ function User() {
                     className="btn btn-default btn-user-save"
                     style={{ background: "#5dabc3" }}
                   >
-                    Save
+                    {t("btnSave")}
                   </button>
                 )}
-                <button
-                  onClick={() => navigate(-1)}
-                  className="btn btn-default btn-user-save"
-                  style={{ background: "#5dabc3" }}
-                >
-                  Cancel
-                </button>
               </div>
             </div>
           </form>

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
+import { getProfileApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
 import { loginApi } from "../../Api/userApi";
 import "./Login.css";
@@ -17,6 +18,7 @@ function Login() {
       [name]: value,
     });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -28,6 +30,10 @@ function Login() {
       sessionStorage.setItem("sessionUserId", response.data.data.id);
       sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
       sessionStorage.setItem("sessionToken", response.data.data.token);
+      sessionStorage.setItem(
+        "sessionLanguage",
+        response.data.data.language === 0 ? "en" : "vn"
+      );
       if (response.data.status === 200) {
         navigate("/mycheckpoints", { replace: true });
         navigate(0);

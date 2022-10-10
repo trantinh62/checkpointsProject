@@ -9,9 +9,11 @@ import {
   getAvgByCheckpointIdMyHistory,
   getReviewsByCheckpointId,
 } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
 import "./DetailHistory.css";
 function DetailHistory() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const search = useLocation().search;
@@ -57,7 +59,7 @@ function DetailHistory() {
         setDataAvg(resAvg.data.data[0].avg_checkpoint[0]);
       }
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
 
@@ -82,11 +84,11 @@ function DetailHistory() {
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
                       <a className="breadcrumb" href="/histories">
-                        My checkpoints: Checkpoint histories
+                        {t("history.listHistories")}
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Title: {title}
+                      {title}
                     </li>
                   </ol>
                 </nav>
@@ -94,27 +96,26 @@ function DetailHistory() {
             </div>
           </div>
           {loading === false && (
-            <h3 className="review-notify">Waiting for loading data!</h3>
+            <h3 className="review-notify">{t("waitingData")}</h3>
           )}
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-            loading == true && (
-              <h3 className="history-notify">No checkpoint history!</h3>
-            )}
-          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+          {dataPerPage.length === 0 && loading == true && (
+            <h3 className="history-notify">{t("history.noHistories")}</h3>
+          )}
+          {dataPerPage.length > 0 && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th style={{ width: "5%" }}>#</th>
-                    <th className="point-table">Attitude</th>
-                    <th className="point-table">Performance</th>
-                    <th className="point-table">Teamwork</th>
-                    <th className="point-table">Training</th>
-                    <th className="point-table">Adhere</th>
-                    <th>Strength</th>
-                    <th>Weakness</th>
-                    <th style={{ width: "15%" }}>Reviewer</th>
-                    <th style={{ width: "6%" }}>Note</th>
+                    <th className="point-table">{t("Attitude")}</th>
+                    <th className="point-table">{t("Performance")}</th>
+                    <th className="point-table">{t("Teamwork")}</th>
+                    <th className="point-table">{t("Training")}</th>
+                    <th className="point-table">{t("Adhere")}</th>
+                    <th>{t("Strength")}</th>
+                    <th>{t("Weakness")}</th>
+                    <th style={{ width: "15%" }}>{t("Reviewer")}</th>
+                    <th style={{ width: "6%" }}>{t("Note")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -146,14 +147,14 @@ function DetailHistory() {
                           ele.teamwork === null &&
                           ele.training === null &&
                           ele.adhere === null
-                            ? "Chưa đánh giá"
-                            : "Đã đánh giá"}
+                            ? t("checked")
+                            : t("yetChecked")}
                         </td>
                       </tr>
                     );
                   })}
                   <tr key="Avg">
-                    <td>Avg</td>
+                    <td>{t("Avg")}</td>
                     <td>
                       {dataAvg.avg_attitude !== 0 && dataAvg.avg_attitude}
                     </td>
@@ -176,8 +177,8 @@ function DetailHistory() {
                       dataAvg.avg_teamwork === 0 &&
                       dataAvg.avg_training === 0 &&
                       dataAvg.avg_adhere === 0
-                        ? "Chưa hoàn thành"
-                        : "Đã hoàn thành"}
+                        ? t("yet")
+                        : t("done")}
                     </td>
                   </tr>
                 </tbody>
@@ -196,7 +197,7 @@ function DetailHistory() {
                 type="submit"
                 className="btn btn-default btn-detail-history"
               >
-                Back
+                {t("btnBack")}
               </button>
             </div>
           </div>
