@@ -1,10 +1,9 @@
 
 .profile-cover{
-    padding-top: 40px;
     background-color: #5dabc3;
-    height: -webkit-fill-available;
+    min-height: calc(100% - 80px);
     width: 100%;
-    position: absolute;
+    position: absolute
 }
 .emp-profile{
     padding: 3%;
@@ -110,7 +109,7 @@ input[type=text-form] {
     width: 380%;
     
 }
-input[type=password][id=profile-pass] {
+.profile-pass{
     width: 380%;
 }
 .col-md-3.profile-col-3{
@@ -125,7 +124,7 @@ input[type=password][id=profile-pass] {
 .btn.btn-default.btn-profile{
     background: #5dabc3;
     color: #fff;
-    width: 10rem;
+    width: 11rem;
     font-weight: 600;
     display: flex;
     margin-left: auto;

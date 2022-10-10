@@ -5,9 +5,11 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
 import "./CreateCheckpoint.css";
 
 function Checkpoints() {
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = (e) => {
@@ -68,7 +70,7 @@ function Checkpoints() {
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
       setLoading(true);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
 
@@ -78,17 +80,17 @@ function Checkpoints() {
       if (
         new Date(dataCheckpoint.start_date) >= new Date(dataCheckpoint.end_date)
       ) {
-        Toast("The end date must be chosen after the start date!", "warning");
+        Toast(t("create.errorChoseDate"), "warning");
         return;
       }
       const response = await createApi(dataCheckpoint, token);
-      Toast("Create checkpoint successful!", "success");
+      Toast(t("create.createSuccess"), "success");
       const res = await getCheckApi(token);
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
     } catch (err) {
-      Toast("Create checkpoint failed!", "error");
+      Toast(t("create.createFailed"), "error");
     }
   };
 
@@ -97,13 +99,13 @@ function Checkpoints() {
     try {
       handleClose();
       const resDel = await deleteCheckpoint(deleteId, token);
-      Toast("Delete checkpoint successful!", "success");
+      Toast(t("create.deleteSuccess"), "success");
       const res = await getCheckApi(token);
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
     } catch (err) {
-      Toast("Delete checkpoint failed!", "error");
+      Toast(t("create.deleteFailed"), "error");
     }
   };
 
@@ -125,14 +127,14 @@ function Checkpoints() {
   return (
     <div className="create-cover">
       <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+        <div className="table-wrapper create">
+          <div className="table-title create">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item active" aria-current="page">
-                      Manage checkpoints: Create checkpoints
+                      {t("create.create")}
                     </li>
                   </ol>
                 </nav>
@@ -144,13 +146,13 @@ function Checkpoints() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Enter title checkpoint"
+                      placeholder={t("create.inputTitle")}
                       name="name"
                       onChange={onChangeInput}
                       value={dataCheckpoint.name}
@@ -158,7 +160,7 @@ function Checkpoints() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    Start date:
+                    {t("startDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
@@ -172,7 +174,7 @@ function Checkpoints() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    End date:
+                    {t("endDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
@@ -190,31 +192,28 @@ function Checkpoints() {
             </div>
             <div className="col-md-12">
               <button type="submit" className="btn btn-default btn-create">
-                Create checkpoint
+                {t("create.createBtn")}
               </button>
             </div>
           </form>
           {loading === false && (
-            <h3 className="review-notify">
-              Waiting for loading data checkpoint!
-            </h3>
+            <h3 className="review-notify">{t("waitingData")}</h3>
           )}
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-            loading === true && (
-              <h3 className="create-notify">
-                No checkpoints have been created yet!
-              </h3>
-            )}
-          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+          {dataPerPage.length === 0 && loading === true && (
+            <h3 className="create-notify">{t("create.yetCheckpoint")}</h3>
+          )}
+          {dataPerPage.length > 0 && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th className="assign-delete">Assign/Delete</th>
+                    <th>{t("title")}</th>
+                    <th>{t("startDate")}</th>
+                    <th>{t("endDate")}</th>
+                    <th className="assign-delete">
+                      {t("create.Assign/Delete")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -258,17 +257,15 @@ function Checkpoints() {
 
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Confirm delete checkpoint!</Modal.Title>
+              <Modal.Title>{t("create.confirmDelete")}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              Do you really want to delete this checkpoint?
-            </Modal.Body>
+            <Modal.Body>{t("create.reallyconfirm")}</Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
-                Cancel
+                {t("btnCancel")}
               </Button>
               <Button variant="danger" onClick={handleDelete}>
-                Delete
+                {t("btnDelete")}
               </Button>
             </Modal.Footer>
           </Modal>

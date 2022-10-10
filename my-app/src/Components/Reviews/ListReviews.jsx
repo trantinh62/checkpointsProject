@@ -6,9 +6,12 @@ import {
   useLocation,
   useSearchParams,
 } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import Toast from "../Toast/Toast";
 import "./ListReviews.css";
 function ListReviews() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { search } = useLocation();
   const params = useParams();
@@ -55,7 +58,7 @@ function ListReviews() {
       setDataPerPage(yetReview.slice(start, end));
       setLoading(true);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
   let menuItems = [];
@@ -75,20 +78,6 @@ function ListReviews() {
   }
   return (
     <div className="list-reviews-cover">
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css"
-        integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q=="
-        crossOrigin="anonymous"
-        referrerPolicy="no-referrer"
-      />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css"
-        integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc="
-        crossOrigin="anonymous"
-      />
-
       <div className="container">
         <div className="table-wrapper list-review">
           <div className="table-title list-review">
@@ -98,7 +87,7 @@ function ListReviews() {
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
                       <a className="breadcrumb" href="/mycheckpoints">
-                        My checkpoints: List checkpoints
+                        {t("myCheckpoints.listCheckpoint")}
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
@@ -111,13 +100,12 @@ function ListReviews() {
           </div>
           <div className="row">
             {loading === false && (
-              <h3 className="review-notify">Waiting for loading data!</h3>
+              <h3 className="review-notify">{t("waitingData")}</h3>
             )}
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-              loading === true && (
-                <h3 className="review-notify">All checkpoints are checked!</h3>
-              )}
-            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            {dataPerPage.length === 0 && loading === true && (
+              <h3 className="review-notify">{t("listReviews.allChecked")}</h3>
+            )}
+            {dataPerPage.length > 0 && (
               <>
                 {dataPerPage?.map((ele, index) => {
                   return (
@@ -147,12 +135,12 @@ function ListReviews() {
                             </div>
                           </div>
                           <div className="mt-3 pt-1">
-                            <p className="text-muted mb-0 ">
-                              <i className="mdi mdi-phone font-size-5 align-middle pe-2 text-primary"></i>
+                            <p className="text-muted mb-0">
+                              <i class="bi bi-phone"></i>
                               {ele.user.phone}
                             </p>
                             <p className="text-muted mb-0 mt-2 review-panel">
-                              <i className="mdi mdi-email font-size-5 align-middle pe-2 text-primary"></i>
+                              <i class="bi bi-envelope"></i>
                               <div>{ele.user.email}</div>
                             </p>
                           </div>
@@ -183,7 +171,7 @@ function ListReviews() {
                                 }}
                               >
                                 <i className="bx bx-message-square-dots me-1"></i>
-                                Review
+                                {t("listReviews.btnReview")}
                               </button>
                             </a>
                           </div>
@@ -208,7 +196,7 @@ function ListReviews() {
                 type="submit"
                 className="btn btn-default btn-review"
               >
-                Back
+                {t("btnBack")}
               </button>
             </div>
           </div>

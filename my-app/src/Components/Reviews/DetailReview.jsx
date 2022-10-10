@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { reviewApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
 import "./DetailReview.css";
 
 function ListReviews() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const [searchParams] = useSearchParams();
@@ -37,9 +39,9 @@ function ListReviews() {
     e.preventDefault();
     try {
       const res = await reviewApi(dataReview, token, params.review_id);
-      Toast("Check checpoint successful!", "success");
+      Toast(t("reviewSuccess"), "success");
     } catch (err) {
-      Toast("Check checpoint failed!", "error");
+      Toast(t("reviewFailed"), "error");
     }
   };
 
@@ -54,7 +56,7 @@ function ListReviews() {
                   <ol className="breadcrumb" style={{ width: "max-content" }}>
                     <li className="breadcrumb-item">
                       <a className="breadcrumb" href="/mycheckpoints">
-                        My checkpoints: List checkpoints
+                        {t("myCheckpoints.listCheckpoint")}
                       </a>
                     </li>
                     <li className="breadcrumb-item">
@@ -62,11 +64,11 @@ function ListReviews() {
                         className="breadcrumb"
                         href={`/mycheckpoints/${params.check_id}?title=${title}`}
                       >
-                        List reviews: {title}
+                        {title}
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Username: {username}
+                      {t("detailReview.beChecked")} {username}
                     </li>
                   </ol>
                 </nav>
@@ -82,16 +84,11 @@ function ListReviews() {
                 <div class="row align-items-center">
                   <div class="col-12 col-md-3 detail-review-panel">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
-                      1. THÁI ĐỘ TRÁCH NHIỆM
+                      <p>{t("detailReview.check1")}</p>
                     </h4>
                   </div>
                   <div class="col-12 col-md-6 text-center">
-                    <span>
-                      - 10 điểm: Luôn chủ động, tích cực. Hoặc tính sẵn sàng đi
-                      onsite.- 7 điểm: Bình thường- 5 điểm: Còn thụ động, còn để
-                      nhắc nhở về tinh thần, thái độ, ý thức làm việc- 0 điểm:
-                      rất có vấn đề về ý thức
-                    </span>
+                    <span>{t("detailReview.descrip1")}</span>
                   </div>
                   <div class="col-12 col-md-3 detail-review-panel text-center">
                     <select
@@ -107,7 +104,7 @@ function ListReviews() {
                       aria-label="Default select example"
                       required
                     >
-                      <option value="">Select point</option>
+                      <option value="">{t("detailReview.selectPoint")}</option>
                       <option value={0}>0</option>
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -130,16 +127,11 @@ function ListReviews() {
                 <div class="row align-items-center">
                   <div class="col-12 col-md-3 detail-review-panel">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
-                      2. HIỆU SUẤT CÔNG VIỆC
+                      {t("detailReview.check2")}
                     </h4>
                   </div>
                   <div class="col-12 col-md-6 text-center">
-                    <span>
-                      - 10 điểm: Khối lượng lớn, đảm bảo chất lượng và tiến độ-
-                      7 điểm: Hiệu suất bình thường, khối lượng việc vừa phải,
-                      chất lượng đạt yêu cầu- 5 điểm: việc còn ít, hoặc chất
-                      lượng chưa đảm bảo- 0 điểm: Không có việc
-                    </span>
+                    <span>{t("detailReview.descrip2")}</span>
                   </div>
                   <div class="col-12 col-md-3 detail-review-panel text-center">
                     <select
@@ -155,7 +147,7 @@ function ListReviews() {
                       aria-label="Default select example"
                       required
                     >
-                      <option value="">Select point</option>
+                      <option value="">{t("detailReview.selectPoint")}</option>
                       <option value={0}>0</option>
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -178,16 +170,11 @@ function ListReviews() {
                 <div class="row align-items-center">
                   <div class="col-12 col-md-3 detail-review-panel">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
-                      3. PHỐI HỢP TRONG TEAM & TẦM ẢNH HƯỞNG
+                      {t("detailReview.check3")}
                     </h4>
                   </div>
                   <div class="col-12 col-md-6 text-center">
-                    <span>
-                      - 10 điểm: Phối hợp nhóm tốt và có tầm ảnh hưởng trong
-                      nhóm- 7 điểm: thành viên quan trọng của nhóm- 5 điểm: Có
-                      vai trò bình thường trong nhóm- 0 điểm: Mắt xích yếu cần
-                      nhóm hỗ trợ
-                    </span>
+                    <span>{t("detailReview.descrip3")}</span>
                   </div>
                   <div class="col-12 col-md-3 detail-review-panel text-center">
                     <select
@@ -203,7 +190,7 @@ function ListReviews() {
                       aria-label="Default select example"
                       required
                     >
-                      <option value="">Select point</option>
+                      <option value="">{t("detailReview.selectPoint")}</option>
                       <option value={0}>0</option>
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -226,19 +213,11 @@ function ListReviews() {
                 <div class="row align-items-center">
                   <div class="col-12 col-md-3 detail-review-panel">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
-                      4. ĐÀO TẠO PHÁT TRIỂN
+                      {t("detailReview.check4")}
                     </h4>
                   </div>
                   <div class="col-12 col-md-6 text-center">
-                    <span>
-                      - 10 điểm: Tham gia huấn luyện, đào tạo đội ngũ- 7 điểm:
-                      học thi và đạt chứng chỉ cá nhân- 5 điểm: Không đào tạo
-                      cho đội ngũ, nhưng tham gia các khóa học cho công việc.
-                      Hoặc D Lead đánh giá được sự tiến bộ của nhân sự qua việc
-                      tự học, tự nghiên cứu và áp dụng vào trong công việc.- 0
-                      điểm: Không tham gia đào tạo, cũng không tham gia các khóa
-                      học
-                    </span>
+                    <span>{t("detailReview.descrip4")}</span>
                   </div>
                   <div class="col-12 col-md-3 detail-review-panel text-center">
                     <select
@@ -254,7 +233,7 @@ function ListReviews() {
                       aria-label="Default select example"
                       required
                     >
-                      <option value="">Select point</option>
+                      <option value="">{t("detailReview.selectPoint")}</option>
                       <option value={0}>0</option>
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -277,17 +256,11 @@ function ListReviews() {
                 <div class="row align-items-center">
                   <div class="col-12 col-md-3 detail-review-panel">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
-                      5. TUÂN THỦ TIÊU CHUẨN CHẤT LƯỢNG
+                      {t("detailReview.check5")}
                     </h4>
                   </div>
                   <div class="col-12 col-md-6 text-center">
-                    <span>
-                      - 10 điểm: thực hiện nghiêm túc kỷ luật, nội quy, vấn đề
-                      BMTT; chủ động có ý tưởng đóng góp cải tiến quy trình
-                      chung- 7 điểm: Bình thường- 5 điểm: Đôi khi còn phải nhắc
-                      nhở- 0 điểm: tuân thủ kém, nhiều lần vi phạm kỷ luật, nội
-                      quy, quy trình dự án, vi phạm quy định BMTT
-                    </span>
+                    <span>{t("detailReview.descrip5")}</span>
                   </div>
                   <div class="col-12 col-md-3 detail-review-panel text-center">
                     <select
@@ -303,7 +276,7 @@ function ListReviews() {
                       aria-label="Default select example"
                       required
                     >
-                      <option value="">Select point</option>
+                      <option value="">{t("detailReview.selectPoint")}</option>
                       <option value={0}>0</option>
                       <option value={1}>1</option>
                       <option value={2}>2</option>
@@ -326,7 +299,7 @@ function ListReviews() {
                 <div class="row align-items-center">
                   <div class="col-12 col-md-3 detail-review-panel">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
-                      ĐIỂM MẠNH
+                      {t("Strength")}
                     </h4>
                   </div>
                   <div class="col-12 col-sm-9 text-center">
@@ -348,7 +321,7 @@ function ListReviews() {
                 <div class="row align-items-center">
                   <div class="col-12 col-md-3 detail-review-panel">
                     <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
-                      ĐIỂM YẾU
+                      {t("Weakness")}
                     </h4>
                   </div>
                   <div class="col-12 col-sm-9 text-center">
@@ -369,14 +342,14 @@ function ListReviews() {
                     type="submit"
                     className="btn btn-default btn-detail-review"
                   >
-                    Save
+                    {t("btnSave")}
                   </button>
                   <button
                     type="button"
                     onClick={() => navigate(-1)}
                     className="btn btn-default btn-detail-review"
                   >
-                    Back
+                    {t("btnBack")}
                   </button>
                 </div>
               </div>

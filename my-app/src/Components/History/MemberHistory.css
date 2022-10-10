@@ -1,8 +1,7 @@
 
 .member-his-cover {
-    padding-top: 40px;
     background-color: #5dabc3;
-    height: -webkit-fill-available;
+    min-height: calc(100% - 80px);
     width: 100%;
     position: absolute;
 }
@@ -115,7 +114,7 @@ table.table td .add {
     justify-content: center;
 }
 .point-table-member{
-    width: 5rem;
+    width: 8%;
 }
 .table-title.mem-history {
     padding-bottom:0;

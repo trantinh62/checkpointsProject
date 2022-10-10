@@ -1,7 +1,7 @@
 
 .assign-cover {
     background-color: #5dabc3;
-    height: -webkit-fill-available;
+    min-height: calc(100% - 80px);
     width: 100%;
     position: absolute;
 }
@@ -106,7 +106,7 @@ table.table td .add {
     margin-left: auto;
 }
 .table-title.assign {
-    padding: bottom 0;
+    padding: 0;
     margin: 0;
 }
 .btn.btn-default.btn-assign{
