@@ -10,7 +10,13 @@ export const profileApi = (data, token) =>
       Accept: "application/json",
     },
   });
-
+export const updateLanguage = (data, token) =>
+  axiosClient.put("/api/profile/multi-language", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
 export const passApi = (data, token) =>
   axiosClient.put("/api/profile/change_password", data, {
     headers: {
@@ -43,7 +49,13 @@ export const reviewApi = (data, token, review_id) =>
       Accept: "application/json",
     },
   });
-export const inviteApi = (data) => axiosClient.post("/api/invite", data);
+export const inviteApi = (data, token) =>
+  axiosClient.post("/api/invite", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+  });
 
 export const getCheckApi = (token) =>
   axiosClient.get("/api/checkpoint", {

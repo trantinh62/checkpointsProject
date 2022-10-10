@@ -6,9 +6,12 @@ import {
 } from "../../Api/userApi";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
+import removeMark from "../../Helper/removeMark";
 import "./ListMemberHistory.css";
 
 function ListMemberHistory() {
+  const { t } = useTranslation();
   const search = useLocation().search;
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
@@ -117,7 +120,7 @@ function ListMemberHistory() {
         setLoading(true);
       }
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
 
@@ -136,17 +139,6 @@ function ListMemberHistory() {
       setDataPerPage(dataListCheck.slice(start, end));
     } catch (err) {}
   };
-
-  function removeMark(str) {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-    str = str.replace(/đ/g, "d");
-    return str;
-  }
 
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
@@ -173,7 +165,7 @@ function ListMemberHistory() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item active" aria-current="page">
-                      Manage checkpoints: Member's checkpoint histories
+                      {t("listMemberHistory.memberHistory")}
                     </li>
                   </ol>
                 </nav>
@@ -185,20 +177,20 @@ function ListMemberHistory() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Enter title checkpoint to filter"
+                      placeholder={t("listMemberHistory.titleFilter")}
                       name="name"
                       onChange={onChangeInput}
                       value={dataSearch.name}
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    Start date:
+                    {t("startDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
@@ -211,7 +203,7 @@ function ListMemberHistory() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    End date:
+                    {t("endDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
@@ -228,29 +220,28 @@ function ListMemberHistory() {
             </div>
             <div className="col-md-12">
               <button type="submit" className="btn btn-default btn-filter">
-                Reset filter
+                {t("listMemberHistory.resetFilter")}
               </button>
             </div>
           </form>
           {loading === false && (
-            <h3 className="review-notify">Waiting for loading data!</h3>
+            <h3 className="review-notify">{t("waitingData")}</h3>
           )}
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-            loading === true && (
-              <h3 className="list-member-history-notify">
-                No checkpoint history!
-              </h3>
-            )}
-          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+          {dataPerPage.length === 0 && loading === true && (
+            <h3 className="list-member-history-notify">
+              {t("listMemberHistory.noCheckpoints")}
+            </h3>
+          )}
+          {dataPerPage.length > 0 && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th className="view-list-member-history">View</th>
+                    <th>{t("title")}</th>
+                    <th>{t("startDate")}</th>
+                    <th>{t("endDate")}</th>
+                    <th className="view-list-member-history">{t("view")}</th>
                   </tr>
                 </thead>
                 <tbody>

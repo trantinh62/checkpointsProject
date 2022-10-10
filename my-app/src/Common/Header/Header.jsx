@@ -1,23 +1,22 @@
 import "./Header.css";
 import $ from "jquery";
 import { useEffect } from "react";
+import { updateLanguage } from "../../Api/userApi";
+import Toast from "../../Components/Toast/Toast";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 function Header() {
+  const { t } = useTranslation();
   const userName = sessionStorage.getItem("sessionUsername");
+  const token = sessionStorage.getItem("sessionToken");
   const roleId = sessionStorage.getItem("sessionRoleId");
+  const language = sessionStorage.getItem("sessionLanguage");
   const handleLogout = async () => {
     sessionStorage.clear();
   };
 
   useEffect(() => {
-    $(window).on("scroll", function () {
-      if ($(this).scrollTop() >= 200) {
-        $(".navbar").addClass("fixed-top");
-      } else if ($(this).scrollTop() == 0) {
-        $(".navbar").removeClass("fixed-top");
-      }
-    });
-
     function adjustNav() {
       var winWidth = $(window).width(),
         dropdown = $(".dropdown"),
@@ -42,7 +41,34 @@ function Header() {
     $(window).on("resize", adjustNav);
 
     adjustNav();
-  });
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      i18n.changeLanguage(language);
+    } catch (err) {
+      Toast(t("errorFetchData"), "error");
+    }
+  };
+
+  const handleChangeLanguage = async (e) => {
+    e.preventDefault();
+    try {
+      const languageValue = e.target.id;
+      i18n.changeLanguage(languageValue);
+      sessionStorage.setItem("sessionLanguage", languageValue);
+      const updatelanguage = await updateLanguage(
+        { language: languageValue === "en" ? 0 : 1 },
+        token
+      );
+    } catch (err) {
+      Toast(t("changeLangError"), "error");
+    }
+  };
 
   return (
     <div className="header-area overlay">
@@ -64,51 +90,55 @@ function Header() {
             <ul className="navbar-nav ml-auto">
               <li className="dropdown">
                 <a className="nav-item nav-link" data-toggle="dropdown">
-                  My checkpoints
+                  {t("header.myCheckpoints")}
                 </a>
                 <div className="dropdown-menu">
                   <a href="/mycheckpoints" className="dropdown-item">
-                    List checkpoints
+                    {t("header.listCheckpoints")}
                   </a>
                   <a href="/histories" className="dropdown-item">
-                    Checkpoint histories
+                    {t("header.checkpointHistories")}
                   </a>
                 </div>
               </li>
               {roleId !== "3" && (
                 <li className="dropdown">
                   <a className="nav-item nav-link" data-toggle="dropdown">
-                    Manage checkpoints
+                    {t("header.manageCheckpoints")}
                   </a>
 
                   <div className="dropdown-menu">
                     {roleId === "1" && (
                       <a href="/create" className="dropdown-item">
-                        Create/Assign/Delete checkpoints
+                        {t("header.crudCheckpoints")}
                       </a>
                     )}
                     {roleId === "1" && (
                       <a href="/gpoint" className="dropdown-item">
-                        Update gpoint
+                        {t("header.updateGpoint")}
                       </a>
                     )}
                     <a href="/histories/member" className="dropdown-item">
-                      View member's checkpoint histories
+                      {t("header.memberHistories")}
                     </a>
                   </div>
                 </li>
               )}
               {roleId === "1" && (
                 <li className="dropdown">
-                  <a className="nav-item nav-link" data-toggle="dropdown">
-                    Manage users
+                  <a
+                    href="#"
+                    className="nav-item nav-link"
+                    data-toggle="dropdown"
+                  >
+                    {t("header.manageUsers")}
                   </a>
                   <div className="dropdown-menu">
                     <a href="/invite" className="dropdown-item">
-                      Invite users
+                      {t("header.inviteUser")}
                     </a>
                     <a href="/users" className="dropdown-item">
-                      Update users
+                      {t("header.updateUsers")}
                     </a>
                   </div>
                 </li>
@@ -129,14 +159,37 @@ function Header() {
                 </a>
                 <div className="dropdown-menu">
                   <a href="/profile" className="dropdown-item">
-                    Profile
+                    {t("header.profile")}
                   </a>
                   <a
                     href="/login"
                     className="dropdown-item"
                     onClick={handleLogout}
                   >
-                    Logout
+                    {t("header.logout")}
+                  </a>
+                </div>
+              </li>
+              <li className="dropdown">
+                <a className="nav-item nav-link" data-toggle="dropdown">
+                  <i className="bi bi-globe2"></i>
+                </a>
+                <div className="dropdown-menu">
+                  <a
+                    href="#"
+                    className="dropdown-item"
+                    id="vn"
+                    onClick={handleChangeLanguage}
+                  >
+                    {t("header.vietnamese")}
+                  </a>
+                  <a
+                    href="#"
+                    className="dropdown-item"
+                    id="en"
+                    onClick={handleChangeLanguage}
+                  >
+                    {t("header.english")}
                   </a>
                 </div>
               </li>

@@ -8,9 +8,11 @@ import {
   getAllUsersApi,
   createAndDeleteReview,
 } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
 
 function Assgin() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const search = useLocation().search;
@@ -94,7 +96,7 @@ function Assgin() {
       setIdAssign(resUser.data.data[0].id);
       setLoading(true);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
   const onChangeInput = async (e) => {
@@ -243,14 +245,11 @@ function Assgin() {
         dataReview.new_reviewers.length === 0 &&
         dataReview.remove_reviewers.length === 0
       ) {
-        Toast("There is no change in order to update users!", "warning");
+        Toast(t("assign.noChangeWarning"), "warning");
         return;
       }
       if (Array.from(new Set(dataReview.role_id)).length < 3) {
-        Toast(
-          "Must assign all 3 roles (Group leader, Team leader, Member ) !",
-          "warning"
-        );
+        Toast(t("assign.rolesWarning"), "warning");
         return;
       }
       const res = await createAndDeleteReview(dataReview, token);
@@ -270,8 +269,10 @@ function Assgin() {
       });
       setDataChecked(reschecked.data.data);
       setCopyChecked(reschecked.data.data);
-      Toast("Update reviewer successful!", "success");
-    } catch (err) {}
+      Toast(t("assign.updateSuccess"), "success");
+    } catch (err) {
+      Toast(t("assign.updateFailed"), "error");
+    }
   };
 
   let menuItems = [];
@@ -300,11 +301,11 @@ function Assgin() {
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
                       <a className="breadcrumb" href="/create">
-                        Manage checkpoints: Create checkpoints
+                        {t("create.create")}
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Assign users: {dataCheckpoint.name}
+                      {dataCheckpoint.name}
                     </li>
                   </ol>
                 </nav>
@@ -316,7 +317,7 @@ function Assgin() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -330,7 +331,7 @@ function Assgin() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    Be assigned:
+                    {t("beChecked")}
                   </label>
                   <div className="col-sm-10">
                     <select
@@ -370,23 +371,20 @@ function Assgin() {
               </div>
             </div>
             {loading === false && (
-              <h3 className="review-notify">
-                Waiting for loading data checkpoint!
-              </h3>
+              <h3 className="review-notify">{t("waitingData")}</h3>
             )}
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-              loading === true && (
-                <h3 className="review-notify">There are no users to assign</h3>
-              )}
-            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            {dataPerPage.length === 0 && loading === true && (
+              <h3 className="review-notify">{t("assign.noUsers")}</h3>
+            )}
+            {dataPerPage.length > 0 && (
               <div>
                 <Table striped bordered hover className="text-center">
                   <thead>
                     <tr>
                       <th>#</th>
                       <th>Email</th>
-                      <th>Username</th>
-                      <th>Role</th>
+                      <th>{t("username")}</th>
+                      <th>{t("role")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -442,7 +440,9 @@ function Assgin() {
                           ref={selectAll}
                         ></input>
                       </td>
-                      <td style={{ textAlign: "initial" }}>Select all</td>
+                      <td style={{ textAlign: "initial" }}>
+                        {t("assign.selectAll")}
+                      </td>
                     </tr>
                   </tbody>
                 </Table>
@@ -457,14 +457,14 @@ function Assgin() {
                       type="submit"
                       className="btn btn-default btn-assign"
                     >
-                      Assign users
+                      {t("assign.btnAssign")}
                     </button>
                     <button
                       onClick={() => navigate(-1)}
                       type="submit"
                       className="btn btn-default btn-assign"
                     >
-                      Cancel
+                      {t("btnCancel")}
                     </button>
                   </div>
                 </div>
