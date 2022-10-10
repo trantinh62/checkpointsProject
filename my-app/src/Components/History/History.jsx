@@ -74,7 +74,7 @@ function History() {
               <h3 className="review-notify">{t("waitingData")}</h3>
             )}
             {dataPerPage.length === 0 && loading === true && (
-              <h3 className="history-notify">{t("noHistories")}</h3>
+              <h3 className="history-notify">{t("history.noHistories")}</h3>
             )}
             {dataPerPage.length > 0 && (
               <div>

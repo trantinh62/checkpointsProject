@@ -99,8 +99,8 @@
         "inputUsername": "Nhập username hoặc email để lọc kết quả",
         "selectRole": "Chọn role:",
         "resetbtn":"Đặt lại filter",
-        "updateSuccess":"Cập nhật user thành công",
-        "updateFailed":"Cập nhật user thất bại",
+        "updateSuccess":"Cập nhật user thành công!",
+        "updateFailed":"Cập nhật user thất bại!",
         "noUsers":"Không tồn tại user"
     },
     "reset":{
@@ -157,6 +157,6 @@
     "age":"Tuổi:",
     "phone":"Số điện thoại:",
     "status":"Trạng thái:",
-    "address":"Address:"
+    "address":"Địa chỉ:"
 
 }

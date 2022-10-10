@@ -2,6 +2,7 @@
     background-color: #5dabc3;
     min-height: calc(100% - 80px);
     width: 100%;
+    position: absolute;
 }
 .table-wrapper.user {
     background: #fff;

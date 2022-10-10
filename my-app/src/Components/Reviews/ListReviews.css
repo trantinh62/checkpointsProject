@@ -1,9 +1,9 @@
 
 .list-reviews-cover {
     background-color: #5dabc3;
-    height: 100%;
+    height: calc(100% - 80px);
     width: 100%;
-    position: inherit;
+    position: absolute;
 }
 .table-wrapper .list-review {
     background: #fff;
