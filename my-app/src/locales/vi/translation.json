@@ -120,8 +120,8 @@
         "oldPass":"Mật khẩu cũ",
         "newPass":"Mật khẩu mới",
         "confirmPass":"Nhập lại mật khẩu",
-        "updateSuccess":"Cập nhật password thành công",
-        "updateFailed":"Cập nhật password thất bại",
+        "updateSuccess":"Cập nhật thông tin thành công",
+        "updateFailed":"Cập nhật thông tin thất bại",
         "updatePassSuccess":"Thay đổi password thành công!",
         "updatePassFailed":"Thay đổi pasword thất bại!",
         "btnUp":"Cập nhật profile",
@@ -157,6 +157,6 @@
     "age":"Tuổi:",
     "phone":"Số điện thoại:",
     "status":"Trạng thái:",
-    "address":"Địa chỉ:"
-
+    "address":"Địa chỉ:",
+    "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số"
 }

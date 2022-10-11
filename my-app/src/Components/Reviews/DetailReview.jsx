@@ -39,9 +39,9 @@ function ListReviews() {
     e.preventDefault();
     try {
       const res = await reviewApi(dataReview, token, params.review_id);
-      Toast(t("reviewSuccess"), "success");
+      Toast(t("detailReview.reviewSuccess"), "success");
     } catch (err) {
-      Toast(t("reviewFailed"), "error");
+      Toast(t("detailReview.reviewFailed"), "error");
     }
   };
 
