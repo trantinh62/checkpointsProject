@@ -1,6 +1,6 @@
 {
     "header": {
-        "myCheckpoints": "My chechpoints",
+        "myCheckpoints": "My checkpoints",
         "listCheckpoints": "List need checked",
         "checkpointHistories": "View my histories",
         "manageCheckpoints": "Manage checkpoint",
@@ -122,8 +122,10 @@
         "updatePassSuccess":"Update password successful!",
         "updatePassFailed":"Update password failed!",
         "btnUp":"Update profile",
-        "btnChange":"Change password"
-
+        "btnChange":"Change password",
+        "age":"Age:",
+        "phone":"Phone:",
+        "address":"Address:"
     }
     ,
     "waitingData": "Waiting for loading data",
@@ -156,6 +158,6 @@
     "age":"Age:",
     "phone":"Phone:",
     "status":"Status:",
-    "address":"Address:"
-
+    "address":"Address:",
+    "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số"
 }

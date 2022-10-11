@@ -29,6 +29,10 @@ function ResetPassword() {
       navigate("/login", { replace: true });
       navigate(0);
     } catch (err) {
+      if (err.response.request.status === 422) {
+        Toast(t("errorFormatPass"), "error");
+        return;
+      }
       Toast("Reset password failed!", "error");
     }
   };

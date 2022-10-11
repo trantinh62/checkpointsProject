@@ -59,18 +59,22 @@ const Profile = () => {
         "sessionUsername",
         response.data.data.first_name + " " + response.data.data.last_name
       );
-      Toast(t("updateSuccess"), "success");
+      Toast(t("profile.updateSuccess"), "success");
     } catch (err) {
-      Toast(t("updateFailed"), "error");
+      Toast(t("profile.updateFailed"), "error");
     }
   };
   const handleChange = async (e) => {
     e.preventDefault();
     try {
       const response = await passApi(dataPass, token);
-      Toast(t("updatePassSuccess"), "success");
+      Toast(t("profile.updatePassSuccess"), "success");
     } catch (err) {
-      Toast(t("updatePassFailed"), "error");
+      if (err.response.request.status === 422) {
+        Toast(t("errorFormatPass"), "error");
+        return;
+      }
+      Toast(t("profile.updatePassFailed"), "error");
     }
   };
   return (
