@@ -1,5 +1,4 @@
 import "./Header.css";
-import $ from "jquery";
 import { useEffect } from "react";
 import { updateLanguage } from "../../Api/userApi";
 import Toast from "../../Components/Toast/Toast";
@@ -15,33 +14,6 @@ function Header() {
   const handleLogout = async () => {
     sessionStorage.clear();
   };
-
-  useEffect(() => {
-    function adjustNav() {
-      var winWidth = $(window).width(),
-        dropdown = $(".dropdown"),
-        dropdownMenu = $(".dropdown-menu");
-
-      if (winWidth >= 768) {
-        dropdown.on("mouseenter", function () {
-          $(this).addClass("show").children(dropdownMenu).addClass("show");
-        });
-
-        dropdown.on("mouseleave", function () {
-          $(this)
-            .removeClass("show")
-            .children(dropdownMenu)
-            .removeClass("show");
-        });
-      } else {
-        dropdown.off("mouseenter mouseleave");
-      }
-    }
-
-    $(window).on("resize", adjustNav);
-
-    adjustNav();
-  }, []);
 
   useEffect(() => {
     fetchData();
@@ -79,121 +51,75 @@ function Header() {
         <div className="container">
           <a className="navbar-brand">Checkpoint 360</a>
 
-          <button
-            type="button"
-            className="navbar-toggler collapsed"
-            data-toggle="collapse"
-            data-target="#main-nav"
-          ></button>
+          <button type="button" className="navbar-toggler collapsed"></button>
 
-          <div id="main-nav" className="collapse navbar-collapse">
-            <ul className="navbar-nav ml-auto">
-              <li className="dropdown">
-                <a className="nav-item nav-link" data-toggle="dropdown">
-                  {t("header.myCheckpoints")}
-                </a>
-                <div className="dropdown-menu">
-                  <a href="/mycheckpoints" className="dropdown-item">
-                    {t("header.listCheckpoints")}
-                  </a>
-                  <a href="/histories" className="dropdown-item">
-                    {t("header.checkpointHistories")}
-                  </a>
+          <div className="">
+            <div className="dropdown">
+              <button className="dropbtn">{t("header.myCheckpoints")}</button>
+              <div className="dropdown-content">
+                <a href="/mycheckpoints">{t("header.listCheckpoints")}</a>
+                <a href="/histories">{t("header.checkpointHistories")}</a>
+              </div>
+            </div>
+            {roleId !== "3" && (
+              <div className="dropdown ">
+                <button className="dropbtn">
+                  {t("header.manageCheckpoints")}
+                </button>
+                <div className="dropdown-content">
+                  {roleId === "1" && (
+                    <a href="/create">{t("header.crudCheckpoints")}</a>
+                  )}
+                  {roleId === "1" && (
+                    <a href="/gpoint">{t("header.updateGpoint")}</a>
+                  )}
+                  <a href="/histories/member">{t("header.memberHistories")}</a>
                 </div>
-              </li>
-              {roleId !== "3" && (
-                <li className="dropdown">
-                  <a className="nav-item nav-link" data-toggle="dropdown">
-                    {t("header.manageCheckpoints")}
-                  </a>
-
-                  <div className="dropdown-menu">
-                    {roleId === "1" && (
-                      <a href="/create" className="dropdown-item">
-                        {t("header.crudCheckpoints")}
-                      </a>
-                    )}
-                    {roleId === "1" && (
-                      <a href="/gpoint" className="dropdown-item">
-                        {t("header.updateGpoint")}
-                      </a>
-                    )}
-                    <a href="/histories/member" className="dropdown-item">
-                      {t("header.memberHistories")}
-                    </a>
-                  </div>
-                </li>
-              )}
-              {roleId === "1" && (
-                <li className="dropdown">
-                  <a
-                    href="#"
-                    className="nav-item nav-link"
-                    data-toggle="dropdown"
-                  >
-                    {t("header.manageUsers")}
-                  </a>
-                  <div className="dropdown-menu">
-                    <a href="/invite" className="dropdown-item">
-                      {t("header.inviteUser")}
-                    </a>
-                    <a href="/users" className="dropdown-item">
-                      {t("header.updateUsers")}
-                    </a>
-                  </div>
-                </li>
-              )}
-            </ul>
+              </div>
+            )}
+            {roleId !== "3" && (
+              <div className="dropdown ">
+                <button className="dropbtn">{t("header.manageUsers")}</button>
+                <div className="dropdown-content">
+                  <a href="/invite">{t("header.inviteUser")}</a>
+                  <a href="/users">{t("header.updateUsers")}</a>
+                </div>
+              </div>
+            )}
           </div>
-          <div
-            id="main-nav"
-            className="collapse navbar-collapse"
-            style={{
-              justifyContent: "right",
-            }}
-          >
-            <ul className="navbar-nav">
-              <li className="dropdown">
-                <a className="nav-item nav-link" data-toggle="dropdown">
-                  {userName}
+          <div className="dropdown-right">
+            <div className="dropdown">
+              <button className="dropbtn"> {userName}</button>
+              <div className="dropdown-content">
+                <a href="/profile">{t("header.profile")}</a>
+                <a href="/login" onClick={handleLogout}>
+                  {t("header.logout")}
                 </a>
-                <div className="dropdown-menu">
-                  <a href="/profile" className="dropdown-item">
-                    {t("header.profile")}
-                  </a>
-                  <a
-                    href="/login"
-                    className="dropdown-item"
-                    onClick={handleLogout}
-                  >
-                    {t("header.logout")}
-                  </a>
-                </div>
-              </li>
-              <li className="dropdown">
-                <a className="nav-item nav-link" data-toggle="dropdown">
-                  <i className="bi bi-globe2"></i>
+              </div>
+            </div>
+            <div className="dropdown">
+              <button className="dropbtn">
+                <i className="bi bi-globe2"></i>
+              </button>
+              <div className="dropdown-content">
+                <a
+                  href="/"
+                  className="dropdown-item"
+                  id="vn"
+                  onClick={handleChangeLanguage}
+                >
+                  {t("header.vietnamese")}
                 </a>
-                <div className="dropdown-menu">
-                  <a
-                    href="#"
-                    className="dropdown-item"
-                    id="vn"
-                    onClick={handleChangeLanguage}
-                  >
-                    {t("header.vietnamese")}
-                  </a>
-                  <a
-                    href="#"
-                    className="dropdown-item"
-                    id="en"
-                    onClick={handleChangeLanguage}
-                  >
-                    {t("header.english")}
-                  </a>
-                </div>
-              </li>
-            </ul>
+                <a
+                  href="/"
+                  className="dropdown-item"
+                  id="en"
+                  onClick={handleChangeLanguage}
+                >
+                  {t("header.english")}
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </nav>

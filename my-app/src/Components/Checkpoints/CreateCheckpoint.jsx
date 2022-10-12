@@ -50,7 +50,7 @@ function Checkpoints() {
   };
 
   const handleOnClick = (e) => {
-    const page = e.target.value;
+    const page = parseInt(e.target.value);
     setPage(page);
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
@@ -101,7 +101,14 @@ function Checkpoints() {
       const resDel = await deleteCheckpoint(deleteId, token);
       Toast(t("create.deleteSuccess"), "success");
       const res = await getCheckApi(token);
+      const pageCur =
+        page > Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
+          ? Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
+          : page;
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
+      setPage(pageCur);
+      const start = (pageCur - 1) * itemsPerPage;
+      const end = pageCur * itemsPerPage;
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
     } catch (err) {
@@ -236,8 +243,8 @@ function Checkpoints() {
                           <span>|</span>
                           <button
                             variant="primary"
-                            onClick={handleShow}
                             className="btn-delete-checkpoint"
+                            onClick={handleShow}
                           >
                             <i id={ele.id} className="bi bi-trash"></i>
                           </button>
