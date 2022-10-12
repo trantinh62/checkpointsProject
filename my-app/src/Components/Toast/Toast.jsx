@@ -10,6 +10,7 @@ function Toast(message, typeofToast) {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
+    zIndex: 9999999999,
   };
   if (typeofToast === "error") return toast.error(message, attrObj);
   if (typeofToast === "warning") return toast.warning(message, attrObj);
