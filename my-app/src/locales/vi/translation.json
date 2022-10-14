@@ -111,6 +111,19 @@
         "inputNew": "Nhập mật khẩu mới",
         "inputConfirm": "Nhập lại mật khẩu mới"
     },
+    "register":{
+        "firstname":"Họ:",
+        "lastname":"Tên:",
+        "phone":"Số điện thoại:",
+        "age":"Tuổi:",
+        "address":"Địa chỉ:",
+        "registerFailed": "Đăng ký thất bại",
+        "title": "Đăng ký",
+        "newPass": "Mật khẩu ",
+        "confirmPass": "Nhập lại mật khẩu",
+        "inputNew": "Nhập mật khẩu ",
+        "inputConfirm": "Nhập lại mật khẩu"
+    },
     "profile":{
         "firstname":"Họ:",
         "lastname":"Tên:",
@@ -126,6 +139,10 @@
         "updatePassFailed":"Thay đổi pasword thất bại!",
         "btnUp":"Cập nhật profile",
         "btnChange":"Cập nhật password"
+    },
+    "login": {
+        "loginSuccess": "Đăng nhập thành công",
+        "loginFailed": "Đăng nhập thất bại"
     },
     "waitingData": "Đang tải dữ liệu",
     "btnBack": "Quay lại",
@@ -158,5 +175,6 @@
     "phone":"Số điện thoại:",
     "status":"Trạng thái:",
     "address":"Địa chỉ:",
-    "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số"
+    "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số",
+    "ratio": "Đã check/Tổng sô"
 }

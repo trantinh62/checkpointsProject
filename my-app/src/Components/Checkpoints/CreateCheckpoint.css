@@ -1,5 +1,6 @@
+
+  
 .create-cover {
-    padding-top: 40px;
     background-color: #5dabc3;
     min-height: calc(100% - 80px);
     width: 100%;
@@ -10,6 +11,7 @@
     padding: 20px;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    min-height: calc(100vh - 80px);
 }
 .table-title.create{
     padding-bottom: 0;
@@ -70,7 +72,7 @@ table.table td a.add i {
     position: relative;
     top: 3px;
 }    
-table.table .form-control {
+table.table .form-control .create {
     height: 32px;
     line-height: 32px;
     box-shadow: none;
@@ -108,6 +110,8 @@ table.table td .add {
 .create-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .btn-delete-checkpoint{
     background: none;

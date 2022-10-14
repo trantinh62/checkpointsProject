@@ -58,7 +58,7 @@ function ResetPassword() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="password reset"
+                      type="password"
                       className="form-control"
                       id="password"
                       placeholder={t("reset.inputNew")}
@@ -75,7 +75,7 @@ function ResetPassword() {
                   </label>
                   <div className="col-sm-10">
                     <input
-                      type="password reset"
+                      type="password"
                       className="form-control"
                       id="password_confirm"
                       placeholder={t("reset.inputConfirm")}

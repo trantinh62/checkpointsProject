@@ -4,7 +4,7 @@ function Footer() {
     <div>
       <div className="bg-light text-center text-lg-start">
         <div className="text-center footer">
-          © 09/2022 Copyright:
+          © 10/2022 Copyright:
           <a className="text-dark"> Web Group</a>
         </div>
       </div>

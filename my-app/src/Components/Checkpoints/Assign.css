@@ -6,6 +6,7 @@
     position: absolute;
 }
 .table-wrapper.assign {
+    min-height: calc(100vh - 80px);
     background: #fff;
     padding: 20px 20px 0;	
     border-radius: 0.5rem;
@@ -125,4 +126,10 @@ table.table td .add {
     color: var(--bs-btn-hover-color);
     background-color: var(--bs-btn-hover-bg);
     border-color: var(--bs-btn-hover-border-color);
+}
+.justify-content-center{
+    margin: 0;
+}
+.breadcrumb.assign {
+    margin: 0;
 }

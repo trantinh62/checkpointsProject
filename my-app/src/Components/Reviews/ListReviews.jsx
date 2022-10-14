@@ -5,9 +5,10 @@ import {
   useNavigate,
   useLocation,
   useSearchParams,
+  Link,
 } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import i18n from "i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import Toast from "../Toast/Toast";
 import "./ListReviews.css";
 function ListReviews() {
@@ -26,7 +27,7 @@ function ListReviews() {
   const [dataYetReview, setDataYetReview] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1, []);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const handleOnClick = (e) => {
     const page = e.target.value;
     setPage(page);
@@ -41,6 +42,7 @@ function ListReviews() {
   }, []);
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getReviewsByCheckpointIdAndMyReviewId(
         token,
         params.check_id
@@ -56,7 +58,10 @@ function ListReviews() {
       setDataYetReview(yetReview);
       setNumPages(Math.ceil(yetReview.length / itemsPerPage));
       setDataPerPage(yetReview.slice(start, end));
-      setLoading(true);
+      // setDataYetReview(res.data.data);
+      // setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
+      // setDataPerPage(res.data.data.slice(start, end));
+      setIsLoading(false);
     } catch (err) {
       Toast(t("errorFetchData"), "error");
     }
@@ -86,9 +91,9 @@ function ListReviews() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/mycheckpoints">
+                      <Link to="/mycheckpoints">
                         {t("myCheckpoints.listCheckpoint")}
-                      </a>
+                      </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {title}
@@ -99,23 +104,21 @@ function ListReviews() {
             </div>
           </div>
           <div className="row">
-            {loading === false && (
-              <h3 className="review-notify">{t("waitingData")}</h3>
-            )}
-            {dataPerPage.length === 0 && loading === true && (
+            {isLoading === true && <LoadingSpinner />}
+            {dataPerPage.length === 0 && isLoading === false && (
               <h3 className="review-notify">{t("listReviews.allChecked")}</h3>
             )}
-            {dataPerPage.length > 0 && (
+            {dataPerPage.length > 0 && isLoading === false && (
               <>
                 {dataPerPage?.map((ele, index) => {
                   return (
-                    <div className="col-xl-3 col-sm-6">
+                    <div key={index} className="col-xl-3 col-sm-6">
                       <div className="card" style={{ height: "19rem" }}>
                         <div className="card-body">
                           <div className="d-flex align-items-center">
-                            <div class="avatar-md">
-                              <div class="avatar-title bg-soft-primary text-primary display-6 m-0 rounded-circle">
-                                <i class="bx bxs-user-circle"></i>
+                            <div className="avatar-md">
+                              <div className="avatar-title bg-soft-primary text-primary display-6 m-0 rounded-circle">
+                                <i className="bx bxs-user-circle"></i>
                               </div>
                             </div>
                             <div className="flex-1 ms-3">
@@ -135,20 +138,20 @@ function ListReviews() {
                             </div>
                           </div>
                           <div className="mt-3 pt-1">
-                            <p className="text-muted mb-0">
-                              <i class="bi bi-phone"></i>
+                            <div className="text-muted mb-0">
+                              <i className="bi bi-phone"></i>
                               {ele.user.phone}
-                            </p>
-                            <p className="text-muted mb-0 mt-2 review-panel">
-                              <i class="bi bi-envelope"></i>
+                            </div>
+                            <div className="text-muted mb-0 mt-2 review-panel">
+                              <i className="bi bi-envelope"></i>
                               <div>{ele.user.email}</div>
-                            </p>
+                            </div>
                           </div>
                           <div className="d-flex gap-2 pt-4 btn-review-div">
-                            <a
-                              href={`/mycheckpoints/${
-                                params.check_id
-                              }/reviews/${ele.id}?title=${title}&user_id=${
+                            <Link
+                              to={`/mycheckpoints/${params.check_id}/reviews/${
+                                ele.id
+                              }?title=${title}&user_id=${
                                 ele.user.id
                               }&username=${
                                 ele.user.first_name !== null &&
@@ -173,7 +176,7 @@ function ListReviews() {
                                 <i className="bx bx-message-square-dots me-1"></i>
                                 {t("listReviews.btnReview")}
                               </button>
-                            </a>
+                            </Link>
                           </div>
                         </div>
                       </div>
@@ -195,6 +198,7 @@ function ListReviews() {
                 onClick={() => navigate(-1)}
                 type="submit"
                 className="btn btn-default btn-review"
+                disabled={isLoading}
               >
                 {t("btnBack")}
               </button>

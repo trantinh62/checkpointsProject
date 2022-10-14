@@ -1,7 +1,16 @@
 import { useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { reviewApi } from "../../Api/userApi";
+import {
+  useNavigate,
+  useParams,
+  useSearchParams,
+  Link,
+} from "react-router-dom";
+import {
+  getReviewsByCheckpointIdAndReviewId,
+  reviewApi,
+} from "../../Api/userApi";
 import Toast from "../Toast/Toast";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import "./DetailReview.css";
 
@@ -14,6 +23,7 @@ function ListReviews() {
   const title = searchParams.get("title");
   const username = searchParams.get("username");
   const user_id = searchParams.get("user_id");
+  const [isLoading, setIsLoading] = useState(false);
   const [dataReview, setDataReview] = useState({
     attitude: null,
     performance: null,
@@ -38,34 +48,41 @@ function ListReviews() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const res = await reviewApi(dataReview, token, params.review_id);
       Toast(t("detailReview.reviewSuccess"), "success");
+      // const getReview = await getReviewsByCheckpointIdAndReviewId(
+      //   token,
+      //   check_id,
+      //   review_id
+      // );
+      setIsLoading(false);
     } catch (err) {
       Toast(t("detailReview.reviewFailed"), "error");
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="detail-review">
       <div className="container">
-        <div className="table-wrapper">
+        <div className="table-wrapper detail-review-wrap">
           <div className="table-title-detail-review">
             <div className="row ">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb" style={{ width: "max-content" }}>
                     <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/mycheckpoints">
+                      <Link to="/mycheckpoints">
                         {t("myCheckpoints.listCheckpoint")}
-                      </a>
+                      </Link>
                     </li>
                     <li className="breadcrumb-item">
-                      <a
-                        className="breadcrumb"
-                        href={`/mycheckpoints/${params.check_id}?title=${title}`}
+                      <Link
+                        to={`/mycheckpoints/${params.check_id}?title=${title}`}
                       >
                         {title}
-                      </a>
+                      </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {t("detailReview.beChecked")} {username}
@@ -75,22 +92,23 @@ function ListReviews() {
               </div>
             </div>
           </div>
+          {isLoading && <LoadingSpinner />}
           <form onSubmit={handleSubmit}>
             <div>
               <div
-                class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
                 style={{ minHeight: "10rem" }}
               >
-                <div class="row align-items-center">
-                  <div class="col-12 col-md-3 detail-review-panel">
-                    <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-3 detail-review-panel">
+                    <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
                       <p>{t("detailReview.check1")}</p>
                     </h4>
                   </div>
-                  <div class="col-12 col-md-6 text-center">
+                  <div className="col-12 col-md-6 text-center">
                     <span>{t("detailReview.descrip1")}</span>
                   </div>
-                  <div class="col-12 col-md-3 detail-review-panel text-center">
+                  <div className="col-12 col-md-3 detail-review-panel text-center">
                     <select
                       style={{
                         width: "150px",
@@ -121,19 +139,19 @@ function ListReviews() {
                 </div>
               </div>
               <div
-                class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
                 style={{ minHeight: "10rem" }}
               >
-                <div class="row align-items-center">
-                  <div class="col-12 col-md-3 detail-review-panel">
-                    <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-3 detail-review-panel">
+                    <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
                       {t("detailReview.check2")}
                     </h4>
                   </div>
-                  <div class="col-12 col-md-6 text-center">
+                  <div className="col-12 col-md-6 text-center">
                     <span>{t("detailReview.descrip2")}</span>
                   </div>
-                  <div class="col-12 col-md-3 detail-review-panel text-center">
+                  <div className="col-12 col-md-3 detail-review-panel text-center">
                     <select
                       style={{
                         width: "150px",
@@ -164,19 +182,19 @@ function ListReviews() {
                 </div>
               </div>
               <div
-                class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
                 style={{ minHeight: "10rem" }}
               >
-                <div class="row align-items-center">
-                  <div class="col-12 col-md-3 detail-review-panel">
-                    <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-3 detail-review-panel">
+                    <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
                       {t("detailReview.check3")}
                     </h4>
                   </div>
-                  <div class="col-12 col-md-6 text-center">
+                  <div className="col-12 col-md-6 text-center">
                     <span>{t("detailReview.descrip3")}</span>
                   </div>
-                  <div class="col-12 col-md-3 detail-review-panel text-center">
+                  <div className="col-12 col-md-3 detail-review-panel text-center">
                     <select
                       style={{
                         width: "150px",
@@ -207,19 +225,19 @@ function ListReviews() {
                 </div>
               </div>
               <div
-                class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
                 style={{ minHeight: "10rem" }}
               >
-                <div class="row align-items-center">
-                  <div class="col-12 col-md-3 detail-review-panel">
-                    <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-3 detail-review-panel">
+                    <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
                       {t("detailReview.check4")}
                     </h4>
                   </div>
-                  <div class="col-12 col-md-6 text-center">
+                  <div className="col-12 col-md-6 text-center">
                     <span>{t("detailReview.descrip4")}</span>
                   </div>
-                  <div class="col-12 col-md-3 detail-review-panel text-center">
+                  <div className="col-12 col-md-3 detail-review-panel text-center">
                     <select
                       style={{
                         width: "150px",
@@ -250,19 +268,19 @@ function ListReviews() {
                 </div>
               </div>
               <div
-                class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
                 style={{ minHeight: "10rem" }}
               >
-                <div class="row align-items-center">
-                  <div class="col-12 col-md-3 detail-review-panel">
-                    <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-3 detail-review-panel">
+                    <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
                       {t("detailReview.check5")}
                     </h4>
                   </div>
-                  <div class="col-12 col-md-6 text-center">
+                  <div className="col-12 col-md-6 text-center">
                     <span>{t("detailReview.descrip5")}</span>
                   </div>
-                  <div class="col-12 col-md-3 detail-review-panel text-center">
+                  <div className="col-12 col-md-3 detail-review-panel text-center">
                     <select
                       style={{
                         width: "150px",
@@ -293,16 +311,16 @@ function ListReviews() {
                 </div>
               </div>
               <div
-                class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
                 style={{ minHeight: "10rem" }}
               >
-                <div class="row align-items-center">
-                  <div class="col-12 col-md-3 detail-review-panel">
-                    <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-3 detail-review-panel">
+                    <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
                       {t("Strength")}
                     </h4>
                   </div>
-                  <div class="col-12 col-sm-9 text-center">
+                  <div className="col-12 col-sm-9 text-center">
                     <textarea
                       className="form-control"
                       rows="5"
@@ -315,16 +333,16 @@ function ListReviews() {
                 </div>
               </div>
               <div
-                class="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
                 style={{ minHeight: "10rem" }}
               >
-                <div class="row align-items-center">
-                  <div class="col-12 col-md-3 detail-review-panel">
-                    <h4 class="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-3 detail-review-panel">
+                    <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
                       {t("Weakness")}
                     </h4>
                   </div>
-                  <div class="col-12 col-sm-9 text-center">
+                  <div className="col-12 col-sm-9 text-center">
                     <textarea
                       className="form-control"
                       rows="5"

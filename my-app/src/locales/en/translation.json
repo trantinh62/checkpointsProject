@@ -18,11 +18,11 @@
     },
     "myCheckpoints": {
         "listCheckpoint": "My checkpoints: List checkpoints need to be checked",
-        "allChecked": "All checkpoint are checked"
+        "allChecked": "No checkpoints need to be checked"
         
     },"listReviews": {
         "btnReview": "Đánh giá",
-        "allChecked": "All checkpoint are checked"
+        "allChecked": "No checkpoints need to be checked"
     },
     "detailReview":{
         "beChecked": "User is checked:",
@@ -42,7 +42,7 @@
     },
     "history": {
         "listHistories":"My checkpoints: Histories",
-        "noHistories":"User has not checked yet"
+        "noHistories":"You have not been checked yet"
     },
     "create":{
         "create": "Manage checkpoints: Create checkpoint",
@@ -111,6 +111,19 @@
         "inputNew": "Enter new password",
         "inputConfirm": "Enter confirm password"
     },
+    "register":{
+        "firstname":"Firstname:",
+        "lastname":"Lastname:",
+        "phone":"Phone:",
+        "age":"Age:",
+        "address":"Address:",
+        "registerFailed": "Register failed!",
+        "title": "Register",
+        "newPass": "Password",
+        "confirmPass": "Confirm password",
+        "inputNew": "Enter password",
+        "inputConfirm": "Enter confirm password"
+    },
     "profile":{
         "firstname":"Firstname:",
         "lastname":"Lastname:",
@@ -126,6 +139,10 @@
         "age":"Age:",
         "phone":"Phone:",
         "address":"Address:"
+    },
+    "login": {
+        "loginSuccess": "Login successful!",
+        "loginFailed": "Login failed!"
     }
     ,
     "waitingData": "Waiting for loading data",
@@ -134,7 +151,7 @@
     "btnCancel": "Cancel",
     "btnDelete": "Delete",
     "errorFetchData":"Error occurs wwhen loading data",
-    "title": "Title",
+    "title": "Title:",
     "beChecked":"User is checked:",
     "startDate": "Start date",
     "endDate": "End date",
@@ -159,5 +176,6 @@
     "phone":"Phone:",
     "status":"Status:",
     "address":"Address:",
-    "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số"
+    "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số",
+    "ratio": "Checked/Total"
 }

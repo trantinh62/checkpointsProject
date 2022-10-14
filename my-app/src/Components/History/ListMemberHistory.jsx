@@ -241,6 +241,7 @@ function ListMemberHistory() {
                     <th>{t("title")}</th>
                     <th>{t("startDate")}</th>
                     <th>{t("endDate")}</th>
+                    <th>{t("ratio")}</th>
                     <th className="view-list-member-history">{t("view")}</th>
                   </tr>
                 </thead>
@@ -252,6 +253,7 @@ function ListMemberHistory() {
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
+                        <td></td>
                         <td>
                           <a
                             href={`/histories/member/${ele.id}?title=${ele.name}`}

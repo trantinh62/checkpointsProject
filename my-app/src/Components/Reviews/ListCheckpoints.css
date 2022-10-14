@@ -1,12 +1,12 @@
 
 .list-checkpoints-cover {
-    padding-top: 40px;
     background-color: #5dabc3;
     min-height: calc(100% - 80px);
     width: 100%;
     position: absolute;
 }
-.table-wrapper {
+.table-wrapper.list-check {
+    min-height: calc(100vh - 80px);
     background: #fff;
     padding: 20px;	
     border-radius: 0.5rem;
@@ -83,12 +83,15 @@ table.table .form-control.error {
 table.table td .add {
     display: none;
 }
-.breadcrumb {
+.breadcrumb.list-check {
     text-decoration: none;
+    margin: 0;
 }
 .checkpoint-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .view-checkpoint{
     width: 6%;

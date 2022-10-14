@@ -3,9 +3,12 @@
     min-height: calc(100% - 80px);
     width: 100%;
 }
+.breadcrumb.user{
+    margin: 0;
+}
 .table-wrapper.user {
+    min-height: calc(100vh - 80px);
     background: #fff;
-    padding: 20px;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
@@ -119,7 +122,7 @@ table.table td .add {
     justify-content: center;
 }
 .status-col{
-    width: 6%;
+    width: 8%;
 }
 .btn-user-save{
 	background: #5dabc3;

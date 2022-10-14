@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createApi, getCheckApi, deleteCheckpoint } from "../../Api/userApi";
 import Modal from "react-bootstrap/Modal";
@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
 import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./CreateCheckpoint.css";
 
 function Checkpoints() {
@@ -35,7 +36,7 @@ function Checkpoints() {
 
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const token = sessionStorage.getItem("sessionToken");
 
@@ -64,11 +65,12 @@ function Checkpoints() {
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getCheckApi(token);
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
-      setLoading(true);
+      setIsLoading(false);
     } catch (err) {
       Toast(t("errorFetchData"), "error");
     }
@@ -77,10 +79,12 @@ function Checkpoints() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (
         new Date(dataCheckpoint.start_date) >= new Date(dataCheckpoint.end_date)
       ) {
         Toast(t("create.errorChoseDate"), "warning");
+        setIsLoading(false);
         return;
       }
       const response = await createApi(dataCheckpoint, token);
@@ -89,20 +93,24 @@ function Checkpoints() {
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      setIsLoading(false);
     } catch (err) {
       Toast(t("create.createFailed"), "error");
+      setIsLoading(false);
     }
   };
 
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       handleClose();
       const resDel = await deleteCheckpoint(deleteId, token);
       Toast(t("create.deleteSuccess"), "success");
       const res = await getCheckApi(token);
       const pageCur =
-        page > Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
+        page > Math.ceil(res.data.data.checkpoints.length / itemsPerPage) &&
+        page !== 1
           ? Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
           : page;
       setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
@@ -111,8 +119,10 @@ function Checkpoints() {
       const end = pageCur * itemsPerPage;
       setDataListCheck(res.data.data.checkpoints);
       setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      setIsLoading(false);
     } catch (err) {
       Toast(t("create.deleteFailed"), "error");
+      setIsLoading(false);
     }
   };
 
@@ -133,7 +143,7 @@ function Checkpoints() {
   }
   return (
     <div className="create-cover">
-      <div className="container ">
+      <div className="container">
         <div className="table-wrapper create">
           <div className="table-title create">
             <div className="row">
@@ -158,7 +168,7 @@ function Checkpoints() {
                   <div className="col-sm-10">
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control create"
                       placeholder={t("create.inputTitle")}
                       name="name"
                       onChange={onChangeInput}
@@ -172,7 +182,7 @@ function Checkpoints() {
                   <div className="col-sm-4">
                     <input
                       type="datetime-local"
-                      className="form-control"
+                      className="form-control create"
                       id="start"
                       name="start_date"
                       onChange={onChangeInput}
@@ -186,7 +196,7 @@ function Checkpoints() {
                   <div className="col-sm-4">
                     <input
                       type="datetime-local"
-                      className="form-control"
+                      className="form-control create"
                       id="end"
                       name="end_date"
                       onChange={onChangeInput}
@@ -198,18 +208,21 @@ function Checkpoints() {
               </div>
             </div>
             <div className="col-md-12">
-              <button type="submit" className="btn btn-default btn-create">
+              {isLoading === true && <LoadingSpinner />}
+              <button
+                type="submit"
+                className="btn btn-default btn-create"
+                disabled={isLoading}
+              >
                 {t("create.createBtn")}
               </button>
             </div>
           </form>
-          {loading === false && (
-            <h3 className="review-notify">{t("waitingData")}</h3>
-          )}
-          {dataPerPage.length === 0 && loading === true && (
+
+          {dataPerPage.length === 0 && isLoading === false && (
             <h3 className="create-notify">{t("create.yetCheckpoint")}</h3>
           )}
-          {dataPerPage.length > 0 && (
+          {dataPerPage.length > 0 && isLoading === false && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
@@ -232,14 +245,9 @@ function Checkpoints() {
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
                         <td>
-                          <a href={`/assign/${ele.id}`}>
-                            <button
-                              variant="primary"
-                              className="btn-delete-checkpoint"
-                            >
-                              <i className="bi bi-pen"></i>
-                            </button>
-                          </a>
+                          <Link to={`/assign/${ele.id}`}>
+                            <i className="bi bi-pen"></i>
+                          </Link>
                           <span>|</span>
                           <button
                             variant="primary"

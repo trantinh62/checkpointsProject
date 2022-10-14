@@ -1,11 +1,11 @@
 .invite-cover {
+    padding-top: 40px;
     background-color: #5dabc3;
-    height: -webkit-fill-available;
+    min-height: calc(100% - 80px);
     width: 100%;
     position: absolute;
 }
 .invite{
-    padding: 4%;
     height: 400px;
 }
 .col-md-3.invite{

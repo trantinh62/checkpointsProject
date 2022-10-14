@@ -1,4 +1,5 @@
 import "./App.css";
+
 import { Routes, Route } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
@@ -17,71 +18,48 @@ import ListMemberHistory from "./Components/History/ListMemberHistory";
 import MemberHistory from "./Components/History/MemberHistory";
 import User from "./Components/Users/User";
 import Invite from "./Components/Invite/Invite";
-import Header from "./Common/Header/Header";
-import Footer from "./Common/Footer/Footer";
-import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Layout from "./Common/Layout/Layout";
 
 function App() {
-  const [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
-  if (!token) {
-    return (
-      <>
-        <ToastContainer />
-        <Routes>
-          <Route path="/" element={<Login />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/forgot" element={<ForgotPassword />}></Route>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/resetpassword" element={<ResetPassword />}></Route>
-          <Route path="/profile" element={<Login />}></Route>
-          <Route path="/invite" element={<Login />}></Route>
-          <Route path="/users" element={<Login />}></Route>
-          <Route path="/mycheckpoints" element={<Login />}></Route>
-          <Route path="/mycheckpoints/:check_id" element={<Login />}></Route>
-          <Route
-            path="/mycheckpoints/:check_id/reviews/:review_id"
-            element={<Login />}
-          ></Route>
-          <Route path="/create" element={<Login />}></Route>
-          <Route path="/gpoint" element={<Login />}></Route>
-          <Route path="/assign/:id" element={<Login />}></Route>
-          <Route path="/histories" element={<Login />}></Route>
-          <Route path="/histories/member" element={<Login />}></Route>
-          <Route path="/histories/member/:id" element={<Login />}></Route>
-          <Route path="/histories/:id" element={<Login />}></Route>
-        </Routes>
-      </>
-    );
-  }
-
   return (
     <>
       <ToastContainer />
-      <Header></Header>
       <Routes>
-        <Route path="/profile" element={<Profile />}></Route>
-        <Route path="/invite" element={<Invite />}></Route>
-        <Route path="/users" element={<User />}></Route>
-        <Route path="/mycheckpoints" element={<ListCheckpoints />}></Route>
-        <Route
-          path="/mycheckpoints/:check_id"
-          element={<ListReviews />}
-        ></Route>
-        <Route
-          path="/mycheckpoints/:check_id/reviews/:review_id"
-          element={<DetailReview />}
-        ></Route>
-        <Route path="/create" element={<CreateCheckpoint />}></Route>
-        <Route path="/gpoint" element={<Gpoint />}></Route>
-        <Route path="/assign/:id" element={<Assign />}></Route>
-        <Route path="/histories" element={<History />}></Route>
-        <Route path="/histories/member" element={<ListMemberHistory />}></Route>
-        <Route path="/histories/member/:id" element={<MemberHistory />}></Route>
-        <Route path="/histories/:id" element={<DetailHistory />}></Route>
+        <Route element={<Layout />}>
+          <Route path="/profile" element={<Profile />}></Route>
+          <Route path="/invite" element={<Invite />}></Route>
+          <Route path="/users" element={<User />}></Route>
+          <Route path="/mycheckpoints" element={<ListCheckpoints />}></Route>
+          <Route
+            path="/mycheckpoints/:check_id"
+            element={<ListReviews />}
+          ></Route>
+          <Route
+            path="/mycheckpoints/:check_id/reviews/:review_id"
+            element={<DetailReview />}
+          ></Route>
+          <Route path="/create" element={<CreateCheckpoint />}></Route>
+          <Route path="/gpoint" element={<Gpoint />}></Route>
+          <Route path="/assign/:id" element={<Assign />}></Route>
+          <Route path="/histories" element={<History />}></Route>
+          <Route
+            path="/histories/member"
+            element={<ListMemberHistory />}
+          ></Route>
+          <Route
+            path="/histories/member/:id"
+            element={<MemberHistory />}
+          ></Route>
+          <Route path="/histories/:id" element={<DetailHistory />}></Route>
+        </Route>
+        <Route path="/" element={<Login />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="/forgot" element={<ForgotPassword />}></Route>
+        <Route path="/register" element={<Register />}></Route>
+        <Route path="/resetpassword" element={<ResetPassword />}></Route>
       </Routes>
-      <Footer></Footer>
     </>
   );
 }

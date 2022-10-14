@@ -1,5 +1,6 @@
 
 .profile-cover{
+    padding-top: 40px;
     background-color: #5dabc3;
     min-height: calc(100% - 80px);
     width: 100%;

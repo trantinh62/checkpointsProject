@@ -28,7 +28,7 @@ function ForgotPassword() {
   return (
     <div className="forgot-cover">
       <div className="container">
-        <div className="card card-container">
+        <div className="card card-container forgot">
           <img
             id="forgot-img"
             className="forgot-img-card"

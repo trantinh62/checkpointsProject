@@ -1,11 +1,16 @@
  .detail-review {
-    padding: 40px 0 40px ;
     background-color: #5dabc3;
     height: auto;
     width: 100%;
     position: absolute;
  }
-
+ .table-wrapper.detail-review-wrap {
+    min-height: calc(100vh - 80px);
+    background: #fff;
+    padding: 20px;	
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+ }
 .btn:not(:disabled):not(.disabled) {
     cursor: pointer;
 }

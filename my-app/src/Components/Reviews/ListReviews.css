@@ -7,8 +7,8 @@
 }
 .table-wrapper .list-review {
     background: #fff;
-    padding: 20px 20px 0;	
     border-radius: 0.5rem;  
+    margin: 0;
 }
 .table-title .list-review {
     padding-bottom: 0;
@@ -87,6 +87,8 @@ table.table td .add {
 .review-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .role-list{
     width: 15rem;

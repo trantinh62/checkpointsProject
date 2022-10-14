@@ -1,12 +1,12 @@
 
 .histories-cover {
-    padding-top: 40px;
     background-color: #5dabc3;
     min-height: calc(100% - 80px);
     width: 100%;
     position: absolute;
 }
-.table-wrapper {
+.table-wrapper.history {
+    min-height: calc(100vh - 80px);
     background: #fff;
     padding: 20px;	
     border-radius: 0.5rem;
@@ -89,9 +89,11 @@ table.table td .add {
 .history-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .view-history{
-    width: 12rem;
+    width: 6%;
 }
 .btn-list-history{
     background: none;

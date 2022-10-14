@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { getAllUsersApi, updateAllUserApi } from "../../Api/userApi";
 import { useTranslation } from "react-i18next";
 import removeMark from "../../Helper/removeMark";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import Toast from "../Toast/Toast";
 import "./User.css";
 
@@ -20,7 +21,7 @@ function User() {
   const [dataPerPage, setDataPerPage] = useState([]);
   const [dataManage, setDataManage] = useState([]);
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [dataSearch, setDataSearch] = useState({
     name: "",
     role_id: "",
@@ -41,12 +42,13 @@ function User() {
   const token = sessionStorage.getItem("sessionToken");
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const resUser = await getAllUsersApi(token);
       setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
       setdataUser(resUser.data.data);
       setDataFilter(resUser.data.data);
       setDataPerPage(resUser.data.data.slice(start, end));
-      setLoading(true);
+      setIsLoading(false);
     } catch (err) {
       Toast(t("errorFetchData"), "error");
     }
@@ -54,8 +56,10 @@ function User() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (JSON.stringify(dataManage) === JSON.stringify([])) {
         Toast(t("user.noChangeWarning"), "warning");
+        setIsLoading(false);
         return;
       }
       const res = await updateAllUserApi({ data: dataManage }, token);
@@ -102,8 +106,10 @@ function User() {
         );
       }
       Toast(t("user.updateSuccess"), "success");
+      setIsLoading(false);
     } catch (err) {
       Toast(t("user.updateFailed"), "error");
+      setIsLoading(false);
     }
   };
 
@@ -267,7 +273,7 @@ function User() {
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                  <ol className="breadcrumb user">
                     <li className="breadcrumb-item active">{t("user.user")}</li>
                   </ol>
                 </nav>
@@ -328,13 +334,11 @@ function User() {
             </div>
           </form>
           <form onSubmit={handleSubmit}>
-            {loading === false && (
-              <h3 className="user-notify">{t("waitingData")}</h3>
-            )}
-            {dataPerPage.length === 0 && loading === true && (
+            {isLoading === true && <LoadingSpinner />}
+            {dataPerPage.length === 0 && isLoading === false && (
               <h3 className="user-notify">{t("user.noUsers")}</h3>
             )}
-            {dataPerPage.length > 0 && (
+            {dataPerPage.length > 0 && isLoading === false && (
               <div>
                 <table className="table table-bordered text-center">
                   <thead>

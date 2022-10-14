@@ -1,16 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
-import { getProfileApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
+import { useraccount } from "../../actions/user";
 import { loginApi } from "../../Api/userApi";
 import "./Login.css";
 function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [dataLogin, setDataLogin] = useState({
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setDataLogin({
@@ -18,6 +22,7 @@ function Login() {
       [name]: value,
     });
   };
+  const user = useSelector((state) => state.userLogin);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,10 +39,16 @@ function Login() {
         "sessionLanguage",
         response.data.data.language === 0 ? "en" : "vn"
       );
-      if (response.data.status === 200) {
-        navigate("/mycheckpoints", { replace: true });
-        navigate(0);
-      }
+
+      dispatch(
+        useraccount({
+          username:
+            response.data.data.first_name + " " + response.data.data.last_name,
+          language: response.data.data.language === 0 ? "en" : "vn",
+        })
+      );
+      Toast(t("login.loginSuccess"), "success");
+      navigate("/mycheckpoints");
     } catch (err) {
       if (err.response.status === 403) {
         Toast("This account is locked", "error");
@@ -52,7 +63,7 @@ function Login() {
   return (
     <div className="login-cover">
       <div className="container ">
-        <div className="card card-container">
+        <div className="card card-container login">
           <img
             id="profile-img"
             className="profile-img-card"

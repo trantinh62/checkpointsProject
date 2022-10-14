@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { getAllCheckpoints } from "../../Api/userApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import { useTranslation } from "react-i18next";
-import i18n from "i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./History.css";
 function History() {
   const { t } = useTranslation();
@@ -15,7 +15,7 @@ function History() {
   const [listHistories, setListHistories] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const handleOnClick = (e) => {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;
@@ -29,13 +29,15 @@ function History() {
   }, []);
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getAllCheckpoints(token);
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListHistories(res.data.data);
-      setLoading(true);
+      setIsLoading(false);
     } catch (err) {
       Toast(t("errorFetchData"), "error");
+      setIsLoading(false);
     }
   };
 
@@ -53,7 +55,7 @@ function History() {
     <>
       <div className="histories-cover">
         <div className="container ">
-          <div className="table-wrapper">
+          <div className="table-wrapper history">
             <div className="table-title">
               <div className="row">
                 <div className="col-sm-8">
@@ -70,13 +72,11 @@ function History() {
                 </div>
               </div>
             </div>
-            {loading === false && (
-              <h3 className="review-notify">{t("waitingData")}</h3>
+            {isLoading === true && <LoadingSpinner />}
+            {dataPerPage.length === 0 && isLoading === false && (
+              <h3 className="history-notify">{t("history.noHistories")}</h3>
             )}
-            {dataPerPage.length === 0 && loading === true && (
-              <h3 className="history-notify">{t("noHistories")}</h3>
-            )}
-            {dataPerPage.length > 0 && (
+            {dataPerPage.length > 0 && isLoading === false && (
               <div>
                 <table className="table table-bordered text-center">
                   <thead>
@@ -85,6 +85,7 @@ function History() {
                       <th>{t("title")}</th>
                       <th>{t("startDate")}</th>
                       <th>{t("endDate")}</th>
+                      <th>{t("ratio")}</th>
                       <th className="view-history">{t("view")}</th>
                     </tr>
                   </thead>
@@ -96,9 +97,10 @@ function History() {
                           <td>{ele.checkpoint.name}</td>
                           <td>{ele.checkpoint.start_date}</td>
                           <td>{ele.checkpoint.end_date}</td>
+                          <td></td>
                           <td>
-                            <a
-                              href={`/histories/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
+                            <Link
+                              to={`/histories/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
                             >
                               <button
                                 variant="primary"
@@ -106,7 +108,7 @@ function History() {
                               >
                                 <i className="bi bi-arrow-right-circle"></i>
                               </button>
-                            </a>
+                            </Link>
                           </td>
                         </tr>
                       );

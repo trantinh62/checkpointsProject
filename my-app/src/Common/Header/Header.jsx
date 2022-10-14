@@ -1,4 +1,5 @@
 import "./Header.css";
+import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { updateLanguage } from "../../Api/userApi";
 import Toast from "../../Components/Toast/Toast";
@@ -57,8 +58,8 @@ function Header() {
             <div className="dropdown">
               <button className="dropbtn">{t("header.myCheckpoints")}</button>
               <div className="dropdown-content">
-                <a href="/mycheckpoints">{t("header.listCheckpoints")}</a>
-                <a href="/histories">{t("header.checkpointHistories")}</a>
+                <Link to="/mycheckpoints">{t("header.listCheckpoints")}</Link>
+                <Link to="/histories">{t("header.checkpointHistories")}</Link>
               </div>
             </div>
             {roleId !== "3" && (
@@ -68,12 +69,14 @@ function Header() {
                 </button>
                 <div className="dropdown-content">
                   {roleId === "1" && (
-                    <a href="/create">{t("header.crudCheckpoints")}</a>
+                    <Link to="/create">{t("header.crudCheckpoints")}</Link>
                   )}
                   {roleId === "1" && (
-                    <a href="/gpoint">{t("header.updateGpoint")}</a>
+                    <Link to="/gpoint">{t("header.updateGpoint")}</Link>
                   )}
-                  <a href="/histories/member">{t("header.memberHistories")}</a>
+                  <Link to="/histories/member">
+                    {t("header.memberHistories")}
+                  </Link>
                 </div>
               </div>
             )}
@@ -81,8 +84,8 @@ function Header() {
               <div className="dropdown ">
                 <button className="dropbtn">{t("header.manageUsers")}</button>
                 <div className="dropdown-content">
-                  <a href="/invite">{t("header.inviteUser")}</a>
-                  <a href="/users">{t("header.updateUsers")}</a>
+                  <Link to="/invite">{t("header.inviteUser")}</Link>
+                  <Link to="/users">{t("header.updateUsers")}</Link>
                 </div>
               </div>
             )}
@@ -91,7 +94,7 @@ function Header() {
             <div className="dropdown">
               <button className="dropbtn"> {userName}</button>
               <div className="dropdown-content">
-                <a href="/profile">{t("header.profile")}</a>
+                <Link to="/profile">{t("header.profile")}</Link>
                 <a href="/login" onClick={handleLogout}>
                   {t("header.logout")}
                 </a>

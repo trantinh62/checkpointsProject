@@ -1,23 +1,27 @@
 import { useState, useEffect } from "react";
 import { getCheckpointsByReviewId } from "../../Api/userApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import { useTranslation } from "react-i18next";
-import i18n from "i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./ListCheckpoints.css";
+import { useSelector, useDispatch } from "react-redux";
+
 function ListReviews() {
   const { t } = useTranslation();
   const { search } = useLocation();
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
   );
+  const user = useSelector((state) => state.userLogin);
+
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
   const [dataPerPage, setDataPerPage] = useState([]);
   const [listCheckpoints, setListCheckpoints] = useState([]);
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const handleOnClick = (e) => {
     const page = e.target.value;
     setPage(page);
@@ -32,12 +36,14 @@ function ListReviews() {
   }, []);
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getCheckpointsByReviewId(token);
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setListCheckpoints(res.data.data);
       setDataPerPage(res.data.data.slice(start, end));
-      setLoading(true);
+      setIsLoading(false);
     } catch (err) {
+      console.log(err);
       Toast(t("errorFetchData"), "error");
     }
   };
@@ -58,13 +64,14 @@ function ListReviews() {
   }
   return (
     <div className="list-checkpoints-cover">
+      <div>user: {user.username}</div>
       <div className="container ">
-        <div className="table-wrapper">
+        <div className="table-wrapper list-check">
           <div className="table-title">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                  <ol className="breadcrumb list-check">
                     <li className="breadcrumb-item active" aria-current="page">
                       {t("myCheckpoints.listCheckpoint")}
                     </li>
@@ -73,10 +80,8 @@ function ListReviews() {
               </div>
             </div>
           </div>
-          {loading === false && (
-            <h3 className="review-notify">{t("waitingData")}</h3>
-          )}
-          {dataPerPage.length === 0 && loading === true && (
+          {isLoading === true && <LoadingSpinner />}
+          {dataPerPage.length === 0 && isLoading === false && (
             <h3 className="checkpoint-notify">
               {t("myCheckpoints.allChecked")}
             </h3>
@@ -90,6 +95,7 @@ function ListReviews() {
                     <th>{t("title")}</th>
                     <th>{t("startDate")}</th>
                     <th>{t("endDate")}</th>
+                    <th>{t("ratio")}</th>
                     <th className="view-checkpoint">{t("view")}</th>
                   </tr>
                 </thead>
@@ -101,9 +107,10 @@ function ListReviews() {
                         <td>{ele.checkpoint.name}</td>
                         <td>{ele.checkpoint.start_date}</td>
                         <td>{ele.checkpoint.end_date}</td>
+                        <td></td>
                         <td>
-                          <a
-                            href={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
+                          <Link
+                            to={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
                           >
                             <button
                               variant="primary"
@@ -111,7 +118,7 @@ function ListReviews() {
                             >
                               <i className="bi bi-arrow-right-circle"></i>
                             </button>
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     );

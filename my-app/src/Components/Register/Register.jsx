@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { registerApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
 import "./Register.css";
 function Register() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { search } = useLocation();
   const token = new URLSearchParams(search).get("token");
@@ -28,11 +30,11 @@ function Register() {
     e.preventDefault();
     try {
       const res = await registerApi(dataRegister, token);
-      Toast("Register successful!", "success");
+      Toast(t("register.registerSuccess"), "success");
       navigate("/login", { replace: true });
       navigate(0);
     } catch (err) {
-      Toast("Register failed!", "error");
+      Toast(t("register.registerFailed"), "error");
     }
   };
   return (
@@ -45,7 +47,7 @@ function Register() {
                 src="https://image.ibb.co/kUASdV/register-image.png"
                 alt="image"
               />
-              <h2>Register</h2>
+              <h2>{t("register.title")}</h2>
             </div>
           </div>
           <div className="col-md-9">
@@ -53,7 +55,7 @@ function Register() {
               <div className="register-form">
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="firstname">
-                    Firstname:
+                    {t("register.firstname")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -69,7 +71,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="lastname">
-                    Lastname:
+                    {t("register.lastname")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -85,7 +87,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="age">
-                    Age:
+                    {t("register.age")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -101,7 +103,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="phone">
-                    Phone:
+                    {t("register.phone")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -117,7 +119,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="address">
-                    Address:
+                    {t("register.address")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -133,7 +135,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="password">
-                    Password:
+                    {t("register.newPass")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -149,7 +151,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="password">
-                    Password confirm:
+                    {t("register.confirmPass")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -166,7 +168,7 @@ function Register() {
                 <div className="form-group">
                   <div className="col-sm-offset-2 col-sm-10 mt-2">
                     <button type="submit" className="btn btn-default register">
-                      Register
+                      {t("register.title")}
                     </button>
                   </div>
                 </div>

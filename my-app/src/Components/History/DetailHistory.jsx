@@ -4,11 +4,13 @@ import {
   useParams,
   useNavigate,
   useSearchParams,
+  Link,
 } from "react-router-dom";
 import {
   getAvgByCheckpointIdMyHistory,
   getReviewsByCheckpointId,
 } from "../../Api/userApi";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
 import "./DetailHistory.css";
@@ -34,7 +36,7 @@ function DetailHistory() {
     avg_adhere: 0,
   });
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const handleOnClick = (e) => {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;
@@ -49,17 +51,19 @@ function DetailHistory() {
   }, []);
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getReviewsByCheckpointId(token, params.id);
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListReviews(res.data.data);
       const resAvg = await getAvgByCheckpointIdMyHistory(token, params.id);
-      setLoading(true);
       if (resAvg.data.data[0].avg_checkpoint.length !== 0) {
         setDataAvg(resAvg.data.data[0].avg_checkpoint[0]);
       }
+      setIsLoading(false);
     } catch (err) {
       Toast(t("errorFetchData"), "error");
+      setIsLoading(false);
     }
   };
 
@@ -83,9 +87,7 @@ function DetailHistory() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/histories">
-                        {t("history.listHistories")}
-                      </a>
+                      <Link to="/histories">{t("history.listHistories")}</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
                       {title}
@@ -95,13 +97,11 @@ function DetailHistory() {
               </div>
             </div>
           </div>
-          {loading === false && (
-            <h3 className="review-notify">{t("waitingData")}</h3>
-          )}
-          {dataPerPage.length === 0 && loading == true && (
+          {isLoading && <LoadingSpinner />}
+          {dataPerPage.length === 0 && isLoading === false && (
             <h3 className="history-notify">{t("history.noHistories")}</h3>
           )}
-          {dataPerPage.length > 0 && (
+          {dataPerPage.length > 0 && isLoading === false && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
@@ -147,8 +147,8 @@ function DetailHistory() {
                           ele.teamwork === null &&
                           ele.training === null &&
                           ele.adhere === null
-                            ? t("checked")
-                            : t("yetChecked")}
+                            ? t("yetChecked")
+                            : t("checked")}
                         </td>
                       </tr>
                     );
@@ -196,6 +196,7 @@ function DetailHistory() {
                 onClick={() => navigate(-1)}
                 type="submit"
                 className="btn btn-default btn-detail-history"
+                disabled={isLoading}
               >
                 {t("btnBack")}
               </button>
