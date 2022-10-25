@@ -1,14 +1,13 @@
 
 .register-cover{
+    background: #5dabc3;
     height: 100vh;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-
 }
 .register{
     padding: 2rem;
 }
-.col-md-3{
-    background: #0e3476;
+.col-md-3.register{
+    background: #468295;
     padding: 4%;
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
@@ -48,4 +47,20 @@
 }
 .register-form {
     padding-left: 3rem;
+}
+.btn.btn-default.register{
+    background: #5dabc3;
+    color: #fff;
+    width: 10rem;
+    font-weight: 600;
+    display: flex;
+    margin-left: auto;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+}
+.btn.btn-default.register:hover{
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
 }

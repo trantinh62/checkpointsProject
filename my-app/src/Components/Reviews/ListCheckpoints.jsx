@@ -1,10 +1,21 @@
 import { useState, useEffect } from "react";
 import { getCheckpointsByReviewId } from "../../Api/userApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./ListCheckpoints.css";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectListCheckpoints,
+  updateListCheckpoints,
+} from "../../store/listCheckpointSlice";
+
 function ListReviews() {
+  const { t } = useTranslation();
   const { search } = useLocation();
+  const dispatch = useDispatch();
+
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
   );
@@ -14,97 +25,154 @@ function ListReviews() {
   const [dataPerPage, setDataPerPage] = useState([]);
   const [listCheckpoints, setListCheckpoints] = useState([]);
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const handleOnClick = (e) => {
-    const page = e.target.value;
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(listCheckpoints.slice(start, end));
+  const [isLoading, setIsLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
+  const handleOnClick = async (e) => {
+    setIsLoading(true);
+    const value = e.target.value;
+    const resCheck = await getCheckpointsByReviewId(token, value);
+    setPagination(resCheck.data.data);
+    setDataPerPage(resCheck.data.data.data);
+    dispatch(updateListCheckpoints(resCheck.data.data.data));
+    setIsLoading(false);
   };
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
+  const list = useSelector(selectListCheckpoints);
 
   useEffect(() => {
     fetchData();
   }, []);
   const fetchData = async () => {
     try {
-      const res = await getCheckpointsByReviewId(token);
-      setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
-      setListCheckpoints(res.data.data);
-      setDataPerPage(res.data.data.slice(start, end));
-      setLoading(true);
+      setIsLoading(true);
+      const res = await getCheckpointsByReviewId(token, 1);
+      setNumPages(Math.ceil(res.data.data.data.length / itemsPerPage));
+      setListCheckpoints(res.data.data.data);
+      setDataPerPage(res.data.data.data.slice(start, end));
+      dispatch(updateListCheckpoints(res.data.data.data));
+      setPagination(res.data.data);
+      setIsLoading(false);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
+
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
+          onClick={handleOnClick}
+          disabled={pagination.current_page === i + 1}
+          style={{ zIndex: 0 }}
+        >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="list-checkpoints-cover">
       <div className="container ">
-        <div className="table-wrapper">
+        <div className="table-wrapper list-check">
           <div className="table-title">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                  <ol className="breadcrumb list-check">
                     <li className="breadcrumb-item active" aria-current="page">
-                      My checkpoints: List checkpoints
+                      {t("myCheckpoints.listCheckpoint")}
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-          {loading === false && (
-            <h3 className="review-notify">Waiting for loading data!</h3>
+          {isLoading === true && <LoadingSpinner />}
+          {dataPerPage.length === 0 && isLoading === false && (
+            <h3 className="checkpoint-notify">
+              {t("myCheckpoints.allChecked")}
+            </h3>
           )}
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-            loading === true && (
-              <h3 className="checkpoint-notify">
-                There are no checkpoints to check
-              </h3>
-            )}
-          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+          {dataPerPage.length > 0 && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th className="view-checkpoint">View</th>
+                    <th>{t("title")}</th>
+                    <th>{t("startDate")}</th>
+                    <th>{t("endDate")}</th>
+                    <th style={{ width: "14%" }}>{t("ratio")}</th>
+                    <th className="view-checkpoint">{t("view")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          {(pagination.current_page - 1) * pagination.per_page +
+                            index +
+                            1}
+                        </td>
                         <td>{ele.checkpoint.name}</td>
                         <td>{ele.checkpoint.start_date}</td>
                         <td>{ele.checkpoint.end_date}</td>
                         <td>
-                          <a
-                            href={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
-                          >
+                          {ele.checkpoint.count_review_done}/
+                          {ele.checkpoint.count_review}
+                        </td>
+                        <td>
+                          <Link to={`/mycheckpoints/${ele.checkpoint.id}`}>
                             <button
                               variant="primary"
                               className="btn-list-checkpoint"
                             >
                               <i className="bi bi-arrow-right-circle"></i>
                             </button>
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     );
@@ -112,7 +180,7 @@ function ListReviews() {
                 </tbody>
               </table>
               <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
+                <ul className="pagination justify-content-center list-checkpoints">
                   {menuItems}
                 </ul>
               </nav>

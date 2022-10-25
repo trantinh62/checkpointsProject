@@ -1,10 +1,11 @@
 
 .member-his-cover {
-    padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    background-color: #5dabc3;
+    min-height: calc(100% - 80px);
+    width: 100%;
+    position: absolute;
 }
-.table-wrapper {
+.table-wrapper.mem-history {
     background: #fff;
     padding: 20px;	
     border-radius: 0.5rem;
@@ -113,5 +114,25 @@ table.table td .add {
     justify-content: center;
 }
 .point-table-member{
-    width: 5rem;
+    width: 8%;
+}
+.table-title.mem-history {
+    padding-bottom:0;
+    margin: 0;
+}
+.btn.btn-default.mem-history{
+    background: #5dabc3;
+    color: #fff;
+    width: 10rem;
+    font-weight: 600;
+    display: flex;  
+    margin-left: auto;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+}
+.btn.btn-default.mem-history:hover{
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
 }

@@ -1,9 +1,12 @@
 import axios from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://0610-118-69-61-80.ap.ngrok.io",
+  baseURL: "https://checkpoint360webgroup.tk",
   headers: {
     Accept: "application/json",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    "Access-Control-Allow-Credentials": true,
   },
 });
 export default axiosClient;

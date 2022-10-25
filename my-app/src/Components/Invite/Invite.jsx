@@ -1,13 +1,18 @@
 import { useState } from "react";
 import Toast from "../Toast/Toast";
 import { inviteApi } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./Invite.css";
 
 function Invite() {
+  const { t } = useTranslation();
+  const token = localStorage.getItem("localToken");
   const [dataInvite, setDataInvite] = useState({
     email: "",
     role_id: 0,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (name === "role_id") value = parseInt(value);
@@ -19,25 +24,27 @@ function Invite() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await inviteApi(dataInvite);
-      if (response.data.status === 200) {
-        Toast("Invite user successful!", "success");
-      }
+      setIsLoading(true);
+      const response = await inviteApi(dataInvite, token);
+      Toast(t("invite.inviteSuccess"), "success");
+      setIsLoading(false);
     } catch (err) {
-      Toast("Invite user failed!", "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   return (
     <div className="invite-cover">
       <div className="container invite">
+        {isLoading === true && <LoadingSpinner />}
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-3 invite">
             <div className="invite-info">
               <img
                 src="https://image.ibb.co/kUASdV/invite-image.png"
                 alt="image"
               />
-              <h2>Invite user</h2>
+              <h2>{t("invite.invite")}</h2>
             </div>
           </div>
           <div className="col-md-9">
@@ -52,7 +59,7 @@ function Invite() {
                       type="email"
                       className="form-control"
                       id="email"
-                      placeholder="Enter email"
+                      placeholder={t("invite.inputEmail")}
                       name="email"
                       onChange={onChangeInput}
                       value={dataInvite.email}
@@ -62,7 +69,7 @@ function Invite() {
                 </div>
                 <div className="form-group invite-form">
                   <label className="control-label col-sm-2" htmlFor="role-id">
-                    Select role:
+                    {t("invite.selectRole")}
                   </label>
                   <div className="col-sm-10">
                     <select
@@ -73,7 +80,7 @@ function Invite() {
                       aria-label="Default select example"
                       required
                     >
-                      <option value="">Select role</option>
+                      <option value="">{t("invite.selectRole")}</option>
                       <option value={1}>Group leader</option>
                       <option value={2}>Leader</option>
                       <option value={3}>Member</option>
@@ -85,8 +92,9 @@ function Invite() {
                     <button
                       type="submit"
                       className="btn btn-default btn-invite"
+                      disabled={isLoading}
                     >
-                      Invite user
+                      {t("invite.inviteBtn")}
                     </button>
                   </div>
                 </div>

@@ -1,83 +1,141 @@
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import "./Header.css";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { updateLanguage } from "../../Api/userApi";
+import Toast from "../../Components/Toast/Toast";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
+import variable from "../Variable/variabe";
 
 function Header() {
-  const userName = sessionStorage.getItem("sessionUsername");
-  const roleId = sessionStorage.getItem("sessionRoleId");
-  const token = sessionStorage.getItem("token");
+  const { t } = useTranslation();
+  const userName = localStorage.getItem("localUsername");
+  const token = localStorage.getItem("localToken");
+  const roleId = localStorage.getItem("localRoleId");
+  const language = localStorage.getItem("localLanguage");
   const handleLogout = async () => {
-    sessionStorage.clear();
+    localStorage.clear();
   };
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      i18n.changeLanguage(language);
+    } catch (err) {
+      Toast(t("errorFetchData"), "error");
+    }
+  };
+
+  const handleChangeLanguage = async (e) => {
+    e.preventDefault();
+    try {
+      const languageValue = e.target.id;
+      const localLanguage = localStorage.getItem("localLanguage");
+      if (languageValue === localLanguage) return;
+      i18n.changeLanguage(languageValue);
+      localStorage.setItem("localLanguage", languageValue);
+      setIsLoading(true);
+      const updatelanguage = await updateLanguage(
+        { language: languageValue === "vn" ? 0 : 1 },
+        token
+      );
+      setIsLoading(false);
+    } catch (err) {
+      Toast(t("changeLangError"), "error");
+    }
+  };
+
   return (
-    <>
-      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-        <Container>
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
-            <Nav className="me-auto">
-              <NavDropdown title="My checkpoints" id="collasible-nav-dropdown">
-                <NavDropdown.Item href="/mycheckpoints">
-                  List checkpoints
-                </NavDropdown.Item>
-                <NavDropdown.Item href="/histories">
-                  Checkpoint histories
-                </NavDropdown.Item>
-              </NavDropdown>
-
-              {roleId !== "3" && (
-                <div>
-                  <NavDropdown
-                    title="Manage checkpoints"
-                    id="collasible-nav-dropdown"
-                  >
-                    {roleId === "1" && (
-                      <NavDropdown.Item href="/create">
-                        Create/assign/delete checkpoint
-                      </NavDropdown.Item>
-                    )}
-                    {roleId === "1" && (
-                      <NavDropdown.Item href="/gpoint">
-                        Update gpoint
-                      </NavDropdown.Item>
-                    )}
-                    <NavDropdown.Item href="/histories/member">
-                      Member's checkpoint histories
-                    </NavDropdown.Item>
-                  </NavDropdown>
+    <div className="header-area overlay">
+      <nav
+        className="navbar navbar-expand-md navbar-dark"
+        style={{ height: "5rem" }}
+      >
+        <div className="container">
+          <Link to="/" className="navbar-brand">
+            Checkpoint 360
+          </Link>
+          <button type="button" className="navbar-toggler collapsed"></button>
+          <div className="">
+            <div className="dropdown">
+              <button className="dropbtn">{t("header.myCheckpoints")}</button>
+              <div className="dropdown-content">
+                <Link to="/mycheckpoints">{t("header.listCheckpoints")}</Link>
+                <Link to="/histories">{t("header.checkpointHistories")}</Link>
+              </div>
+            </div>
+            {parseInt(roleId) !== variable.MemRoleId && (
+              <div className="dropdown ">
+                <button className="dropbtn">
+                  {t("header.manageCheckpoints")}
+                </button>
+                <div className="dropdown-content">
+                  {parseInt(roleId) === variable.GLRoleId && (
+                    <Link to="/create">{t("header.crudCheckpoints")}</Link>
+                  )}
+                  {parseInt(roleId) === variable.GLRoleId && (
+                    <Link to="/gpoint">{t("header.updateGpoint")}</Link>
+                  )}
+                  <Link to="/histories/member">
+                    {t("header.memberHistories")}
+                  </Link>
                 </div>
-              )}
-
-              {roleId === "1" && (
-                <div>
-                  <NavDropdown
-                    title="Manage users"
-                    id="collasible-nav-dropdown"
-                  >
-                    <NavDropdown.Item href="/invite">
-                      Invite user
-                    </NavDropdown.Item>
-                    <NavDropdown.Item href="/users">
-                      Update users
-                    </NavDropdown.Item>
-                  </NavDropdown>
+              </div>
+            )}
+            {parseInt(roleId) === variable.GLRoleId && (
+              <div className="dropdown ">
+                <button className="dropbtn">{t("header.manageUsers")}</button>
+                <div className="dropdown-content">
+                  <Link to="/invite">{t("header.inviteUser")}</Link>
+                  <Link to="/users">{t("header.updateUsers")}</Link>
                 </div>
-              )}
-            </Nav>
-            <Nav>
-              <NavDropdown title={userName} id="collasible-nav-dropdown">
-                <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="/login" onClick={handleLogout}>
-                  Logout
-                </NavDropdown.Item>
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </>
+              </div>
+            )}
+          </div>
+          <div className="dropdown-right">
+            <div className="dropdown">
+              <button className="dropbtn">
+                {" "}
+                {userName ? userName : "Unknown"}
+              </button>
+              <div className="dropdown-content">
+                <Link to="/profile">{t("header.profile")}</Link>
+                <a href="/login" onClick={handleLogout}>
+                  {t("header.logout")}
+                </a>
+              </div>
+            </div>
+            <div className="dropdown">
+              <button className="dropbtn">
+                <i className="bi bi-globe2"></i>
+              </button>
+              <div className="dropdown-content">
+                <a
+                  href="/"
+                  className="dropdown-item"
+                  id="vn"
+                  onClick={handleChangeLanguage}
+                >
+                  {t("header.vietnamese")}
+                </a>
+                <a
+                  href="/"
+                  className="dropdown-item"
+                  id="en"
+                  onClick={handleChangeLanguage}
+                >
+                  {t("header.english")}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
   );
 }
 

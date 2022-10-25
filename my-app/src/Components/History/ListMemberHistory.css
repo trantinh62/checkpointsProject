@@ -1,10 +1,12 @@
 .list-member-his-cover {
-    padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
-}
-.table-wrapper {
+    background-color: #5dabc3;
+    min-height: calc(100% - 80px);
+    width: 100%;
+    position: absolute;
+} 
+.table-wrapper.list-mem-history {
     background: #fff;
+    min-height: calc(100vh - 80px);
     padding: 20px;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
@@ -83,7 +85,7 @@ table.table td .add {
 .label1 {
     padding-left: 1rem;
 }
-.btn-create{
+.btn-filter{
     margin: 0.5rem 0 0.5rem auto;
     background: #ff9b00;
     color: #fff;
@@ -102,12 +104,40 @@ table.table td .add {
 .list-member-history-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .view-list-member-history{
-    width: 12rem;
+    width: 8%;
 }
 .btn-list-member-history{
     background: none;
     border: none;
     size: 10px;
+}
+.table-title.list-mem-history{
+    padding-bottom:0;
+    margin:0
+}
+.btn.btn-default.btn-filter{
+    background: #5dabc3;
+    color: #fff;
+    width: 10rem;
+    font-weight: 600;
+    display: flex;  
+    margin-left: auto;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+}
+.btn.btn-default.btn-filter:hover{
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
+}
+.pagination.justify-content-center.list-mem-history{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
 }

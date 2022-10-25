@@ -1,5 +1,5 @@
 
-.card-container.card {
+.card-container.card.login {
     max-width: 350px;
     padding: 40px 40px;
     position: absolute;
@@ -111,7 +111,7 @@
 .btn.btn-signin:hover,
 .btn.btn-signin:active,
 .btn.btn-signin:focus {
-    background-color: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    background-color: #41869b
 }
 
 .forgot-password {
@@ -125,6 +125,12 @@
 }
 
 .login-cover{
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    background: #5dabc3;
     height: 100vh;
+}
+
+.btn-signin:hover{
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
 }

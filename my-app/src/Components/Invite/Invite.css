@@ -1,13 +1,15 @@
 .invite-cover {
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    padding-top: 40px;
+    background-color: #5dabc3;
+    min-height: calc(100% - 80px);
+    width: 100%;
+    position: absolute;
 }
 .invite{
-    padding: 4%;
     height: 400px;
 }
-.col-md-3{
-    background: #ff9b00;
+.col-md-3.invite{
+    background: #40869b;
     padding: 4%;
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
@@ -32,7 +34,7 @@
     font-weight:600;
 }
 .invite-form button{
-    background: #ff9b00;
+    background: #40869b;
     color: #fff;
     font-weight: 600;
     width: 25%;

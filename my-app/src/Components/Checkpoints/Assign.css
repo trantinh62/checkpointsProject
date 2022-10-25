@@ -1,12 +1,14 @@
 
 .assign-cover {
-    padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    background-color: #5dabc3;
+    min-height: calc(100% - 80px);
+    width: 100%;
+    position: absolute;
 }
-.table-wrapper {
+.table-wrapper.assign {
+    min-height: calc(100vh - 80px);
     background: #fff;
-    padding: 20px;	
+    padding: 20px 20px 0;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
@@ -103,4 +105,31 @@ table.table td .add {
 }
 .btn-group-1{
     margin-left: auto;
+}
+.table-title.assign {
+    padding: 0;
+    margin: 0;
+}
+.btn.btn-default.btn-assign{
+    background: #5dabc3;
+    color: #fff;
+    width: 10rem;
+    font-weight: 600;
+    display: flex;
+    margin-left: auto;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+    margin-left: 1rem;
+}
+.btn.btn-default.btn-assign:hover{
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
+}
+.justify-content-center{
+    margin: 0;
+}
+.breadcrumb.assign {
+    margin: 0;
 }

@@ -1,14 +1,16 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createApi, getCheckApi, deleteCheckpoint } from "../../Api/userApi";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./CreateCheckpoint.css";
 
 function Checkpoints() {
-  const navigate = useNavigate();
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = (e) => {
@@ -16,44 +18,41 @@ function Checkpoints() {
     setDeleteId(id);
     setShow(true);
   };
-
-  const search = useLocation().search;
-  const [page, setPage] = useState(
-    new URLSearchParams(search).get("page") || 1
-  );
-  const itemsPerPage = 10;
-  const start = (page - 1) * itemsPerPage;
-  const end = page * itemsPerPage;
-  const user_id = sessionStorage.getItem("sessionUserId");
+  const user_id = localStorage.getItem("localUserId");
   const [dataCheckpoint, setDataCheckpoint] = useState({
     user_id: user_id,
     name: "",
     start_date: "",
     end_date: "",
   });
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
 
   const [dataPerPage, setDataPerPage] = useState([]);
-  const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
 
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (name === "start_date" || name === "end_date")
-      value = dayjs(value).format("YYYY-MM-DDTHH:mm");
+      value = dayjs(value).format("YYYY-MM-DD HH:mm:ss");
     setDataCheckpoint({
       ...dataCheckpoint,
       [name]: value,
     });
   };
 
-  const handleOnClick = (e) => {
-    const page = e.target.value;
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(dataListCheck.slice(start, end));
+  const handleOnClick = async (e) => {
+    setIsLoading(true);
+    const value = e.target.value;
+    const res = await getCheckApi(token, value);
+    setDataPerPage(res.data.data.checkpoint.data);
+    setPagination(res.data.data.checkpoint);
+    setIsLoading(false);
   };
 
   const [dataListCheck, setDataListCheck] = useState([]);
@@ -63,72 +62,123 @@ function Checkpoints() {
 
   const fetchData = async () => {
     try {
-      const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
-      setLoading(true);
+      setIsLoading(true);
+      const res = await getCheckApi(token, 1);
+      setDataPerPage(res.data.data.checkpoint.data);
+      setPagination(res.data.data.checkpoint);
+      setIsLoading(false);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (
         new Date(dataCheckpoint.start_date) >= new Date(dataCheckpoint.end_date)
       ) {
-        Toast("The end date must be chosen after the start date!", "warning");
-        return;
+        setIsLoading(false);
+        return Toast(t("create.errorChoseDate"), "warning");
+      }
+      if (
+        new Date(dataCheckpoint.start_date) < new Date() ||
+        new Date(dataCheckpoint.start_date) < new Date()
+      ) {
+        setIsLoading(false);
+        return Toast(t("create.errorNowDate"), "warning");
       }
       const response = await createApi(dataCheckpoint, token);
-      Toast("Create checkpoint successful!", "success");
-      const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      Toast(t("create.createSuccess"), "success");
+      const res = await getCheckApi(token, 1);
+      setDataPerPage(res.data.data.checkpoint.data);
+      setPagination(res.data.data.checkpoint);
+      setIsLoading(false);
     } catch (err) {
-      Toast("Create checkpoint failed!", "error");
+      Toast(err.response.data.message, "error");
+      setIsLoading(false);
     }
   };
 
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       handleClose();
       const resDel = await deleteCheckpoint(deleteId, token);
-      Toast("Delete checkpoint successful!", "success");
+      Toast(t("create.deleteSuccess"), "success");
       const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      setDataListCheck(res.data.data.checkpoint.data);
+      setDataPerPage(res.data.data.checkpoint.data);
+      setIsLoading(false);
     } catch (err) {
-      Toast("Delete checkpoint failed!", "error");
+      Toast(t("create.deleteFailed"), "error");
+      setIsLoading(false);
     }
   };
 
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
+          onClick={handleOnClick}
+          disabled={pagination.current_page === i + 1}
+        >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="create-cover">
-      <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+      <div className="container">
+        <div className="table-wrapper create">
+          <div className="table-title create">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                  <ol className="breadcrumb create">
                     <li className="breadcrumb-item active" aria-current="page">
-                      Manage checkpoints: Create checkpoints
+                      {t("create.create")}
                     </li>
                   </ol>
                 </nav>
@@ -140,13 +190,13 @@ function Checkpoints() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
                       type="text"
-                      className="form-control"
-                      placeholder="Enter title checkpoint"
+                      className="form-control create"
+                      placeholder={t("create.inputTitle")}
                       name="name"
                       onChange={onChangeInput}
                       value={dataCheckpoint.name}
@@ -154,12 +204,12 @@ function Checkpoints() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    Start date:
+                    {t("startDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
                       type="datetime-local"
-                      className="form-control"
+                      className="form-control create"
                       id="start"
                       name="start_date"
                       onChange={onChangeInput}
@@ -168,12 +218,12 @@ function Checkpoints() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    End date:
+                    {t("endDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
                       type="datetime-local"
-                      className="form-control"
+                      className="form-control create"
                       id="end"
                       name="end_date"
                       onChange={onChangeInput}
@@ -185,56 +235,55 @@ function Checkpoints() {
               </div>
             </div>
             <div className="col-md-12">
-              <button type="submit" className="btn-create">
-                Create checkpoint
+              {isLoading === true && <LoadingSpinner />}
+              <button
+                type="submit"
+                className="btn btn-default btn-create"
+                disabled={isLoading}
+              >
+                {t("create.createBtn")}
               </button>
             </div>
           </form>
-          {loading === false && (
-            <h3 className="review-notify">
-              Waiting for loading data checkpoint!
-            </h3>
+
+          {dataPerPage.length === 0 && isLoading === false && (
+            <h3 className="create-notify">{t("create.yetCheckpoint")}</h3>
           )}
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-            loading === true && (
-              <h3 className="create-notify">
-                No checkpoints have been created yet!
-              </h3>
-            )}
-          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+          {dataPerPage.length > 0 && isLoading === false && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th className="assign-delete">Assign/Delete</th>
+                    <th>{t("title")}</th>
+                    <th>{t("startDate")}</th>
+                    <th>{t("endDate")}</th>
+                    <th className="assign-delete">
+                      {t("create.Assign/Delete")}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          {(pagination.current_page - 1) * pagination.per_page +
+                            index +
+                            1}
+                        </td>
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
                         <td>
-                          <a href={`/assign/${ele.id}`}>
-                            <button
-                              variant="primary"
-                              className="btn-delete-checkpoint"
-                            >
-                              <i className="bi bi-pen"></i>
-                            </button>
-                          </a>
+                          <Link to={`/assign/${ele.id}`}>
+                            <i className="bi bi-pen"></i>
+                          </Link>
                           <span>|</span>
                           <button
                             variant="primary"
-                            onClick={handleShow}
                             className="btn-delete-checkpoint"
+                            onClick={handleShow}
                           >
                             <i id={ele.id} className="bi bi-trash"></i>
                           </button>
@@ -245,7 +294,7 @@ function Checkpoints() {
                 </tbody>
               </table>
               <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
+                <ul className="pagination justify-content-center create">
                   {menuItems}
                 </ul>
               </nav>
@@ -254,17 +303,15 @@ function Checkpoints() {
 
           <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-              <Modal.Title>Confirm delete checkpoint!</Modal.Title>
+              <Modal.Title>{t("create.confirmDelete")}</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-              Do you really want to delete this checkpoint?
-            </Modal.Body>
+            <Modal.Body>{t("create.reallyconfirm")}</Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
-                Cancel
+                {t("btnCancel")}
               </Button>
               <Button variant="danger" onClick={handleDelete}>
-                Delete
+                {t("btnDelete")}
               </Button>
             </Modal.Footer>
           </Modal>

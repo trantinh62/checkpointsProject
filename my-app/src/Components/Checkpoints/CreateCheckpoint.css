@@ -1,19 +1,27 @@
+
+  
 .create-cover {
-    padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    background-color: #5dabc3;
+    min-height: calc(100% - 80px);
+    width: 100%;
+    position: absolute;
 }
-.table-wrapper {
+.table-wrapper.create {
     background: #fff;
     padding: 20px;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    min-height: calc(100vh - 80px);
 }
-.table-title h2 {
+.table-title.create{
+    padding-bottom: 0;
+    margin: 0 ;
+}
+.table-title.create h2 {
     margin: 6px 0 0;
     font-size: 22px;
 }
-.table-title .add-new {
+.table-title.create .add-new {
     float: right;
     height: 30px;
     font-weight: bold;
@@ -23,7 +31,7 @@
     border-radius: 50px;
     line-height: 13px;
 }
-.table-title .add-new i {
+.table-title.create .add-new i {
     margin-right: 4px;
 }
 table.table {
@@ -64,7 +72,7 @@ table.table td a.add i {
     position: relative;
     top: 3px;
 }    
-table.table .form-control {
+table.table .form-control .create {
     height: 32px;
     line-height: 32px;
     box-shadow: none;
@@ -83,27 +91,33 @@ table.table td .add {
 .label1 {
     padding-left: 1rem;
 }
-.btn-create{
-    margin: 0.5rem 0 0.5rem auto;
-    background: #ff9b00;
+.btn.btn-default.btn-create{
+    background: #5dabc3;
     color: #fff;
+    width: 10rem;
     font-weight: 600;
-    width: 25%;
     display: flex;
-    border: none;
-    border-radius: 2.5rem;
+    margin: 0.5rem 0 0.5rem auto;
+    border-radius: 1.5rem;
     cursor: pointer;
     justify-content: center;
-    padding: 0.5rem 0;
+}
+.btn.btn-default.btn-create:hover {
+    color: var(--bs-btn-hover-color);
+    background-color: var(--bs-btn-hover-bg);
+    border-color: var(--bs-btn-hover-border-color);
 }
 .create-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .btn-delete-checkpoint{
     background: none;
     border: none;
     size: 10px;
+    padding: 0;
 }
 .assign-delete{
     width: 12rem;
@@ -113,4 +127,22 @@ table.table td .add {
 }
 .modal-content{
     margin-top: 40%;
+}
+.bi.bi-trash{
+    padding: 8px;
+    color: red;
+}
+.bi.bi-pen{
+    padding: 8px;
+    color: #FFC107;
+}
+.pagination.justify-content-center.create{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+}
+.breadcrumb.create{
+    text-decoration: none;
+    margin: 0;
 }

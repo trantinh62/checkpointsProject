@@ -1,17 +1,20 @@
-.user-cover {
-    padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+ .user-cover {
+    background-color: #5dabc3;
+    min-height: calc(100% - 80px);
+    width: 100%;
 }
-.table-wrapper {
+.breadcrumb.user{
+    margin: 0;
+}
+.table-wrapper.user {
+    min-height: calc(100vh - 80px);
     background: #fff;
-    padding: 20px;	
     border-radius: 0.5rem;
     box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
-.table-title {
-    padding-bottom: 10px;
-    margin: 0 0 10px;
+.table-title.user {
+    padding-bottom: 0;
+    margin: 0;
 }
 .table-title h2 {
     margin: 6px 0 0;
@@ -84,6 +87,11 @@ table.table td .add {
     display: flex;
     justify-content: center;
 }
+
+.form-switch .form-check-input:checked{
+    background-color: #5dabc3;
+    border: none;
+}
 .btn-group-1 button{
     background: #ff9b00;
     color: #fff;
@@ -114,5 +122,26 @@ table.table td .add {
     justify-content: center;
 }
 .status-col{
-    width: 5rem;
+    width: 8%;
+}
+.btn-user-save{
+	background: #5dabc3;
+}
+.btn.btn-default.btn-filter-user{
+    background: #5dabc3;
+    color: #fff;
+    width: 10rem;
+    font-weight: 600;
+    display: flex;
+    margin-left: auto;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    justify-content: center;
+    margin-right: 0.5rem;
+}
+.pagination.justify-content-center.user{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
 }

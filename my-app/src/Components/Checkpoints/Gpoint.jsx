@@ -1,15 +1,17 @@
 import { useState } from "react";
 import Toast from "../Toast/Toast";
 import { updateGpointApi } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
 import "./Gpoint.css";
 
 function Gpoint() {
+  const { t } = useTranslation();
   const [dataGpoint, setDataGpoint] = useState({
     groupLeader: "",
     leader: "",
     member: "",
   });
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (name === "role_id") value = parseInt(value);
@@ -23,31 +25,31 @@ function Gpoint() {
     try {
       const response = await updateGpointApi(dataGpoint, token);
       if (response.data.status === 200) {
-        Toast("Update gpoint successful!", "success");
+        Toast(t("gpoint.updateSuccess"), "success");
       }
     } catch (err) {
-      Toast("Update gpoint failed!", "error");
+      Toast(t("gpoint.updateFailed"), "error");
     }
   };
   return (
     <div className="gpoint-cover">
       <div className="container gpoint">
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-3 gpoint">
             <div className="gpoint-info">
               <img
                 src="https://image.ibb.co/kUASdV/gpoint-image.png"
                 alt="image"
               />
-              <h2>Update gpoint</h2>
+              <h2>{t("gpoint.title")}</h2>
             </div>
           </div>
           <div className="col-md-9">
             <form onSubmit={handleSubmit}>
               <div className="gpoint-form">
                 <div className="form-group gpoint-form">
-                  <label className="control-label col-sm-3" htmlFor="email">
-                    Group leader's gpoint:
+                  <label className="control-label col-sm-4" htmlFor="email">
+                    {t("gpoint.GLpoint")}
                   </label>
                   <div className="col-sm-6">
                     <input
@@ -63,8 +65,8 @@ function Gpoint() {
                   </div>
                 </div>
                 <div className="form-group gpoint-form">
-                  <label className="control-label col-sm-3" htmlFor="email">
-                    Team leader's gpoint:
+                  <label className="control-label col-sm-4" htmlFor="email">
+                    {t("gpoint.TLpoint")}
                   </label>
                   <div className="col-sm-6">
                     <input
@@ -79,8 +81,8 @@ function Gpoint() {
                   </div>
                 </div>
                 <div className="form-group gpoint-form">
-                  <label className="control-label col-sm-3" htmlFor="email">
-                    Member's gpoint:
+                  <label className="control-label col-sm-4" htmlFor="email">
+                    {t("gpoint.Mempoint")}
                   </label>
                   <div className="col-sm-6">
                     <input
@@ -101,7 +103,7 @@ function Gpoint() {
                       type="submit"
                       className="btn btn-default btn-gpoint"
                     >
-                      Update gpoint
+                      {t("gpoint.btnUpdate")}
                     </button>
                   </div>
                 </div>

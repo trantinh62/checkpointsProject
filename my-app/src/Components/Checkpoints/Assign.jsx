@@ -1,16 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import Table from "react-bootstrap/Table";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, Link } from "react-router-dom";
 import "./Assign.css";
 import {
   getDetailCheckpointApi,
   getCheckedUser,
+  getAllUsersPaginateApi,
   getAllUsersApi,
   createAndDeleteReview,
 } from "../../Api/userApi";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
 
 function Assgin() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const search = useLocation().search;
@@ -21,7 +25,7 @@ function Assgin() {
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [idAssign, setIdAssign] = useState(null);
   const [dataFilter, setDataFilter] = useState([]);
   const [dataChecked, setDataChecked] = useState([]);
@@ -46,10 +50,10 @@ function Assgin() {
     fetchData();
   }, []);
 
-  const token = sessionStorage.getItem("sessionToken");
-  const userId = sessionStorage.getItem("sessionUserId");
+  const token = localStorage.getItem("localToken");
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getDetailCheckpointApi(token, params.id);
       const resUser = await getAllUsersApi(token);
       const resChecked = await getCheckedUser(
@@ -73,7 +77,14 @@ function Assgin() {
           beAssignedRoleId,
         ],
       });
-      setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
+      setNumPages(
+        Math.ceil(
+          resUser.data.data.filter(
+            (item) =>
+              item.id !== resUser.data.data[0].id && item.status !== "disable"
+          ).length / itemsPerPage
+        )
+      );
       setDataUser(resUser.data.data);
       setDataUserEnable(
         resUser.data.data.filter((item) => item.status !== "disable")
@@ -93,9 +104,9 @@ function Assgin() {
           .slice(start, end)
       );
       setIdAssign(resUser.data.data[0].id);
-      setLoading(true);
+      setIsLoading(false);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
   const onChangeInput = async (e) => {
@@ -240,18 +251,18 @@ function Assgin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       if (
         dataReview.new_reviewers.length === 0 &&
         dataReview.remove_reviewers.length === 0
       ) {
-        Toast("There is no change in order to update users!", "warning");
+        Toast(t("assign.noChangeWarning"), "warning");
+        setIsLoading(false);
         return;
       }
       if (Array.from(new Set(dataReview.role_id)).length < 3) {
-        Toast(
-          "Must assign all 3 roles (Group leader, Team leader, Member ) !",
-          "warning"
-        );
+        Toast(t("assign.rolesWarning"), "warning");
+        setIsLoading(false);
         return;
       }
       const res = await createAndDeleteReview(dataReview, token);
@@ -271,15 +282,24 @@ function Assgin() {
       });
       setDataChecked(reschecked.data.data);
       setCopyChecked(reschecked.data.data);
-      Toast("Update reviewer successful!", "success");
-    } catch (err) {}
+      Toast(t("assign.updateSuccess"), "success");
+      setIsLoading(false);
+    } catch (err) {
+      Toast(t("assign.updateFailed"), "error");
+      setIsLoading(false);
+    }
   };
 
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={i + 1}
+          onClick={handleOnClick}
+        >
           {i + 1}
         </button>
       </li>
@@ -288,19 +308,17 @@ function Assgin() {
   return (
     <div className="assign-cover">
       <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+        <div className="table-wrapper assign">
+          <div className="table-title assign">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                  <ol className="breadcrumb assign">
                     <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/create">
-                        Manage checkpoints: Create checkpoints
-                      </a>
+                      <Link to="/create">{t("create.create")}</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Assign users: {dataCheckpoint.name}
+                      {dataCheckpoint.name}
                     </li>
                   </ol>
                 </nav>
@@ -312,7 +330,7 @@ function Assgin() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -325,10 +343,10 @@ function Assgin() {
                       readOnly
                     ></input>
                   </div>
-                  <label className="control-label label1 col-sm-2">
-                    Be assigned:
+                  <label className="control-label label1 col-sm-4">
+                    {t("beChecked")}
                   </label>
-                  <div className="col-sm-10">
+                  <div className="col-sm-8">
                     <select
                       className="form-select"
                       name="user_id"
@@ -365,24 +383,20 @@ function Assgin() {
                 </div>
               </div>
             </div>
-            {loading === false && (
-              <h3 className="review-notify">
-                Waiting for loading data checkpoint!
-              </h3>
+            {isLoading && <LoadingSpinner />}
+
+            {dataPerPage.length === 0 && isLoading === false && (
+              <h3 className="review-notify">{t("assign.noUsers")}</h3>
             )}
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-              loading === true && (
-                <h3 className="review-notify">There are no users to assign</h3>
-              )}
-            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            {dataPerPage.length > 0 && isLoading === false && (
               <div>
                 <Table striped bordered hover className="text-center">
                   <thead>
                     <tr>
                       <th>#</th>
                       <th>Email</th>
-                      <th>Username</th>
-                      <th>Role</th>
+                      <th>{t("username")}</th>
+                      <th>{t("role")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -438,29 +452,34 @@ function Assgin() {
                           ref={selectAll}
                         ></input>
                       </td>
-                      <td style={{ textAlign: "initial" }}>Select all</td>
+                      <td style={{ textAlign: "initial" }}>
+                        {t("assign.selectAll")}
+                      </td>
                     </tr>
                   </tbody>
                 </Table>
-                <div className="form-group form1">
-                  <div className="d-flex btn-group-1">
-                    <button type="submit" className="btn btn-default ">
-                      Assign users
-                    </button>
-                    <button
-                      onClick={() => navigate(-1)}
-                      type="submit"
-                      className="btn btn-default "
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-center">
                     {menuItems}
                   </ul>
                 </nav>
+                <div className="form-group form1">
+                  <div className="d-flex btn-group-1">
+                    <button
+                      type="submit"
+                      className="btn btn-default btn-assign"
+                    >
+                      {t("assign.btnAssign")}
+                    </button>
+                    <button
+                      onClick={() => navigate(-1)}
+                      type="button"
+                      className="btn btn-default btn-assign"
+                    >
+                      {t("btnBack")}
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </form>

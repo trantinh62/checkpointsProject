@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   getAllCheckpointApi,
@@ -6,9 +6,14 @@ import {
 } from "../../Api/userApi";
 import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
+import removeMark from "../../Helper/removeMark";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./ListMemberHistory.css";
+import variable from "../../Common/Variable/variabe";
 
 function ListMemberHistory() {
+  const { t } = useTranslation();
   const search = useLocation().search;
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
@@ -19,15 +24,18 @@ function ListMemberHistory() {
   const [dataSearch, setDataSearch] = useState({
     name: "",
     start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
-    end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
+    end_date: dayjs(new Date("2025-12-31")).format("YYYY-MM-DDTHH:mm"),
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
-  const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const token = sessionStorage.getItem("sessionToken");
-  const roleId = sessionStorage.getItem("sessionRoleId");
-
+  const [isLoading, setIsLoading] = useState(true);
+  const token = localStorage.getItem("localToken");
+  const roleId = localStorage.getItem("localRoleId");
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     let name_value = dataSearch.name || "";
@@ -48,7 +56,7 @@ function ListMemberHistory() {
           new Date(item.start_date) > new Date(start_date_value) &&
           new Date(item.end_date) < new Date(end_date_value)
       );
-      setDataPerPage(dataFilter.slice(start, end));
+      setDataPerPage(dataFilter);
     }
     if (name === "start_date") {
       start_date_value = value;
@@ -84,12 +92,20 @@ function ListMemberHistory() {
     }
   };
 
-  const handleOnClick = (e) => {
-    const page = e.target.value;
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(dataListCheck.slice(start, end));
+  const handleOnClick = async (e) => {
+    setIsLoading(true);
+    let res = [];
+    const value = e.target.value;
+    if (parseInt(roleId) === variable.GLRoleId) {
+      res = await getAllCheckpointApi(token, value);
+    }
+    if (parseInt(roleId) === variable.TLRoleId) {
+      res = await getCheckpointsByReviewId(token, value);
+    }
+    setDataPerPage(res.data.data.checkpoint.data);
+    setPagination(res.data.data.checkpoint);
+    setDataListCheck(res.data.data.checkpoint.data);
+    setIsLoading(false);
   };
 
   const [dataListCheck, setDataListCheck] = useState([]);
@@ -100,75 +116,104 @@ function ListMemberHistory() {
   const fetchData = async () => {
     try {
       let res = [];
-      if (roleId === "1") {
-        res = await getAllCheckpointApi(token);
-        setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-        setDataListCheck(res.data.data.checkpoints);
-        setDataPerPage(res.data.data.checkpoints.slice(start, end));
-        setLoading(true);
+      if (parseInt(roleId) === variable.GLRoleId) {
+        setIsLoading(true);
+        res = await getAllCheckpointApi(token, 1);
+        setDataListCheck(res.data.data.checkpoint.data);
+        setDataPerPage(res.data.data.checkpoint.data);
+        setPagination(res.data.data.checkpoint);
+        setIsLoading(false);
       }
-      if (roleId === "2") {
-        res = await getCheckpointsByReviewId(token);
-        setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
-        setDataListCheck(res.data.data.map((item) => item.checkpoint));
+      if (parseInt(roleId) === variable.TLRoleId) {
+        setIsLoading(true);
+        res = await getCheckpointsByReviewId(token, 1);
+        setDataListCheck(res.data.data.data.map((item) => item.checkpoint));
         setDataPerPage(
-          res.data.data.map((item) => item.checkpoint).slice(start, end)
+          res.data.data.data.map((item) => item.checkpoint).slice(start, end)
         );
-        setLoading(true);
+        setPagination(res.data.data);
+        setIsLoading(false);
       }
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const page = 1;
-      setPage(page);
-      const start = (page - 1) * itemsPerPage;
-      const end = page * itemsPerPage;
+      setIsLoading(true);
       setDataSearch({
         name: "",
         start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
-        end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
+        end_date: dayjs(new Date("2025-12-31")).format("YYYY-MM-DDTHH:mm"),
       });
-      setDataPerPage(dataListCheck.slice(start, end));
+      setDataPerPage(dataListCheck);
+      setIsLoading(false);
     } catch (err) {}
   };
 
-  function removeMark(str) {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-    str = str.replace(/đ/g, "d");
-    return str;
-  }
-
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link pre-btn"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
+        <button
+          type="button"
+          className="page-link"
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
+          onClick={handleOnClick}
+          disabled={pagination.current_page === i + 1}
+        >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="list-member-his-cover">
       <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+        <div className="table-wrapper list-mem-history">
+          <div className="table-title list-mem-history">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item active" aria-current="page">
-                      Manage checkpoints: Member's checkpoint histories
+                      {t("listMemberHistory.memberHistory")}
                     </li>
                   </ol>
                 </nav>
@@ -180,20 +225,20 @@ function ListMemberHistory() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
                       type="text"
                       className="form-control"
-                      placeholder="Enter title checkpoint to filter"
+                      placeholder={t("listMemberHistory.titleFilter")}
                       name="name"
                       onChange={onChangeInput}
                       value={dataSearch.name}
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    Start date:
+                    {t("startDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
@@ -206,7 +251,7 @@ function ListMemberHistory() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    End date:
+                    {t("endDate")}
                   </label>
                   <div className="col-sm-4">
                     <input
@@ -222,51 +267,52 @@ function ListMemberHistory() {
               </div>
             </div>
             <div className="col-md-12">
-              <button type="submit" className="btn-create">
-                Reset filter
+              <button type="submit" className="btn btn-default btn-filter">
+                {t("listMemberHistory.resetFilter")}
               </button>
             </div>
           </form>
-          {loading === false && (
-            <h3 className="review-notify">Waiting for loading data!</h3>
+          {isLoading === true && <LoadingSpinner />}
+          {dataPerPage.length === 0 && isLoading === false && (
+            <h3 className="list-member-history-notify">
+              {t("listMemberHistory.noCheckpoints")}
+            </h3>
           )}
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-            loading === true && (
-              <h3 className="list-member-history-notify">
-                No checkpoint history!
-              </h3>
-            )}
-          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+          {dataPerPage.length > 0 && isLoading === false && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Title</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                    <th className="view-list-member-history">View</th>
+                    <th>{t("title")}</th>
+                    <th>{t("startDate")}</th>
+                    <th>{t("endDate")}</th>
+                    <th>{t("count")}</th>
+                    <th className="view-list-member-history">{t("view")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          {(pagination.current_page - 1) * pagination.per_page +
+                            index +
+                            1}
+                        </td>
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
+                        <td>{ele.count_review}</td>
                         <td>
-                          <a
-                            href={`/histories/member/${ele.id}?title=${ele.name}`}
-                          >
+                          <Link to={`/histories/member/${ele.id}`}>
                             <button
                               variant="primary"
                               className="btn-list-member-history"
                             >
                               <i className="bi bi-arrow-right-circle"></i>
                             </button>
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     );
@@ -274,7 +320,7 @@ function ListMemberHistory() {
                 </tbody>
               </table>
               <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
+                <ul className="pagination justify-content-center list-mem-history">
                   {menuItems}
                 </ul>
               </nav>

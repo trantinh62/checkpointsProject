@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import Profile from "./Components/Profile/Profile";
@@ -17,93 +17,134 @@ import ListMemberHistory from "./Components/History/ListMemberHistory";
 import MemberHistory from "./Components/History/MemberHistory";
 import User from "./Components/Users/User";
 import Invite from "./Components/Invite/Invite";
-import Header from "./Common/Header/Header";
-import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import Layout from "./Common/Layout/Layout";
+import { PrivateRoute } from "./Common/PrivateRoute/PrivateRoute";
 function App() {
-  const [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
-  if (!token) {
-    return (
-      <>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <ToastContainer />
-        <Routes>
-          <Route path="/" element={<Login />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/forgot" element={<ForgotPassword />}></Route>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/reset" element={<ResetPassword />}></Route>
-          <Route path="/profile" element={<Login />}></Route>
-          <Route path="/invite" element={<Login />}></Route>
-          <Route path="/users" element={<Login />}></Route>
-          <Route path="/mycheckpoints" element={<Login />}></Route>
-          <Route path="/mycheckpoints/:check_id" element={<Login />}></Route>
-          <Route
-            path="/mycheckpoints/:check_id/reviews/:review_id"
-            element={<Login />}
-          ></Route>
-          <Route path="/create" element={<Login />}></Route>
-          <Route path="/gpoint" element={<Login />}></Route>
-          <Route path="/assign/:id" element={<Login />}></Route>
-          <Route path="/histories" element={<Login />}></Route>
-          <Route path="/histories/member" element={<Login />}></Route>
-          <Route path="/histories/member/:id" element={<Login />}></Route>
-          <Route path="/histories/:id" element={<Login />}></Route>
-        </Routes>
-      </>
-    );
-  }
-
   return (
     <>
-      <div>
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <ToastContainer />
-        <Header></Header>
-      </div>
-
+      <ToastContainer />
       <Routes>
-        <Route path="/profile" element={<Profile />}></Route>
-        <Route path="/invite" element={<Invite />}></Route>
-        <Route path="/users" element={<User />}></Route>
-        <Route path="/mycheckpoints" element={<ListCheckpoints />}></Route>
-        <Route
-          path="/mycheckpoints/:check_id"
-          element={<ListReviews />}
-        ></Route>
-        <Route
-          path="/mycheckpoints/:check_id/reviews/:review_id"
-          element={<DetailReview />}
-        ></Route>
-        <Route path="/create" element={<CreateCheckpoint />}></Route>
-        <Route path="/gpoint" element={<Gpoint />}></Route>
-        <Route path="/assign/:id" element={<Assign />}></Route>
-        <Route path="/histories" element={<History />}></Route>
-        <Route path="/histories/member" element={<ListMemberHistory />}></Route>
-        <Route path="/histories/member/:id" element={<MemberHistory />}></Route>
-        <Route path="/histories/:id" element={<DetailHistory />}></Route>
+        <Route element={<Layout />}>
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/invite"
+            element={
+              <PrivateRoute>
+                <Invite />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <User />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <ListCheckpoints />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/mycheckpoints"
+            element={
+              <PrivateRoute>
+                <ListCheckpoints />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/mycheckpoints/:check_id"
+            element={
+              <PrivateRoute>
+                <ListReviews />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/mycheckpoints/:check_id/reviews/:review_id"
+            element={
+              <PrivateRoute>
+                <DetailReview />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/create"
+            element={
+              <PrivateRoute>
+                <CreateCheckpoint />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/gpoint"
+            element={
+              <PrivateRoute>
+                <Gpoint />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/assign/:id"
+            element={
+              <PrivateRoute>
+                <Assign />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/histories"
+            element={
+              <PrivateRoute>
+                <History />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/histories/member"
+            element={
+              <PrivateRoute>
+                <ListMemberHistory />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/histories/member/:id"
+            element={
+              <PrivateRoute>
+                <MemberHistory />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/histories/:id"
+            element={
+              <PrivateRoute>
+                <DetailHistory />
+              </PrivateRoute>
+            }
+          ></Route>
+        </Route>
+
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="/forgot" element={<ForgotPassword />}></Route>
+        <Route path="/register" element={<Register />}></Route>
+        <Route path="/resetpassword" element={<ResetPassword />}></Route>
       </Routes>
     </>
   );

@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
 import Toast from "../Toast/Toast";
-import { profileApi, passApi, getProfileApi } from "../../Api/userApi";
+import {
+  profileApi,
+  passApi,
+  getProfileApi,
+  updateAvatar,
+} from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./Profile.css";
 const Profile = () => {
+  const { t } = useTranslation();
   const [dataProfile, setDataProfile] = useState({
     id: null,
     email: "",
@@ -12,6 +20,8 @@ const Profile = () => {
     age: "",
     address: "",
     phone: "",
+    image: "",
+    link: "",
     createdAt: null,
     updateAt: null,
   });
@@ -20,6 +30,8 @@ const Profile = () => {
     password: "",
     password_confirm: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setDataProfile({
@@ -35,52 +47,85 @@ const Profile = () => {
     });
   };
 
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getProfileApi(token);
       setDataProfile(res.data.data);
+      setIsLoading(false);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let formData = new FormData();
+      formData.append("image", selectedFile);
+      setIsLoading(true);
       const response = await profileApi(dataProfile, token);
-      sessionStorage.setItem("sessionUser", response.data.data.first_name);
-      Toast("Update profile successful!", "success");
+      localStorage.setItem(
+        "localUsername",
+        response.data.data.first_name + " " + response.data.data.last_name
+      );
+      const updateAvt = await updateAvatar(formData, token);
+      Toast(t("profile.updateSuccess"), "success");
+      setIsLoading(false);
     } catch (err) {
-      Toast("Update profile failed!", "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   const handleChange = async (e) => {
     e.preventDefault();
     try {
+      if (dataPass.password.length < 8) {
+        return Toast(t("profile.login8Chars"), "warning");
+      }
+      if (dataPass.password !== dataPass.password_confirm) {
+        return Toast(t("profile.confirmNotMatch"), "warning");
+      }
+      setIsLoading(true);
       const response = await passApi(dataPass, token);
-      Toast("Update password successful!", "success");
+      Toast(t("profile.updatePassSuccess"), "success");
+      setIsLoading(false);
     } catch (err) {
-      Toast("Update password failed!", "error");
+      setIsLoading(false);
+      if (err.response.request.status === 422) {
+        Toast(t("errorFormatPass"), "error");
+        return;
+      }
+      Toast(err.response.data.message, "error");
     }
+  };
+  const handleFileSelect = (event) => {
+    setSelectedFile(event.target.files[0]);
   };
   return (
     <div className="profile-cover">
       <div className="container emp-profile">
         <div className="row">
+          {isLoading === true && <LoadingSpinner />}
           <div className="col-md-4">
             <div className="profile-img">
               <img
-                src="https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=2000"
+                src={
+                  dataProfile.link
+                    ? dataProfile.link
+                    : "https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=2000"
+                }
                 alt=""
               />
               <div className="file btn btn-lg btn-primary">
-                Change Photo
-                <input type="file" name="file" />
+                {t("profile.changePhoto")}
+                <input type="file" name="image" onChange={handleFileSelect} />
               </div>
             </div>
           </div>
@@ -96,30 +141,30 @@ const Profile = () => {
                   >
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Firstname:</label>
+                        <label>{t("profile.firstname")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="first_name"
                           value={dataProfile.first_name}
                           onChange={onChangeInput}
-                          placeholder="firstname"
+                          placeholder={t("profile.firstname")}
                           required
                         ></input>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Lastname:</label>
+                        <label>{t("profile.lastname")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="last_name"
                           value={dataProfile.last_name}
                           onChange={onChangeInput}
-                          placeholder="lastname"
+                          placeholder={t("profile.lastname")}
                           required
                         ></input>
                       </div>
@@ -128,58 +173,58 @@ const Profile = () => {
                       <div className="col-md-6 col1">
                         <label>Email:</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="email"
                           value={dataProfile.email}
                           onChange={onChangeInput}
-                          placeholder="email"
+                          placeholder={t("profile.email")}
                           readOnly
                         ></input>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Phone:</label>
+                        <label>{t("profile.phone")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="phone"
                           value={dataProfile.phone}
                           onChange={onChangeInput}
-                          placeholder="phone"
+                          placeholder={t("profile.phone")}
                           required
                         ></input>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Age:</label>
+                        <label>{t("profile.age")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="age"
                           value={dataProfile.age}
                           onChange={onChangeInput}
-                          placeholder="age"
+                          placeholder={t("profile.age")}
                           required
                         ></input>
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-6 col1">
-                        <label>Address:</label>
+                        <label>{t("profile.address")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="address"
                           value={dataProfile.address}
                           onChange={onChangeInput}
-                          placeholder="address"
+                          placeholder={t("profile.address")}
                           required
                         ></input>
                       </div>
@@ -187,8 +232,12 @@ const Profile = () => {
                   </div>
                   <div className="form-group profile-form">
                     <div className="d-flex btn-profile">
-                      <button type="submit" className="btn btn-default">
-                        Update profile
+                      <button
+                        type="submit"
+                        className="btn btn-default btn-profile"
+                        disabled={isLoading}
+                      >
+                        {t("profile.btnUp")}
                       </button>
                     </div>
                   </div>
@@ -210,13 +259,19 @@ const Profile = () => {
                 {dataProfile.first_name + " " + dataProfile.last_name}
               </h3>
               <p>
-                ROLE: {dataProfile.role_id === 1 && "Group leader"}
+                {t("role")} {dataProfile.role_id === 1 && "Group leader"}
                 {dataProfile.role_id === 2 && "Tech leader"}
                 {dataProfile.role_id === 3 && "Member"}
               </p>
-              <p>Age: {dataProfile.age}</p>
-              <p>STATUS: {dataProfile.status}</p>
-              <p>Address: {dataProfile.address}</p>
+              <p>
+                {t("age")} {dataProfile.age}
+              </p>
+              <p>
+                {t("status")} {dataProfile.status}
+              </p>
+              <p>
+                {t("address")} {dataProfile.address}
+              </p>
               <br />
             </div>
           </div>
@@ -230,56 +285,60 @@ const Profile = () => {
               >
                 <div className="row">
                   <div className="col-md-6 col1">
-                    <label>Old password:</label>
+                    <label>{t("profile.oldPass")}</label>
                   </div>
-                  <div className="col-md-6 col1">
+                  <div className="col-8 col1">
                     <input
                       type="password"
-                      id="profile-pass"
+                      className="profile-pass"
                       name="old_password"
                       value={dataPass.old_password}
                       onChange={onChangePass}
-                      placeholder="old password"
+                      placeholder={t("profile.oldPass")}
                       required
                     ></input>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-md-6 col1">
-                    <label>New password:</label>
+                    <label>{t("profile.newPass")}</label>
                   </div>
-                  <div className="col-md-6 col1">
+                  <div className="col-8 col1">
                     <input
                       type="password"
                       name="password"
-                      id="profile-pass"
+                      className="profile-pass"
                       value={dataPass.password}
                       onChange={onChangePass}
-                      placeholder="new password"
+                      placeholder={t("profile.newPass")}
                       required
                     ></input>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-md-6 col1">
-                    <label>Confirm password:</label>
+                    <label>{t("profile.confirmPass")}</label>
                   </div>
-                  <div className="col-md-6 col1">
+                  <div className="col-8 col1">
                     <input
                       type="password"
                       name="password_confirm"
-                      id="profile-pass"
+                      className="profile-pass"
                       value={dataPass.password_confirm}
                       onChange={onChangePass}
-                      placeholder="confirm password"
+                      placeholder={t("profile.confirmPass")}
                       required
                     ></input>
                   </div>
                 </div>
                 <div className="form-group">
                   <div className="d-flex btn-profile">
-                    <button type="submit" className="btn btn-default">
-                      Change password
+                    <button
+                      type="submit"
+                      className="btn btn-default btn-profile"
+                      disabled={isLoading}
+                    >
+                      {t("profile.btnChange")}
                     </button>
                   </div>
                 </div>

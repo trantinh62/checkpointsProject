@@ -11,15 +11,18 @@ import {
   getListUsersByCheckpointId,
   getAvgByCheckpointIdAuthor,
 } from "../../Api/userApi";
+import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./MemberHistory.css";
 
 function MemberHistory() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
   const search = useLocation().search;
   const [searchParams] = useSearchParams();
-  const title = searchParams.get("title");
+  const [title, setTitle] = useState("");
   const [dataPagination, setDataPagination] = useState({
     page: new URLSearchParams(search).get("page") || 1,
     itemsPerPage: 10,
@@ -35,7 +38,6 @@ function MemberHistory() {
   const start = (dataPagination.page - 1) * dataPagination.itemsPerPage;
   const end = dataPagination.page * dataPagination.itemsPerPage;
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [dataCheckpoint, setDataCheckpoint] = useState({
     id: null,
     name: "",
@@ -43,23 +45,25 @@ function MemberHistory() {
   const [dataCheckpointByUser, setDataCheckpointByUser] = useState([]);
   const [dataUser, setDataUser] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     fetchData();
   }, []);
 
-  const token = sessionStorage.getItem("sessionToken");
-  const roleId = sessionStorage.getItem("sessionRoleId");
+  const token = localStorage.getItem("localToken");
+  const roleId = localStorage.getItem("localRoleId");
   const fetchData = async () => {
     try {
       const resCheck = await getCheckpointByCheckId(token, params.id);
       setDataCheckpoint(resCheck.data.data);
+      setTitle(resCheck.data.data.name ? resCheck.data.data.name : "");
       let resUser = [];
       if (roleId === "1") {
         resUser = await getListUsersByCheckpointId(token, params.id);
         setDataUser(resUser.data.data.map((item) => item.user));
       }
       if (roleId === "2") {
-        resUser = await getListUsersByCheckpointId(token, params.id); // mai sua
+        resUser = await getListUsersByCheckpointId(token, params.id);
         setDataUser(resUser.data.data.map((item) => item.user));
       }
       const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
@@ -83,15 +87,17 @@ function MemberHistory() {
       if (avgPoint.length === 1) {
         setDataAvg(avgPoint[0]);
       }
-      setLoading(true);
+      setIsLoading(false);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      setIsLoading(false);
+      Toast(t("errorFetchData"), "error");
     }
   };
 
   const onChangeInput = async (e) => {
     let { name, value } = e.target;
     if (name === "user_id") {
+      setIsLoading(true);
       value = parseInt(value);
       const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
         token,
@@ -121,6 +127,7 @@ function MemberHistory() {
           created_at: null,
         });
       }
+      setIsLoading(false);
     }
   };
 
@@ -133,12 +140,6 @@ function MemberHistory() {
     const start = (page - 1) * dataPagination.itemsPerPage;
     const end = page * dataPagination.itemsPerPage;
     setDataPerPage(dataCheckpointByUser.slice(start, end));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-    } catch (err) {}
   };
 
   let menuItems = [];
@@ -154,31 +155,31 @@ function MemberHistory() {
   return (
     <div className="member-his-cover">
       <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
+        <div className="table-wrapper mem-history">
+          <div className="table-title mem-history">
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
                       <a className="breadcrumb" href="/histories/member">
-                        Manage checkpoints: Member's checkpoint histories
+                        {t("listMemberHistory.memberHistory")}
                       </a>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Title: {title}
+                      {title}
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="col-md-6">
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    Title:
+                    {t("title")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -191,7 +192,7 @@ function MemberHistory() {
                     ></input>
                   </div>
                   <label className="control-label label1 col-sm-2">
-                    Be assigned:
+                    {t("beChecked")}
                   </label>
                   <div className="col-sm-10">
                     <select
@@ -220,30 +221,27 @@ function MemberHistory() {
                 </div>
               </div>
             </div>
-            {loading === false && (
-              <h3 className="review-notify">Waiting for loading data!</h3>
+            {isLoading === true && <LoadingSpinner />}
+            {dataPerPage.length === 0 && isLoading === false && (
+              <h3 className="member-history-notify">
+                {t("memberHistory.noCheckpoints")}
+              </h3>
             )}
-            {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-              loading === true && (
-                <h3 className="member-history-notify">
-                  No checkpoint history!
-                </h3>
-              )}
-            {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+            {dataPerPage.length > 0 && isLoading === false && (
               <div>
                 <table className="table table-bordered text-center">
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th className="point-table-member">Attitude</th>
-                      <th className="point-table-member">Performance</th>
-                      <th className="point-table-member">Teamwork</th>
-                      <th className="point-table-member">Training</th>
-                      <th className="point-table-member">Adhere</th>
-                      <th>Strength</th>
-                      <th>Weakness</th>
-                      <th style={{ width: "12rem" }}>Reviewer</th>
-                      <th style={{ width: "6rem" }}>Note</th>
+                      <th className="point-table-member">{t("Attitude")}</th>
+                      <th className="point-table-member">{t("Performance")}</th>
+                      <th className="point-table-member">{t("Teamwork")}</th>
+                      <th className="point-table-member">{t("Training")}</th>
+                      <th className="point-table-member">{t("Adhere")}</th>
+                      <th>{t("Strength")}</th>
+                      <th>{t("Weakness")}</th>
+                      <th style={{ width: "12rem" }}>{t("Reviewer")}</th>
+                      <th style={{ width: "6rem" }}>{t("Note")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -327,11 +325,14 @@ function MemberHistory() {
             <div className="form-group form1">
               <div className="d-flex btn-group-1">
                 <button
-                  onClick={() => navigate(-1)}
+                  onClick={() => {
+                    navigate("/histories/member", { replace: true });
+                    navigate(0);
+                  }}
                   type="submit"
-                  className="btn btn-default "
+                  className="btn btn-default mem-history"
                 >
-                  Back
+                  {t("btnBack")}
                 </button>
               </div>
             </div>

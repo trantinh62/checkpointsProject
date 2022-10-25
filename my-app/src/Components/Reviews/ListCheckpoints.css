@@ -1,10 +1,12 @@
 
 .list-checkpoints-cover {
-    padding-top: 40px;
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-    height: 100vh;
+    background-color: #5dabc3;
+    min-height: calc(100% - 80px);
+    width: 100%;
+    position: absolute;
 }
-.table-wrapper {
+.table-wrapper.list-check {
+    min-height: calc(100vh - 80px);
     background: #fff;
     padding: 20px;	
     border-radius: 0.5rem;
@@ -81,18 +83,30 @@ table.table .form-control.error {
 table.table td .add {
     display: none;
 }
-.breadcrumb {
+.breadcrumb.list-check {
     text-decoration: none;
+    margin: 0;
 }
 .checkpoint-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .view-checkpoint{
-    width: 12rem;
+    width: 6%;
 }
 .btn-list-checkpoint{
     background: none;
     border: none;
     size: 10px;
+}
+.review-notify{
+    text-align: center;
+}
+.pagination.justify-content-center.list-checkpoints{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
 }

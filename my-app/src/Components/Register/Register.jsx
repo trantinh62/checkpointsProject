@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { registerApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
+import { useTranslation } from "react-i18next";
 import "./Register.css";
 function Register() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { search } = useLocation();
   const token = new URLSearchParams(search).get("token");
@@ -17,6 +19,7 @@ function Register() {
     password: "",
     password_confirm: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const onChangeInput = (e) => {
     const { id, value } = e.target;
     setdataRegister({
@@ -27,25 +30,34 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (dataRegister.password.length < 8) {
+        return Toast(t("profile.login8Chars"), "warning");
+      }
+      if (dataRegister.password !== dataRegister.password_confirm) {
+        return Toast(t("profile.confirmNotMatch"), "warning");
+      }
+      setIsLoading(true);
       const res = await registerApi(dataRegister, token);
-      Toast("Register successful!", "success");
-      navigate("/login", { replace: true });
-      navigate(0);
+      localStorage.clear();
+      Toast(t("register.registerSuccess"), "success");
+      navigate("/login");
+      setIsLoading(false);
     } catch (err) {
-      Toast("Register failed!", "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   return (
     <div className="register-cover">
       <div className="container register">
         <div className="row">
-          <div className="col-md-3">
+          <div className="col-md-3 register">
             <div className="register-info">
               <img
                 src="https://image.ibb.co/kUASdV/register-image.png"
                 alt="image"
               />
-              <h2>Register</h2>
+              <h2>{t("register.title")}</h2>
             </div>
           </div>
           <div className="col-md-9">
@@ -53,7 +65,7 @@ function Register() {
               <div className="register-form">
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="firstname">
-                    Firstname:
+                    {t("register.firstname")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -69,7 +81,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="lastname">
-                    Lastname:
+                    {t("register.lastname")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -85,7 +97,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="age">
-                    Age:
+                    {t("register.age")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -101,7 +113,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="phone">
-                    Phone:
+                    {t("register.phone")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -117,7 +129,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="address">
-                    Address:
+                    {t("register.address")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -133,7 +145,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="password">
-                    Password:
+                    {t("register.newPass")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -149,7 +161,7 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <label className="control-label col-sm-2" htmlFor="password">
-                    Password confirm:
+                    {t("register.confirmPass")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -165,8 +177,12 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <div className="col-sm-offset-2 col-sm-10 mt-2">
-                    <button type="submit" className="btn btn-default">
-                      Register
+                    <button
+                      type="submit"
+                      className="btn btn-default register"
+                      disabled={isLoading}
+                    >
+                      {t("register.title")}
                     </button>
                   </div>
                 </div>

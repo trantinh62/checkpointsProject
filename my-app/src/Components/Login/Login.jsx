@@ -1,15 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 import { loginApi } from "../../Api/userApi";
+import i18n from "i18next";
 import "./Login.css";
 function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [dataLogin, setDataLogin] = useState({
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setDataLogin({
@@ -17,36 +21,49 @@ function Login() {
       [name]: value,
     });
   };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const token = localStorage.getItem("localToken");
+      if (token) navigate("/");
+    } catch (err) {}
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (dataLogin.password.length < 8)
+        return Toast(t("login.login8Chars"), "warning");
+      setIsLoading(true);
       const response = await loginApi(dataLogin);
-      sessionStorage.setItem(
-        "sessionUsername",
+      localStorage.setItem(
+        "localUsername",
         response.data.data.first_name + " " + response.data.data.last_name
       );
-      sessionStorage.setItem("sessionUserId", response.data.data.id);
-      sessionStorage.setItem("sessionRoleId", response.data.data.role_id);
-      sessionStorage.setItem("sessionToken", response.data.data.token);
-      if (response.data.status === 200) {
-        navigate("/mycheckpoints", { replace: true });
-        navigate(0);
-      }
+      localStorage.setItem("localUserId", response.data.data.id);
+      localStorage.setItem("localRoleId", response.data.data.role_id);
+      localStorage.setItem("localToken", response.data.data.token);
+      localStorage.setItem(
+        "localLanguage",
+        response.data.data.language === 0 ? "vn" : "en"
+      );
+      setIsLoading(false);
+      i18n.changeLanguage(response.data.data.language === 0 ? "vn" : "en");
+      Toast(t("login.loginSuccess"), "success");
+      navigate("/");
     } catch (err) {
-      if (err.response.status === 403) {
-        Toast("This account is locked", "error");
-      } else if (err.response.status === 400) {
-        Toast("Wrong account information!", "error");
-      } else if (err.response.status === 422) {
-        Toast("Password must be longer than 8 characters!", "warning");
-      } else Toast(err.response.data.message, "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
 
   return (
     <div className="login-cover">
       <div className="container ">
-        <div className="card card-container">
+        <div className="card card-container login">
           <img
             id="profile-img"
             className="profile-img-card"
@@ -79,6 +96,7 @@ function Login() {
             <button
               className="btn btn-lg btn-primary btn-block btn-signin"
               type="submit"
+              disabled={isLoading}
             >
               Sign in
             </button>

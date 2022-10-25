@@ -4,21 +4,32 @@ import {
   useParams,
   useNavigate,
   useSearchParams,
+  Link,
 } from "react-router-dom";
 import {
   getAvgByCheckpointIdMyHistory,
   getReviewsByCheckpointId,
+  getAllCheckpoints,
 } from "../../Api/userApi";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectListHistories,
+  updateListDetailHistories,
+  updateListHistories,
+} from "../../store/listHistorySlice";
 import "./DetailHistory.css";
 function DetailHistory() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const params = useParams();
   const search = useLocation().search;
   const page = new URLSearchParams(search).get("page") || 1;
-
+  const [title, setTitle] = useState("");
   const [searchParams] = useSearchParams();
-  const title = searchParams.get("title");
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
@@ -32,45 +43,40 @@ function DetailHistory() {
     avg_adhere: 0,
   });
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const handleOnClick = (e) => {
     const page = e.target.value;
     const start = (page - 1) * itemsPerPage;
     const end = page * itemsPerPage;
     setDataPerPage(listReviews.slice(start, end));
   };
-  const token = sessionStorage.getItem("sessionToken");
-  const userId = sessionStorage.getItem("sessionUserId");
+  const token = localStorage.getItem("localToken");
+  const userId = localStorage.getItem("localUserId");
+  const history = useSelector(selectListHistories);
 
   useEffect(() => {
     fetchData();
   }, []);
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getReviewsByCheckpointId(token, params.id);
+      setTitle(res.data.data[0].name);
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListReviews(res.data.data);
       const resAvg = await getAvgByCheckpointIdMyHistory(token, params.id);
-      setLoading(true);
       if (resAvg.data.data[0].avg_checkpoint.length !== 0) {
+        res.data.data.avg = resAvg.data.data[0].avg_checkpoint[0];
         setDataAvg(resAvg.data.data[0].avg_checkpoint[0]);
       }
+      setIsLoading(false);
     } catch (err) {
-      Toast("An error occurred while loading data!", "error");
+      Toast(t("errorFetchData"), "error");
+      setIsLoading(false);
     }
   };
 
-  let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
-    menuItems.push(
-      <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
-          {i + 1}
-        </button>
-      </li>
-    );
-  }
   return (
     <div className="detail-histories-cover">
       <div className="container ">
@@ -81,40 +87,35 @@ function DetailHistory() {
                 <nav aria-label="breadcrumb">
                   <ol className="breadcrumb">
                     <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/histories">
-                        My checkpoints: Checkpoint histories
-                      </a>
+                      <Link to="/histories">{t("history.listHistories")}</Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Title: {title}
+                      {title}
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-          {loading === false && (
-            <h3 className="review-notify">Waiting for loading data!</h3>
+          {isLoading && <LoadingSpinner />}
+          {dataPerPage.length === 0 && isLoading === false && (
+            <h3 className="history-notify">{t("history.noHistories")}</h3>
           )}
-          {JSON.stringify(dataPerPage) === JSON.stringify([]) &&
-            loading == true && (
-              <h3 className="history-notify">No checkpoint history!</h3>
-            )}
-          {JSON.stringify(dataPerPage) !== JSON.stringify([]) && (
+          {dataPerPage.length > 0 && isLoading === false && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th className="point-table">Attitude</th>
-                    <th className="point-table">Performance</th>
-                    <th className="point-table">Teamwork</th>
-                    <th className="point-table">Training</th>
-                    <th className="point-table">Adhere</th>
-                    <th>Strength</th>
-                    <th>Weakness</th>
-                    <th style={{ width: "12rem" }}>Reviewer</th>
-                    <th style={{ width: "6rem" }}>Note</th>
+                    <th style={{ width: "5%" }}>#</th>
+                    <th className="point-table">{t("Attitude")}</th>
+                    <th className="point-table">{t("Performance")}</th>
+                    <th className="point-table">{t("Teamwork")}</th>
+                    <th className="point-table">{t("Training")}</th>
+                    <th className="point-table">{t("Adhere")}</th>
+                    <th>{t("Strength")}</th>
+                    <th>{t("Weakness")}</th>
+                    <th style={{ width: "15%" }}>{t("Reviewer")}</th>
+                    <th style={{ width: "6%" }}>{t("Note")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -146,14 +147,14 @@ function DetailHistory() {
                           ele.teamwork === null &&
                           ele.training === null &&
                           ele.adhere === null
-                            ? "Chưa đánh giá"
-                            : "Đã đánh giá"}
+                            ? t("yetChecked")
+                            : t("checked")}
                         </td>
                       </tr>
                     );
                   })}
                   <tr key="Avg">
-                    <td>Avg</td>
+                    <td>{t("Avg")}</td>
                     <td>
                       {dataAvg.avg_attitude !== 0 && dataAvg.avg_attitude}
                     </td>
@@ -176,17 +177,12 @@ function DetailHistory() {
                       dataAvg.avg_teamwork === 0 &&
                       dataAvg.avg_training === 0 &&
                       dataAvg.avg_adhere === 0
-                        ? "Chưa hoàn thành"
-                        : "Đã hoàn thành"}
+                        ? t("yet")
+                        : t("done")}
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
-                  {menuItems}
-                </ul>
-              </nav>
             </div>
           )}
           <div className="form-group">
@@ -194,9 +190,10 @@ function DetailHistory() {
               <button
                 onClick={() => navigate(-1)}
                 type="submit"
-                className="btn btn-default "
+                className="btn btn-default btn-detail-history"
+                disabled={isLoading}
               >
-                Back
+                {t("btnBack")}
               </button>
             </div>
           </div>

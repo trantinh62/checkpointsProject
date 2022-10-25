@@ -1,17 +1,37 @@
-import { useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { reviewApi } from "../../Api/userApi";
+import { useEffect, useState } from "react";
+import {
+  useNavigate,
+  useParams,
+  useSearchParams,
+  Link,
+} from "react-router-dom";
+import {
+  getReviewById,
+  getCheckpointsByReviewId,
+  getReviewsByCheckpointIdAndMyReviewId,
+  reviewApi,
+} from "../../Api/userApi";
 import Toast from "../Toast/Toast";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { useTranslation } from "react-i18next";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectListCheckpoints,
+  updateListCheckpoints,
+  updateListReviews,
+} from "../../store/listCheckpointSlice";
+
 import "./DetailReview.css";
 
 function ListReviews() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const params = useParams();
   const [searchParams] = useSearchParams();
   const check_id = params.check_id;
-  const title = searchParams.get("title");
-  const username = searchParams.get("username");
   const user_id = searchParams.get("user_id");
+  const [isLoading, setIsLoading] = useState(false);
   const [dataReview, setDataReview] = useState({
     attitude: null,
     performance: null,
@@ -22,9 +42,34 @@ function ListReviews() {
     weakness: "",
     checkpoint_id: check_id,
     user_id: user_id,
+    title: "",
+    userBeChecked: "",
   });
-  const token = sessionStorage.getItem("sessionToken");
+  const [isChecked, setIsChecked] = useState(false);
 
+  const token = localStorage.getItem("localToken");
+  const list = useSelector(selectListCheckpoints);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const review = await getReviewById(parseInt(params.review_id), token);
+      setDataReview({
+        ...review.data.data,
+        title: review.data.data.checkpoint.name,
+        userBeChecked:
+          review.data.data.user.first_name +
+          " " +
+          review.data.data.user.last_name,
+      });
+      setIsChecked(review.data.data.attitude != null ? true : false);
+      setIsLoading(false);
+    } catch (err) {
+      Toast(t("errorFetchData"), "error");
+    }
+  };
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (Number(value)) value = parseInt(value);
@@ -36,263 +81,367 @@ function ListReviews() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const res = await reviewApi(dataReview, token, params.review_id);
-      Toast("Check checpoint successful!", "success");
+      Toast(t("detailReview.reviewSuccess"), "success");
+      navigate(`/mycheckpoints/${params.check_id}`);
+      setIsLoading(false);
     } catch (err) {
-      Toast("Check checpoint failed!", "error");
+      Toast(t("detailReview.reviewFailed"), "error");
+      setIsLoading(false);
     }
   };
-
   return (
     <div className="detail-review">
-      <div className="container ">
-        <div className="table-wrapper">
-          <div className="table-title">
-            <div className="row">
+      <div className="container">
+        <div className="table-wrapper detail-review-wrap">
+          <div className="table-title-detail-review">
+            <div className="row ">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                  <ol className="breadcrumb" style={{ width: "max-content" }}>
                     <li className="breadcrumb-item">
-                      <a className="breadcrumb" href="/mycheckpoints">
-                        My checkpoints: List checkpoints
-                      </a>
+                      <Link to="/mycheckpoints">
+                        {t("myCheckpoints.listCheckpoint")}
+                      </Link>
                     </li>
                     <li className="breadcrumb-item">
-                      <a
-                        className="breadcrumb"
-                        href={`/mycheckpoints/${params.check_id}?title=${title}`}
-                      >
-                        List reviews: {title}
-                      </a>
+                      <Link to={`/mycheckpoints/${params.check_id}`}>
+                        {dataReview.title}
+                      </Link>
                     </li>
                     <li className="breadcrumb-item active" aria-current="page">
-                      Username: {username}
+                      {t("detailReview.beChecked")}{" "}
+                      {dataReview.userBeChecked !== "null null"
+                        ? dataReview.userBeChecked
+                        : "Unknown"}
                     </li>
                   </ol>
                 </nav>
               </div>
             </div>
           </div>
-          <form onSubmit={handleSubmit}>
-            <div className="detail-review-form">
-              <div className="form-group form1">
-                <label className="control-label col-sm-3" htmlFor="email">
-                  Question 1: THÁI ĐỘ TRÁCH NHIỆM
-                </label>
-                <div className="col-sm-9">
-                  <h6>
-                    - 10 điểm: Luôn chủ động, tích cực. Hoặc tính sẵn sàng đi
-                    onsite.- 7 điểm: Bình thường- 5 điểm: Còn thụ động, còn để
-                    nhắc nhở về tinh thần, thái độ, ý thức làm việc- 0 điểm: rất
-                    có vấn đề về ý thức
-                  </h6>
-                  <select
-                    style={{ width: "150px" }}
-                    className="form-select"
-                    onChange={onChangeInput}
-                    name="attitude"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option value="">Select point</option>
-                    <option value={0}>0</option>
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    <option value={6}>6</option>
-                    <option value={7}>7</option>
-                    <option value={8}>8</option>
-                    <option value={9}>9</option>
-                    <option value={10}>10</option>
-                  </select>
+          {isLoading === true && <LoadingSpinner />}
+          {isLoading === false && (
+            <form onSubmit={handleSubmit}>
+              <div>
+                <div
+                  className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                  style={{ minHeight: "10rem" }}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-3 detail-review-panel">
+                      <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                        <p>{t("detailReview.check1")}</p>
+                      </h4>
+                    </div>
+                    <div className="col-12 col-md-6 text-center">
+                      <span>{t("detailReview.descrip1")}</span>
+                    </div>
+                    <div className="col-12 col-md-3 detail-review-panel text-center">
+                      <select
+                        style={{
+                          width: "150px",
+                          backgroundColor: "#5dabc3",
+                          margin: "auto",
+                          color: "white",
+                        }}
+                        className="form-select"
+                        onChange={onChangeInput}
+                        name="attitude"
+                        aria-label="Default select example"
+                        required
+                        value={dataReview.attitude ? dataReview.attitude : ""}
+                        disabled={
+                          dataReview.attitude && isChecked ? true : false
+                        }
+                      >
+                        <option value="">
+                          {t("detailReview.selectPoint")}
+                        </option>
+                        <option value={0}>0</option>
+                        <option value={1}>1</option>
+                        <option value={2}>2</option>
+                        <option value={3}>3</option>
+                        <option value={4}>4</option>
+                        <option value={5}>5</option>
+                        <option value={6}>6</option>
+                        <option value={7}>7</option>
+                        <option value={8}>8</option>
+                        <option value={9}>9</option>
+                        <option value={10}>10</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                  style={{ minHeight: "10rem" }}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-3 detail-review-panel">
+                      <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                        {t("detailReview.check2")}
+                      </h4>
+                    </div>
+                    <div className="col-12 col-md-6 text-center">
+                      <span>{t("detailReview.descrip2")}</span>
+                    </div>
+                    <div className="col-12 col-md-3 detail-review-panel text-center">
+                      <select
+                        style={{
+                          width: "150px",
+                          backgroundColor: "#5dabc3",
+                          margin: "auto",
+                          color: "white",
+                        }}
+                        className="form-select"
+                        onChange={onChangeInput}
+                        name="performance"
+                        aria-label="Default select example"
+                        required
+                        value={
+                          dataReview.performance ? dataReview.performance : ""
+                        }
+                        disabled={
+                          dataReview.performance && isChecked ? true : false
+                        }
+                      >
+                        <option value="">
+                          {t("detailReview.selectPoint")}
+                        </option>
+                        <option value={0}>0</option>
+                        <option value={1}>1</option>
+                        <option value={2}>2</option>
+                        <option value={3}>3</option>
+                        <option value={4}>4</option>
+                        <option value={5}>5</option>
+                        <option value={6}>6</option>
+                        <option value={7}>7</option>
+                        <option value={8}>8</option>
+                        <option value={9}>9</option>
+                        <option value={10}>10</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                  style={{ minHeight: "10rem" }}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-3 detail-review-panel">
+                      <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                        {t("detailReview.check3")}
+                      </h4>
+                    </div>
+                    <div className="col-12 col-md-6 text-center">
+                      <span>{t("detailReview.descrip3")}</span>
+                    </div>
+                    <div className="col-12 col-md-3 detail-review-panel text-center">
+                      <select
+                        style={{
+                          width: "150px",
+                          backgroundColor: "#5dabc3",
+                          margin: "auto",
+                          color: "white",
+                        }}
+                        className="form-select"
+                        onChange={onChangeInput}
+                        name="teamwork"
+                        aria-label="Default select example"
+                        required
+                        value={dataReview.teamwork ? dataReview.teamwork : ""}
+                        disabled={
+                          dataReview.teamwork && isChecked ? true : false
+                        }
+                      >
+                        <option value="">
+                          {t("detailReview.selectPoint")}
+                        </option>
+                        <option value={0}>0</option>
+                        <option value={1}>1</option>
+                        <option value={2}>2</option>
+                        <option value={3}>3</option>
+                        <option value={4}>4</option>
+                        <option value={5}>5</option>
+                        <option value={6}>6</option>
+                        <option value={7}>7</option>
+                        <option value={8}>8</option>
+                        <option value={9}>9</option>
+                        <option value={10}>10</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                  style={{ minHeight: "10rem" }}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-3 detail-review-panel">
+                      <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                        {t("detailReview.check4")}
+                      </h4>
+                    </div>
+                    <div className="col-12 col-md-6 text-center">
+                      <span>{t("detailReview.descrip4")}</span>
+                    </div>
+                    <div className="col-12 col-md-3 detail-review-panel text-center">
+                      <select
+                        style={{
+                          width: "150px",
+                          backgroundColor: "#5dabc3",
+                          margin: "auto",
+                          color: "white",
+                        }}
+                        className="form-select"
+                        onChange={onChangeInput}
+                        name="training"
+                        aria-label="Default select example"
+                        required
+                        value={dataReview.training ? dataReview.training : ""}
+                        disabled={
+                          dataReview.training && isChecked ? true : false
+                        }
+                      >
+                        <option value="">
+                          {t("detailReview.selectPoint")}
+                        </option>
+                        <option value={0}>0</option>
+                        <option value={1}>1</option>
+                        <option value={2}>2</option>
+                        <option value={3}>3</option>
+                        <option value={4}>4</option>
+                        <option value={5}>5</option>
+                        <option value={6}>6</option>
+                        <option value={7}>7</option>
+                        <option value={8}>8</option>
+                        <option value={9}>9</option>
+                        <option value={10}>10</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                  style={{ minHeight: "10rem" }}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-3 detail-review-panel">
+                      <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                        {t("detailReview.check5")}
+                      </h4>
+                    </div>
+                    <div className="col-12 col-md-6 text-center">
+                      <span>{t("detailReview.descrip5")}</span>
+                    </div>
+                    <div className="col-12 col-md-3 detail-review-panel text-center">
+                      <select
+                        style={{
+                          width: "150px",
+                          backgroundColor: "#5dabc3",
+                          margin: "auto",
+                          color: "white",
+                        }}
+                        className="form-select"
+                        onChange={onChangeInput}
+                        name="adhere"
+                        aria-label="Default select example"
+                        required
+                        value={dataReview.adhere ? dataReview.adhere : ""}
+                        disabled={dataReview.adhere && isChecked ? true : false}
+                      >
+                        <option value="">
+                          {t("detailReview.selectPoint")}
+                        </option>
+                        <option value={0}>0</option>
+                        <option value={1}>1</option>
+                        <option value={2}>2</option>
+                        <option value={3}>3</option>
+                        <option value={4}>4</option>
+                        <option value={5}>5</option>
+                        <option value={6}>6</option>
+                        <option value={7}>7</option>
+                        <option value={8}>8</option>
+                        <option value={9}>9</option>
+                        <option value={10}>10</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                  style={{ minHeight: "10rem" }}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-3 detail-review-panel">
+                      <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                        {t("Strength")}
+                      </h4>
+                    </div>
+                    <div className="col-12 col-sm-9 text-center">
+                      <textarea
+                        type="text"
+                        className="form-control"
+                        rows="5"
+                        id="comment"
+                        name="strength"
+                        onChange={onChangeInput}
+                        value={dataReview.strength}
+                        disabled={isChecked}
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className="d-style btn btn-brc-tp border-2 bgc-white btn-outline-blue btn-h-outline-blue btn-a-outline-blue w-100 my-2 py-3 shadow-sm"
+                  style={{ minHeight: "10rem" }}
+                >
+                  <div className="row align-items-center">
+                    <div className="col-12 col-md-3 detail-review-panel">
+                      <h4 className="pt-3 text-170 text-600 text-primary-d1 letter-spacing">
+                        {t("Weakness")}
+                      </h4>
+                    </div>
+                    <div className="col-12 col-sm-9 text-center">
+                      <textarea
+                        className="form-control"
+                        rows="5"
+                        id="comment"
+                        name="weakness"
+                        onChange={onChangeInput}
+                        value={dataReview.weakness}
+                        disabled={isChecked}
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group form1">
+                  <div className="d-flex btn-group-1">
+                    {!isChecked && (
+                      <button
+                        type="submit"
+                        className="btn btn-default btn-detail-review"
+                      >
+                        {t("btnSave")}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => navigate(-1)}
+                      className="btn btn-default btn-detail-review"
+                      disabled={isLoading}
+                    >
+                      {t("btnBack")}
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className="form-group form1">
-                <label className="control-label col-sm-3" htmlFor="email">
-                  Question 2: HIỆU SUẤT CÔNG VIỆC
-                </label>
-                <div className="col-sm-9">
-                  <h6>
-                    - 10 điểm: Khối lượng lớn, đảm bảo chất lượng và tiến độ- 7
-                    điểm: Hiệu suất bình thường, khối lượng việc vừa phải, chất
-                    lượng đạt yêu cầu- 5 điểm: việc còn ít, hoặc chất lượng chưa
-                    đảm bảo- 0 điểm: Không có việc
-                  </h6>
-                  <select
-                    style={{ width: "150px" }}
-                    className="form-select"
-                    onChange={onChangeInput}
-                    name="performance"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option value="">Select point</option>
-                    <option value={0}>0</option>
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    <option value={6}>6</option>
-                    <option value={7}>7</option>
-                    <option value={8}>8</option>
-                    <option value={9}>9</option>
-                    <option value={10}>10</option>
-                  </select>
-                </div>
-              </div>
-              <div className="form-group form1">
-                <label className="control-label col-sm-3" htmlFor="email">
-                  Question 3: PHỐI HỢP TRONG TEAM & TẦM ẢNH HƯỞNG
-                </label>
-                <div className="col-sm-9">
-                  <h6>
-                    - 10 điểm: Phối hợp nhóm tốt và có tầm ảnh hưởng trong nhóm-
-                    7 điểm: thành viên quan trọng của nhóm- 5 điểm: Có vai trò
-                    bình thường trong nhóm- 0 điểm: Mắt xích yếu cần nhóm hỗ trợ
-                  </h6>
-                  <select
-                    style={{ width: "150px" }}
-                    className="form-select"
-                    onChange={onChangeInput}
-                    name="teamwork"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option value="">Select point</option>
-                    <option value={0}>0</option>
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    <option value={6}>6</option>
-                    <option value={7}>7</option>
-                    <option value={8}>8</option>
-                    <option value={9}>9</option>
-                    <option value={10}>10</option>
-                  </select>
-                </div>
-              </div>
-              <div className="form-group form1">
-                <label className="control-label col-sm-3" htmlFor="email">
-                  Question 4: ĐÀO TẠO PHÁT TRIỂN
-                </label>
-                <div className="col-sm-9">
-                  <h6>
-                    - 10 điểm: Tham gia huấn luyện, đào tạo đội ngũ- 7 điểm: học
-                    thi và đạt chứng chỉ cá nhân- 5 điểm: Không đào tạo cho đội
-                    ngũ, nhưng tham gia các khóa học cho công việc. Hoặc D Lead
-                    đánh giá được sự tiến bộ của nhân sự qua việc tự học, tự
-                    nghiên cứu và áp dụng vào trong công việc.- 0 điểm: Không
-                    tham gia đào tạo, cũng không tham gia các khóa học
-                  </h6>
-                  <select
-                    style={{ width: "150px" }}
-                    className="form-select"
-                    onChange={onChangeInput}
-                    name="training"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option value="">Select point</option>
-                    <option value={0}>0</option>
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    <option value={6}>6</option>
-                    <option value={7}>7</option>
-                    <option value={8}>8</option>
-                    <option value={9}>9</option>
-                    <option value={10}>10</option>
-                  </select>
-                </div>
-              </div>
-              <div className="form-group form1">
-                <label className="control-label col-sm-3" htmlFor="email">
-                  Question 5: TUÂN THỦ TIÊU CHUẨN CHẤT LƯỢNG
-                </label>
-                <div className="col-sm-9">
-                  <h6>
-                    - 10 điểm: thực hiện nghiêm túc kỷ luật, nội quy, vấn đề
-                    BMTT; chủ động có ý tưởng đóng góp cải tiến quy trình chung-
-                    7 điểm: Bình thường- 5 điểm: Đôi khi còn phải nhắc nhở- 0
-                    điểm: tuân thủ kém, nhiều lần vi phạm kỷ luật, nội quy, quy
-                    trình dự án, vi phạm quy định BMTT
-                  </h6>
-                  <select
-                    style={{ width: "150px" }}
-                    className="form-select"
-                    onChange={onChangeInput}
-                    name="adhere"
-                    aria-label="Default select example"
-                    required
-                  >
-                    <option value="">Select point</option>
-                    <option value={0}>0</option>
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    <option value={6}>6</option>
-                    <option value={7}>7</option>
-                    <option value={8}>8</option>
-                    <option value={9}>9</option>
-                    <option value={10}>10</option>
-                  </select>
-                </div>
-              </div>
-              <div className="form-group form1">
-                <label className="control-label col-sm-3" htmlFor="email">
-                  ĐIỂM MẠNH
-                </label>
-                <div className="col-sm-9">
-                  <textarea
-                    className="form-control"
-                    rows="5"
-                    id="comment"
-                    name="strength"
-                    onChange={onChangeInput}
-                    value={dataReview.strength}
-                  ></textarea>
-                </div>
-              </div>
-              <div className="form-group form1">
-                <label className="control-label col-sm-3" htmlFor="email">
-                  ĐIỂM YẾU
-                </label>
-                <div className="col-sm-9">
-                  <textarea
-                    className="form-control"
-                    rows="5"
-                    id="comment"
-                    name="weakness"
-                    onChange={onChangeInput}
-                    value={dataReview.weakness}
-                  ></textarea>
-                </div>
-              </div>
-              <div className="form-group form1">
-                <div className="d-flex btn-group-1">
-                  <button type="submit" className="btn btn-default">
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => navigate(-1)}
-                    className="btn btn-default"
-                  >
-                    Back
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
+            </form>
+          )}
         </div>
       </div>
     </div>
