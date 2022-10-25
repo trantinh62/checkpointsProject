@@ -90,7 +90,6 @@ function MemberHistory() {
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
-      console.log(err);
       Toast(t("errorFetchData"), "error");
     }
   };

@@ -83,8 +83,9 @@ table.table .form-control.error {
 table.table td .add {
     display: none;
 }
-.breadcrumb{
+.breadcrumb.history{
     text-decoration: none;
+    margin: 0;
 }
 .history-notify{
     display: flex;

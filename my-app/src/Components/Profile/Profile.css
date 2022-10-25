@@ -73,7 +73,6 @@
 }
 .profile-work{
     padding: 2% 14%;
-    margin-top: -12%;
 }
 .profile-work p{
     color: #818182;
@@ -107,11 +106,10 @@
     margin-right: 100px;
 }
 input[type=text-form] {
-    width: 380%;
-    
+    width: 100%;
 }
 .profile-pass{
-    width: 380%;
+    width: 100%;
 }
 .col-md-3.profile-col-3{
     background: none;

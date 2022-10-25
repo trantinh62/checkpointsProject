@@ -142,3 +142,7 @@ table.table td .add {
     left: 0;
     right: 0;
 }
+.breadcrumb.create{
+    text-decoration: none;
+    margin: 0;
+}

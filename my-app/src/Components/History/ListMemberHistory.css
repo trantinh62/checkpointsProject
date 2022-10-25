@@ -104,6 +104,8 @@ table.table td .add {
 .list-member-history-notify{
     display: flex;
     justify-content: center;
+    font-family: 'Lobster', cursive;
+    font-size: 2rem;
 }
 .view-list-member-history{
     width: 8%;

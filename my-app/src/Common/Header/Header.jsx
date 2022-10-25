@@ -34,12 +34,16 @@ function Header() {
     e.preventDefault();
     try {
       const languageValue = e.target.id;
+      const localLanguage = localStorage.getItem("localLanguage");
+      if (languageValue === localLanguage) return;
       i18n.changeLanguage(languageValue);
       localStorage.setItem("localLanguage", languageValue);
+      setIsLoading(true);
       const updatelanguage = await updateLanguage(
         { language: languageValue === "vn" ? 0 : 1 },
         token
       );
+      setIsLoading(false);
     } catch (err) {
       Toast(t("changeLangError"), "error");
     }
@@ -55,9 +59,7 @@ function Header() {
           <Link to="/" className="navbar-brand">
             Checkpoint 360
           </Link>
-
           <button type="button" className="navbar-toggler collapsed"></button>
-
           <div className="">
             <div className="dropdown">
               <button className="dropbtn">{t("header.myCheckpoints")}</button>

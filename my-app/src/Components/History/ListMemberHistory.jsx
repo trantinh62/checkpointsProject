@@ -28,7 +28,6 @@ function ListMemberHistory() {
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
-  // const [numPages, setNumPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("localToken");
   const roleId = localStorage.getItem("localRoleId");
@@ -128,9 +127,7 @@ function ListMemberHistory() {
       if (parseInt(roleId) === variable.TLRoleId) {
         setIsLoading(true);
         res = await getCheckpointsByReviewId(token, 1);
-        setDataListCheck(
-          res.data.data.checkpoint.data.map((item) => item.checkpoint)
-        );
+        setDataListCheck(res.data.data.data.map((item) => item.checkpoint));
         setDataPerPage(
           res.data.data.data.map((item) => item.checkpoint).slice(start, end)
         );

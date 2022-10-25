@@ -1,26 +1,13 @@
 import { useState, useEffect } from "react";
 import { getAllCheckpoints } from "../../Api/userApi";
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Toast from "../Toast/Toast";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  selectListHistories,
-  updateListHistories,
-} from "../../store/listHistorySlice";
 import "./History.css";
 function History() {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const search = useLocation().search;
-  const page = new URLSearchParams(search).get("page") || 1;
-  const itemsPerPage = 10;
-  const start = (page - 1) * itemsPerPage;
-  const end = page * itemsPerPage;
-  const [listHistories, setListHistories] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
-  const [numPages, setNumPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [pagination, setPagination] = useState({
     current_page: 1,
@@ -110,7 +97,7 @@ function History() {
               <div className="row">
                 <div className="col-sm-8">
                   <nav aria-label="breadcrumb">
-                    <ol className="breadcrumb">
+                    <ol className="breadcrumb history">
                       <li
                         className="breadcrumb-item active"
                         aria-current="page"
@@ -143,7 +130,12 @@ function History() {
                     {dataPerPage?.map((ele, index) => {
                       return (
                         <tr key={index}>
-                          <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                          <td>
+                            {(pagination.current_page - 1) *
+                              pagination.per_page +
+                              index +
+                              1}
+                          </td>
                           <td>{ele.checkpoint.name}</td>
                           <td>{ele.checkpoint.start_date}</td>
                           <td>{ele.checkpoint.end_date}</td>

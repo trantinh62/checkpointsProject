@@ -33,6 +33,15 @@ export const getProfileApi = (token) =>
     },
   });
 
+export const updateAvatar = (data, token) =>
+  axiosClient.post("/api/profile/avatar", data, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
 export const getListReviews = (token, useReviewId, useUserId) =>
   axiosClient.get("/api/review/list-review", {
     headers: {

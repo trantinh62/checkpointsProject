@@ -18,7 +18,7 @@
     }
     ,"myCheckpoints": {
         "listCheckpoint": "Checkpoint của tôi: Danh sách cần thực hiện",
-        "allChecked": "Tất cả checkpoint đã được thực hiện"
+        "allChecked": "Không có checkpoint nào cần được thực hiện"
 
     },"listReviews": {
         "btnReview": "Đánh giá",
@@ -48,6 +48,7 @@
     "create":{
         "create": "Quản lý checkpoint: Tạo checkpoint",
         "errorChoseDate":"Ngày kết thúc phải sau ngày bắt đầu",
+        "errorNowDate":"Ngày bắt đầu và ngày kết thúc phải sau ngày hiện tại",
         "createSuccess":"Tạo checkpoint thành công!",
         "createFailed":"Tạo checkpoint thất bại!",
         "createFailedExist":"Tiêu đề checkpoint đã tồn tại!",
@@ -145,7 +146,8 @@
         "confirmNotMatch": "Nhập lại mật khẩu không khớp với mật khẩu mới",
         "login8Chars":"Mật khẩu phải đủ 8 ký tự!",
         "btnUp":"Cập nhật profile",
-        "btnChange":"Cập nhật password"
+        "btnChange":"Cập nhật password",
+        "changePhoto": "Thay đổi avatar"
     },
     "login": {
         "loginSuccess": "Đăng nhập thành công",

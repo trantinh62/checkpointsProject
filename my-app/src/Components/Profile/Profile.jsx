@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import Toast from "../Toast/Toast";
-import { profileApi, passApi, getProfileApi } from "../../Api/userApi";
+import {
+  profileApi,
+  passApi,
+  getProfileApi,
+  updateAvatar,
+} from "../../Api/userApi";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./Profile.css";
@@ -15,6 +20,8 @@ const Profile = () => {
     age: "",
     address: "",
     phone: "",
+    image: "",
+    link: "",
     createdAt: null,
     updateAt: null,
   });
@@ -24,6 +31,7 @@ const Profile = () => {
     password_confirm: "",
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setDataProfile({
@@ -59,12 +67,15 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let formData = new FormData();
+      formData.append("image", selectedFile);
       setIsLoading(true);
       const response = await profileApi(dataProfile, token);
       localStorage.setItem(
         "localUsername",
         response.data.data.first_name + " " + response.data.data.last_name
       );
+      const updateAvt = await updateAvatar(formData, token);
       Toast(t("profile.updateSuccess"), "success");
       setIsLoading(false);
     } catch (err) {
@@ -94,6 +105,9 @@ const Profile = () => {
       Toast(err.response.data.message, "error");
     }
   };
+  const handleFileSelect = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
   return (
     <div className="profile-cover">
       <div className="container emp-profile">
@@ -102,12 +116,16 @@ const Profile = () => {
           <div className="col-md-4">
             <div className="profile-img">
               <img
-                src="https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=2000"
+                src={
+                  dataProfile.link
+                    ? dataProfile.link
+                    : "https://img.freepik.com/premium-vector/man-avatar-profile-round-icon_24640-14044.jpg?w=2000"
+                }
                 alt=""
               />
               <div className="file btn btn-lg btn-primary">
-                Change Photo
-                <input type="file" name="file" disabled />
+                {t("profile.changePhoto")}
+                <input type="file" name="image" onChange={handleFileSelect} />
               </div>
             </div>
           </div>
@@ -125,7 +143,7 @@ const Profile = () => {
                       <div className="col-md-6 col1">
                         <label>{t("profile.firstname")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="first_name"
@@ -140,7 +158,7 @@ const Profile = () => {
                       <div className="col-md-6 col1">
                         <label>{t("profile.lastname")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="last_name"
@@ -155,7 +173,7 @@ const Profile = () => {
                       <div className="col-md-6 col1">
                         <label>Email:</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="email"
@@ -170,7 +188,7 @@ const Profile = () => {
                       <div className="col-md-6 col1">
                         <label>{t("profile.phone")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="phone"
@@ -185,7 +203,7 @@ const Profile = () => {
                       <div className="col-md-6 col1">
                         <label>{t("profile.age")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="age"
@@ -200,7 +218,7 @@ const Profile = () => {
                       <div className="col-md-6 col1">
                         <label>{t("profile.address")}</label>
                       </div>
-                      <div className="col-md-6 col1">
+                      <div className="col-8 col1">
                         <input
                           type="text-form"
                           name="address"
@@ -269,7 +287,7 @@ const Profile = () => {
                   <div className="col-md-6 col1">
                     <label>{t("profile.oldPass")}</label>
                   </div>
-                  <div className="col-md-6 col1">
+                  <div className="col-8 col1">
                     <input
                       type="password"
                       className="profile-pass"
@@ -285,7 +303,7 @@ const Profile = () => {
                   <div className="col-md-6 col1">
                     <label>{t("profile.newPass")}</label>
                   </div>
-                  <div className="col-md-6 col1">
+                  <div className="col-8 col1">
                     <input
                       type="password"
                       name="password"
@@ -301,7 +319,7 @@ const Profile = () => {
                   <div className="col-md-6 col1">
                     <label>{t("profile.confirmPass")}</label>
                   </div>
-                  <div className="col-md-6 col1">
+                  <div className="col-8 col1">
                     <input
                       type="password"
                       name="password_confirm"

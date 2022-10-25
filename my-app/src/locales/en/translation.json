@@ -3,7 +3,7 @@
         "myCheckpoints": "My checkpoints",
         "listCheckpoints": "List need checked",
         "checkpointHistories": "View my histories",
-        "manageCheckpoints": "Manage checkpoint",
+        "manageCheckpoints": "Manage checkpoints",
         "crudCheckpoints": "Update Checkpoint",
         "updateGpoint": "Update gpoint",
         "memberHistories": "View member's histories",
@@ -48,6 +48,7 @@
     "create":{
         "create": "Manage checkpoints: Create checkpoint",
         "errorChoseDate":"End date must be chosen after start date",
+        "errorNowDate":"Start date and end date must be chosen after present",
         "createSuccess":"Create checkpoint successful!",
         "createFailed":"Create checkpoint failed!",
         "createFailedExist":"Title checkpoint existed!",
@@ -145,7 +146,8 @@
         "btnChange":"Change password",
         "age":"Age",
         "phone":"Phone",
-        "address":"Address"
+        "address":"Address",
+        "changePhoto": "Change avatar"
     },
     "login": {
         "loginSuccess": "Login successful!",

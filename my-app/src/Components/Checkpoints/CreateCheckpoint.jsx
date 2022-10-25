@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { createApi, getCheckApi, deleteCheckpoint } from "../../Api/userApi";
 import Modal from "react-bootstrap/Modal";
@@ -18,14 +18,6 @@ function Checkpoints() {
     setDeleteId(id);
     setShow(true);
   };
-
-  const search = useLocation().search;
-  const [page, setPage] = useState(
-    new URLSearchParams(search).get("page") || 1
-  );
-  const itemsPerPage = 10;
-  const start = (page - 1) * itemsPerPage;
-  const end = page * itemsPerPage;
   const user_id = localStorage.getItem("localUserId");
   const [dataCheckpoint, setDataCheckpoint] = useState({
     user_id: user_id,
@@ -87,9 +79,15 @@ function Checkpoints() {
       if (
         new Date(dataCheckpoint.start_date) >= new Date(dataCheckpoint.end_date)
       ) {
-        Toast(t("create.errorChoseDate"), "warning");
         setIsLoading(false);
-        return;
+        return Toast(t("create.errorChoseDate"), "warning");
+      }
+      if (
+        new Date(dataCheckpoint.start_date) < new Date() ||
+        new Date(dataCheckpoint.start_date) < new Date()
+      ) {
+        setIsLoading(false);
+        return Toast(t("create.errorNowDate"), "warning");
       }
       const response = await createApi(dataCheckpoint, token);
       Toast(t("create.createSuccess"), "success");
@@ -111,22 +109,15 @@ function Checkpoints() {
       const resDel = await deleteCheckpoint(deleteId, token);
       Toast(t("create.deleteSuccess"), "success");
       const res = await getCheckApi(token);
-      const pageCur =
-        page > Math.ceil(res.data.data.checkpoint.data.length / itemsPerPage) &&
-        page !== 1
-          ? Math.ceil(res.data.data.checkpoint.data.length / itemsPerPage)
-          : page;
-      setPage(pageCur);
-      const start = (pageCur - 1) * itemsPerPage;
-      const end = pageCur * itemsPerPage;
       setDataListCheck(res.data.data.checkpoint.data);
-      setDataPerPage(res.data.data.checkpoint.data.slice(start, end));
+      setDataPerPage(res.data.data.checkpoint.data);
       setIsLoading(false);
     } catch (err) {
       Toast(t("create.deleteFailed"), "error");
       setIsLoading(false);
     }
   };
+
   let menuItems = [];
   menuItems.push(
     <li key="pre" className="page-item">
@@ -185,7 +176,7 @@ function Checkpoints() {
             <div className="row">
               <div className="col-sm-8">
                 <nav aria-label="breadcrumb">
-                  <ol className="breadcrumb">
+                  <ol className="breadcrumb create">
                     <li className="breadcrumb-item active" aria-current="page">
                       {t("create.create")}
                     </li>
@@ -276,7 +267,11 @@ function Checkpoints() {
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          {(pagination.current_page - 1) * pagination.per_page +
+                            index +
+                            1}
+                        </td>
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
