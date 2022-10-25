@@ -112,15 +112,15 @@ function Checkpoints() {
       Toast(t("create.deleteSuccess"), "success");
       const res = await getCheckApi(token);
       const pageCur =
-        page > Math.ceil(res.data.data.checkpoints.length / itemsPerPage) &&
+        page > Math.ceil(res.data.data.checkpoint.data.length / itemsPerPage) &&
         page !== 1
-          ? Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
+          ? Math.ceil(res.data.data.checkpoint.data.length / itemsPerPage)
           : page;
       setPage(pageCur);
       const start = (pageCur - 1) * itemsPerPage;
       const end = pageCur * itemsPerPage;
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      setDataListCheck(res.data.data.checkpoint.data);
+      setDataPerPage(res.data.data.checkpoint.data.slice(start, end));
       setIsLoading(false);
     } catch (err) {
       Toast(t("create.deleteFailed"), "error");
