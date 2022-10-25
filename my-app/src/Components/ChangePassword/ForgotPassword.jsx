@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "./ForgotPassword.css";
 function ForgotPassword() {
   const navigate = useNavigate();
-
   const [dataEmail, setDataEmail] = useState({
     email: "",
   });
@@ -22,12 +21,10 @@ function ForgotPassword() {
     try {
       const response = await forgotApi(dataEmail);
       if (response.data.status === 200) {
-        navigate("/login", { replace: true });
-        navigate(0);
-        Toast("Gửi yêu cầu reset password thành công!", "success");
+        Toast("Send reset password request successfully!", "success");
       }
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Send reset password request failed!", "error");
     }
   };
   return (
@@ -35,11 +32,11 @@ function ForgotPassword() {
       <div className="container">
         <div className="card card-container">
           <img
-            id="profile-img"
-            className="profile-img-card"
+            id="forgot-img"
+            className="forgot-img-card"
             src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
           />
-          <p id="profile-name" className="profile-name-card"></p>
+          <p id="forgot-name" className="forgot-name-card"></p>
           <form className="form-signin" onSubmit={handleSubmit}>
             <span id="reauth-email" className="reauth-email"></span>
             <p>Forgot password</p>

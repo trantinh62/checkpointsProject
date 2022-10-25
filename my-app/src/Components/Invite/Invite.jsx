@@ -24,7 +24,7 @@ function Invite() {
         Toast("Invite user successful!", "success");
       }
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Invite user failed!", "error");
     }
   };
   return (
@@ -54,8 +54,9 @@ function Invite() {
                       id="email"
                       placeholder="Enter email"
                       name="email"
-                      value={dataInvite.email}
                       onChange={onChangeInput}
+                      value={dataInvite.email}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -70,7 +71,9 @@ function Invite() {
                       onChange={onChangeInput}
                       name="role_id"
                       aria-label="Default select example"
+                      required
                     >
+                      <option value="">Select role</option>
                       <option value={1}>Group leader</option>
                       <option value={2}>Leader</option>
                       <option value={3}>Member</option>

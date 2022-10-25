@@ -18,15 +18,12 @@ import MemberHistory from "./Components/History/MemberHistory";
 import User from "./Components/Users/User";
 import Invite from "./Components/Invite/Invite";
 import Header from "./Common/Header/Header";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
-  let [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
-  useEffect(() => {
-    document.title = "Checkpoints app";
-  });
+  const [token, setToken] = useState(sessionStorage.getItem("sessionToken"));
   if (!token) {
     return (
       <>
@@ -74,7 +71,7 @@ function App() {
       <div>
         <ToastContainer
           position="top-right"
-          autoClose={5000}
+          autoClose={3000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick

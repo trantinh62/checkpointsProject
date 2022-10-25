@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { registerApi } from "../../Api/userApi";
 import Toast from "../Toast/Toast";
 import "./Register.css";
@@ -33,7 +32,7 @@ function Register() {
       navigate("/login", { replace: true });
       navigate(0);
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Register failed!", "error");
     }
   };
   return (
@@ -64,6 +63,7 @@ function Register() {
                       placeholder="Enter firstname"
                       value={dataRegister.first_name}
                       onChange={onChangeInput}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -79,6 +79,7 @@ function Register() {
                       placeholder="Enter lastname"
                       value={dataRegister.last_name}
                       onChange={onChangeInput}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -94,6 +95,7 @@ function Register() {
                       placeholder="Enter age"
                       value={dataRegister.age}
                       onChange={onChangeInput}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -109,6 +111,7 @@ function Register() {
                       placeholder="Enter phone"
                       value={dataRegister.phone}
                       onChange={onChangeInput}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -124,6 +127,7 @@ function Register() {
                       value={dataRegister.address}
                       placeholder="Enter address"
                       onChange={onChangeInput}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -139,6 +143,7 @@ function Register() {
                       placeholder="Enter password"
                       value={dataRegister.password}
                       onChange={onChangeInput}
+                      required
                     ></input>
                   </div>
                 </div>
@@ -154,6 +159,7 @@ function Register() {
                       placeholder="Confirm password"
                       value={dataRegister.password_confirm}
                       onChange={onChangeInput}
+                      required
                     ></input>
                   </div>
                 </div>

@@ -11,7 +11,7 @@ import {
   getListUsersByCheckpointId,
   getAvgByCheckpointIdAuthor,
 } from "../../Api/userApi";
-import dayjs from "dayjs";
+import Toast from "../Toast/Toast";
 import "./MemberHistory.css";
 
 function MemberHistory() {
@@ -65,7 +65,7 @@ function MemberHistory() {
       const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
         token,
         params.id,
-        resUser.data.data[0].user?.id
+        resUser.data.data[0]?.user.id
       );
       setDataCheckpointByUser(resMemberHistory.data.data);
       setNumPages(
@@ -84,7 +84,9 @@ function MemberHistory() {
         setDataAvg(avgPoint[0]);
       }
       setLoading(true);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
 
   const onChangeInput = async (e) => {
@@ -208,8 +210,8 @@ function MemberHistory() {
                                 ele.last_name +
                                 " (" +
                                 ele.email +
-                                " )"
-                              : "" + " (" + ele.email + " )"}
+                                ")"
+                              : "(" + ele.email + ")"}
                           </option>
                         );
                       })}
@@ -267,9 +269,9 @@ function MemberHistory() {
                               ? ele.reviewer.first_name +
                                 " " +
                                 ele.reviewer.last_name +
-                                " ( " +
+                                " (" +
                                 ele.reviewer.email +
-                                " )"
+                                ")"
                               : ele.reviewer.email}
                           </td>
                           <td>
@@ -315,17 +317,6 @@ function MemberHistory() {
                     </tr>
                   </tbody>
                 </table>
-                <div className="form-group form1">
-                  <div className="d-flex btn-group-1">
-                    <button
-                      onClick={() => navigate(-1)}
-                      type="submit"
-                      className="btn btn-default "
-                    >
-                      Back
-                    </button>
-                  </div>
-                </div>
                 <nav aria-label="Page navigation example">
                   <ul className="pagination justify-content-center">
                     {menuItems}
@@ -333,6 +324,17 @@ function MemberHistory() {
                 </nav>
               </div>
             )}
+            <div className="form-group form1">
+              <div className="d-flex btn-group-1">
+                <button
+                  onClick={() => navigate(-1)}
+                  type="submit"
+                  className="btn btn-default "
+                >
+                  Back
+                </button>
+              </div>
+            </div>
           </form>
         </div>
       </div>

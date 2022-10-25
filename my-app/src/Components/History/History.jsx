@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllCheckpoints } from "../../Api/userApi";
 import { useLocation } from "react-router-dom";
-
+import Toast from "../Toast/Toast";
 import "./History.css";
 function History() {
   const search = useLocation().search;
@@ -31,7 +31,9 @@ function History() {
       setDataPerPage(res.data.data.slice(start, end));
       setListHistories(res.data.data);
       setLoading(true);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
 
   let menuItems = [];
@@ -88,7 +90,7 @@ function History() {
                     {dataPerPage?.map((ele, index) => {
                       return (
                         <tr key={index}>
-                          <td>{index + 1}</td>
+                          <td>{(page - 1) * itemsPerPage + index + 1}</td>
                           <td>{ele.checkpoint.name}</td>
                           <td>{ele.checkpoint.start_date}</td>
                           <td>{ele.checkpoint.end_date}</td>

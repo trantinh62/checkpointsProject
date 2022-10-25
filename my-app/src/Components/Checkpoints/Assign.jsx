@@ -94,7 +94,9 @@ function Assgin() {
       );
       setIdAssign(resUser.data.data[0].id);
       setLoading(true);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
   const onChangeInput = async (e) => {
     let { name, value, id } = e.target;
@@ -204,7 +206,8 @@ function Assgin() {
     const end = page * itemsPerPage;
     setDataPerPage(dataFilter.slice(start, end));
   };
-  const handleSelectAll = async (e) => {
+
+  const handleSelectAll = (e) => {
     if (e.target.checked) {
       list_id_checked = copyChecked.map((item) => item.review_id);
       const beAssignedRoleId = dataUser
@@ -241,12 +244,12 @@ function Assgin() {
         dataReview.new_reviewers.length === 0 &&
         dataReview.remove_reviewers.length === 0
       ) {
-        Toast("Không có sự thay đổi nào !", "warning");
+        Toast("There is no change in order to update users!", "warning");
         return;
       }
       if (Array.from(new Set(dataReview.role_id)).length < 3) {
         Toast(
-          "Phải assign đủ 3 role (Group leader, Team leader, Member ) !",
+          "Must assign all 3 roles (Group leader, Team leader, Member ) !",
           "warning"
         );
         return;
@@ -268,7 +271,7 @@ function Assgin() {
       });
       setDataChecked(reschecked.data.data);
       setCopyChecked(reschecked.data.data);
-      Toast("Cập nhật người đánh giá thành công!", "success");
+      Toast("Update reviewer successful!", "success");
     } catch (err) {}
   };
 

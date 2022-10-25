@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { getCheckpointsByReviewId } from "../../Api/userApi";
-import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import Toast from "../Toast/Toast";
 import "./ListCheckpoints.css";
 function ListReviews() {
-  const navigate = useNavigate();
   const { search } = useLocation();
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
@@ -35,7 +34,9 @@ function ListReviews() {
       setListCheckpoints(res.data.data);
       setDataPerPage(res.data.data.slice(start, end));
       setLoading(true);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
   let menuItems = [];
   for (var i = 0; i < numPages; i++) {

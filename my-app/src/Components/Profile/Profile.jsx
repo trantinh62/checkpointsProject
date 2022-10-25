@@ -5,7 +5,6 @@ import "./Profile.css";
 const Profile = () => {
   const [dataProfile, setDataProfile] = useState({
     id: null,
-    age: null,
     email: "",
     role_id: null,
     last_name: "",
@@ -45,7 +44,9 @@ const Profile = () => {
     try {
       const res = await getProfileApi(token);
       setDataProfile(res.data.data);
-    } catch (err) {}
+    } catch (err) {
+      Toast("An error occurred while loading data!", "error");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -55,7 +56,7 @@ const Profile = () => {
       sessionStorage.setItem("sessionUser", response.data.data.first_name);
       Toast("Update profile successful!", "success");
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Update profile failed!", "error");
     }
   };
   const handleChange = async (e) => {
@@ -64,7 +65,7 @@ const Profile = () => {
       const response = await passApi(dataPass, token);
       Toast("Update password successful!", "success");
     } catch (err) {
-      Toast(err.response.data.message, "error");
+      Toast("Update password failed!", "error");
     }
   };
   return (
@@ -104,6 +105,7 @@ const Profile = () => {
                           value={dataProfile.first_name}
                           onChange={onChangeInput}
                           placeholder="firstname"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -118,6 +120,7 @@ const Profile = () => {
                           value={dataProfile.last_name}
                           onChange={onChangeInput}
                           placeholder="lastname"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -147,6 +150,7 @@ const Profile = () => {
                           value={dataProfile.phone}
                           onChange={onChangeInput}
                           placeholder="phone"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -161,6 +165,7 @@ const Profile = () => {
                           value={dataProfile.age}
                           onChange={onChangeInput}
                           placeholder="age"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -175,6 +180,7 @@ const Profile = () => {
                           value={dataProfile.address}
                           onChange={onChangeInput}
                           placeholder="address"
+                          required
                         ></input>
                       </div>
                     </div>
@@ -234,6 +240,7 @@ const Profile = () => {
                       value={dataPass.old_password}
                       onChange={onChangePass}
                       placeholder="old password"
+                      required
                     ></input>
                   </div>
                 </div>
@@ -249,6 +256,7 @@ const Profile = () => {
                       value={dataPass.password}
                       onChange={onChangePass}
                       placeholder="new password"
+                      required
                     ></input>
                   </div>
                 </div>
@@ -264,6 +272,7 @@ const Profile = () => {
                       value={dataPass.password_confirm}
                       onChange={onChangePass}
                       placeholder="confirm password"
+                      required
                     ></input>
                   </div>
                 </div>
