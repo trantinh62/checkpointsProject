@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   getAllCheckpointApi,
@@ -308,16 +308,14 @@ function ListMemberHistory() {
                         <td>{ele.end_date}</td>
                         <td>{ele.count_review}</td>
                         <td>
-                          <a
-                            href={`/histories/member/${ele.id}?title=${ele.name}`}
-                          >
+                          <Link to={`/histories/member/${ele.id}`}>
                             <button
                               variant="primary"
                               className="btn-list-member-history"
                             >
                               <i className="bi bi-arrow-right-circle"></i>
                             </button>
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     );

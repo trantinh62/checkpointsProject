@@ -13,6 +13,7 @@ import {
 } from "../../Api/userApi";
 import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./MemberHistory.css";
 
 function MemberHistory() {
@@ -21,7 +22,7 @@ function MemberHistory() {
   const params = useParams();
   const search = useLocation().search;
   const [searchParams] = useSearchParams();
-  const title = searchParams.get("title");
+  const [title, setTitle] = useState("");
   const [dataPagination, setDataPagination] = useState({
     page: new URLSearchParams(search).get("page") || 1,
     itemsPerPage: 10,
@@ -37,7 +38,6 @@ function MemberHistory() {
   const start = (dataPagination.page - 1) * dataPagination.itemsPerPage;
   const end = dataPagination.page * dataPagination.itemsPerPage;
   const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
   const [dataCheckpoint, setDataCheckpoint] = useState({
     id: null,
     name: "",
@@ -45,6 +45,7 @@ function MemberHistory() {
   const [dataCheckpointByUser, setDataCheckpointByUser] = useState([]);
   const [dataUser, setDataUser] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     fetchData();
   }, []);
@@ -55,6 +56,7 @@ function MemberHistory() {
     try {
       const resCheck = await getCheckpointByCheckId(token, params.id);
       setDataCheckpoint(resCheck.data.data);
+      setTitle(resCheck.data.data.name ? resCheck.data.data.name : "");
       let resUser = [];
       if (roleId === "1") {
         resUser = await getListUsersByCheckpointId(token, params.id);
@@ -85,8 +87,10 @@ function MemberHistory() {
       if (avgPoint.length === 1) {
         setDataAvg(avgPoint[0]);
       }
-      setLoading(true);
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
+      console.log(err);
       Toast(t("errorFetchData"), "error");
     }
   };
@@ -94,6 +98,7 @@ function MemberHistory() {
   const onChangeInput = async (e) => {
     let { name, value } = e.target;
     if (name === "user_id") {
+      setIsLoading(true);
       value = parseInt(value);
       const resMemberHistory = await getReviewsByCheckpointIdAndUserId(
         token,
@@ -123,6 +128,7 @@ function MemberHistory() {
           created_at: null,
         });
       }
+      setIsLoading(false);
     }
   };
 
@@ -216,15 +222,13 @@ function MemberHistory() {
                 </div>
               </div>
             </div>
-            {loading === false && (
-              <h3 className="review-notify">{t("waitingData")}</h3>
-            )}
-            {dataPerPage.length === 0 && loading === true && (
+            {isLoading === true && <LoadingSpinner />}
+            {dataPerPage.length === 0 && isLoading === false && (
               <h3 className="member-history-notify">
                 {t("memberHistory.noCheckpoints")}
               </h3>
             )}
-            {dataPerPage.length > 0 && (
+            {dataPerPage.length > 0 && isLoading === false && (
               <div>
                 <table className="table table-bordered text-center">
                   <thead>

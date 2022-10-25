@@ -56,6 +56,7 @@ function ListReviews() {
     try {
       setIsLoading(true);
       const review = await getReviewById(parseInt(params.review_id), token);
+      console.log("review", review);
       setDataReview({
         ...review.data.data,
         title: review.data.data.checkpoint.name,
@@ -82,18 +83,29 @@ function ListReviews() {
     e.preventDefault();
     try {
       setIsLoading(true);
-      const res = await reviewApi(dataReview, token, params.review_id);
+      console.log("dataReview", dataReview);
+      const review = {};
+      review.attitude = dataReview.attitude;
+      review.performance = dataReview.performance;
+      review.teamwork = dataReview.teamwork;
+      review.adhere = dataReview.adhere;
+      review.strength = dataReview.strength;
+      review.weakness = dataReview.weakness;
+      review.user_id = dataReview.user_id;
+      review.training = dataReview.training;
+      review.checkpoint_id = dataReview.checkpoint_id;
+      console.log("reviews", review);
+      const res = await reviewApi(review, token, params.review_id);
       const resCheck = await getCheckpointsByReviewId(token, 1);
-      dispatch(updateListCheckpoints(resCheck.data.data.data));
       const resReviews = await getReviewsByCheckpointIdAndMyReviewId(
         token,
         params.check_id
       );
-      dispatch(updateListReviews(resReviews.data.data));
       Toast(t("detailReview.reviewSuccess"), "success");
       navigate(`/mycheckpoints/${params.check_id}`);
       setIsLoading(false);
     } catch (err) {
+      console.log(err);
       Toast(t("detailReview.reviewFailed"), "error");
       setIsLoading(false);
     }
