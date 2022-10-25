@@ -5,6 +5,7 @@ import "./Assign.css";
 import {
   getDetailCheckpointApi,
   getCheckedUser,
+  getAllUsersPaginateApi,
   getAllUsersApi,
   createAndDeleteReview,
 } from "../../Api/userApi";
@@ -49,7 +50,7 @@ function Assgin() {
     fetchData();
   }, []);
 
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
   const fetchData = async () => {
     try {
       setIsLoading(true);

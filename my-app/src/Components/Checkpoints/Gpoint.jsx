@@ -11,7 +11,7 @@ function Gpoint() {
     leader: "",
     member: "",
   });
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (name === "role_id") value = parseInt(value);

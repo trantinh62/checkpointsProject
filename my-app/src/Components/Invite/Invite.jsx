@@ -2,15 +2,17 @@ import { useState } from "react";
 import Toast from "../Toast/Toast";
 import { inviteApi } from "../../Api/userApi";
 import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./Invite.css";
 
 function Invite() {
   const { t } = useTranslation();
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
   const [dataInvite, setDataInvite] = useState({
     email: "",
     role_id: 0,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (name === "role_id") value = parseInt(value);
@@ -22,17 +24,19 @@ function Invite() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await inviteApi(dataInvite, token);
-      if (response.data.status === 200) {
-        Toast(t("invite.inviteSuccess"), "success");
-      }
+      Toast(t("invite.inviteSuccess"), "success");
+      setIsLoading(false);
     } catch (err) {
-      Toast(t("invite.inviteFailed"), "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   return (
     <div className="invite-cover">
       <div className="container invite">
+        {isLoading === true && <LoadingSpinner />}
         <div className="row">
           <div className="col-md-3 invite">
             <div className="invite-info">
@@ -88,6 +92,7 @@ function Invite() {
                     <button
                       type="submit"
                       className="btn btn-default btn-invite"
+                      disabled={isLoading}
                     >
                       {t("invite.inviteBtn")}
                     </button>

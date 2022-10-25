@@ -124,3 +124,6 @@ text-decoration:line-through;;
     background-color: var(--bs-btn-hover-bg);
     border-color: var(--bs-btn-hover-border-color);
 }
+/* .spinner-detail-review .spinner-container{
+    z-index: 1;
+} */

@@ -9,20 +9,27 @@ import {
 import {
   getAvgByCheckpointIdMyHistory,
   getReviewsByCheckpointId,
+  getAllCheckpoints,
 } from "../../Api/userApi";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { useTranslation } from "react-i18next";
 import Toast from "../Toast/Toast";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectListHistories,
+  updateListDetailHistories,
+  updateListHistories,
+} from "../../store/listHistorySlice";
 import "./DetailHistory.css";
 function DetailHistory() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const params = useParams();
   const search = useLocation().search;
   const page = new URLSearchParams(search).get("page") || 1;
-
+  const [title, setTitle] = useState("");
   const [searchParams] = useSearchParams();
-  const title = searchParams.get("title");
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
@@ -43,8 +50,9 @@ function DetailHistory() {
     const end = page * itemsPerPage;
     setDataPerPage(listReviews.slice(start, end));
   };
-  const token = sessionStorage.getItem("sessionToken");
-  const userId = sessionStorage.getItem("sessionUserId");
+  const token = localStorage.getItem("localToken");
+  const userId = localStorage.getItem("localUserId");
+  const history = useSelector(selectListHistories);
 
   useEffect(() => {
     fetchData();
@@ -53,11 +61,13 @@ function DetailHistory() {
     try {
       setIsLoading(true);
       const res = await getReviewsByCheckpointId(token, params.id);
+      setTitle(res.data.data[0].name);
       setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
       setDataPerPage(res.data.data.slice(start, end));
       setListReviews(res.data.data);
       const resAvg = await getAvgByCheckpointIdMyHistory(token, params.id);
       if (resAvg.data.data[0].avg_checkpoint.length !== 0) {
+        res.data.data.avg = resAvg.data.data[0].avg_checkpoint[0];
         setDataAvg(resAvg.data.data[0].avg_checkpoint[0]);
       }
       setIsLoading(false);
@@ -67,16 +77,6 @@ function DetailHistory() {
     }
   };
 
-  let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
-    menuItems.push(
-      <li key={i} className="page-item">
-        <button className="page-link" value={i + 1} onClick={handleOnClick}>
-          {i + 1}
-        </button>
-      </li>
-    );
-  }
   return (
     <div className="detail-histories-cover">
       <div className="container ">
@@ -183,11 +183,6 @@ function DetailHistory() {
                   </tr>
                 </tbody>
               </table>
-              <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
-                  {menuItems}
-                </ul>
-              </nav>
             </div>
           )}
           <div className="form-group">

@@ -133,3 +133,9 @@ table.table td .add {
     background-color: var(--bs-btn-hover-bg);
     border-color: var(--bs-btn-hover-border-color);
 }
+.pagination.justify-content-center.list-mem-history{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+}

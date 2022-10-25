@@ -2,6 +2,7 @@ import { useState } from "react";
 import Toast from "../Toast/Toast";
 import { forgotApi } from "../../Api/userApi";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./ForgotPassword.css";
 function ForgotPassword() {
   const [dataEmail, setDataEmail] = useState({
@@ -14,15 +15,17 @@ function ForgotPassword() {
       [name]: value,
     });
   };
+  const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await forgotApi(dataEmail);
-      if (response.data.status === 200) {
-        Toast("Send reset password request successfully!", "success");
-      }
+      Toast("Send reset password request successfully!", "success");
+      setIsLoading(false);
     } catch (err) {
-      Toast("Send reset password request failed!", "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   return (
@@ -35,6 +38,7 @@ function ForgotPassword() {
             src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
           />
           <p id="forgot-name" className="forgot-name-card"></p>
+          {isLoading === true && <LoadingSpinner />}
           <form className="form-signin" onSubmit={handleSubmit}>
             <span id="reauth-email" className="reauth-email"></span>
             <p>Forgot password</p>
@@ -50,6 +54,7 @@ function ForgotPassword() {
             <button
               className="btn btn-lg btn-primary btn-block btn-forgot"
               type="submit"
+              disabled={isLoading}
             >
               Reset
             </button>

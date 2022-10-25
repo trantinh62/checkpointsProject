@@ -26,36 +26,41 @@ function Checkpoints() {
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
-  const user_id = sessionStorage.getItem("sessionUserId");
+  const user_id = localStorage.getItem("localUserId");
   const [dataCheckpoint, setDataCheckpoint] = useState({
     user_id: user_id,
     name: "",
     start_date: "",
     end_date: "",
   });
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
 
   const [dataPerPage, setDataPerPage] = useState([]);
-  const [numPages, setNumPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
 
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     if (name === "start_date" || name === "end_date")
-      value = dayjs(value).format("YYYY-MM-DDTHH:mm");
+      value = dayjs(value).format("YYYY-MM-DD HH:mm:ss");
     setDataCheckpoint({
       ...dataCheckpoint,
       [name]: value,
     });
   };
 
-  const handleOnClick = (e) => {
-    const page = parseInt(e.target.value);
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(dataListCheck.slice(start, end));
+  const handleOnClick = async (e) => {
+    setIsLoading(true);
+    const value = e.target.value;
+    const res = await getCheckApi(token, value);
+    setDataPerPage(res.data.data.checkpoint.data);
+    setPagination(res.data.data.checkpoint);
+    setIsLoading(false);
   };
 
   const [dataListCheck, setDataListCheck] = useState([]);
@@ -66,10 +71,9 @@ function Checkpoints() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      const res = await getCheckApi(token, 1);
+      setDataPerPage(res.data.data.checkpoint.data);
+      setPagination(res.data.data.checkpoint);
       setIsLoading(false);
     } catch (err) {
       Toast(t("errorFetchData"), "error");
@@ -89,13 +93,12 @@ function Checkpoints() {
       }
       const response = await createApi(dataCheckpoint, token);
       Toast(t("create.createSuccess"), "success");
-      const res = await getCheckApi(token);
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-      setDataListCheck(res.data.data.checkpoints);
-      setDataPerPage(res.data.data.checkpoints.slice(start, end));
+      const res = await getCheckApi(token, 1);
+      setDataPerPage(res.data.data.checkpoint.data);
+      setPagination(res.data.data.checkpoint);
       setIsLoading(false);
     } catch (err) {
-      Toast(t("create.createFailed"), "error");
+      Toast(err.response.data.message, "error");
       setIsLoading(false);
     }
   };
@@ -113,7 +116,6 @@ function Checkpoints() {
         page !== 1
           ? Math.ceil(res.data.data.checkpoints.length / itemsPerPage)
           : page;
-      setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
       setPage(pageCur);
       const start = (pageCur - 1) * itemsPerPage;
       const end = pageCur * itemsPerPage;
@@ -125,22 +127,56 @@ function Checkpoints() {
       setIsLoading(false);
     }
   };
-
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
         <button
           type="button"
           className="page-link"
-          value={i + 1}
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
           onClick={handleOnClick}
+          disabled={pagination.current_page === i + 1}
         >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="create-cover">
       <div className="container">
@@ -263,7 +299,7 @@ function Checkpoints() {
                 </tbody>
               </table>
               <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
+                <ul className="pagination justify-content-center create">
                   {menuItems}
                 </ul>
               </nav>

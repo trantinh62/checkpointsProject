@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { getAllUsersApi, updateAllUserApi } from "../../Api/userApi";
+import { getAllUsersPaginateApi, updateAllUserApi } from "../../Api/userApi";
 import { useTranslation } from "react-i18next";
 import removeMark from "../../Helper/removeMark";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
@@ -26,28 +26,36 @@ function User() {
     name: "",
     role_id: "",
   });
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
 
-  const paginationOnClick = (e) => {
-    const page = e.target.value;
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(dataFilter.slice(start, end));
+  const paginationOnClick = async (e) => {
+    setIsLoading(true);
+    const value = e.target.value;
+    const resUser = await getAllUsersPaginateApi(token, value);
+    setIsLoading(false);
+    setPagination(resUser.data.data);
+    setdataUser(resUser.data.data.data);
+    setDataFilter(resUser.data.data.data);
+    setDataPerPage(resUser.data.data.data);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const resUser = await getAllUsersApi(token);
-      setNumPages(Math.ceil(resUser.data.data.length / itemsPerPage));
-      setdataUser(resUser.data.data);
-      setDataFilter(resUser.data.data);
-      setDataPerPage(resUser.data.data.slice(start, end));
+      const resUser = await getAllUsersPaginateApi(token, 1);
+      setPagination(resUser.data.data);
+      setdataUser(resUser.data.data.data);
+      setDataFilter(resUser.data.data.data);
+      setDataPerPage(resUser.data.data.data);
       setIsLoading(false);
     } catch (err) {
       Toast(t("errorFetchData"), "error");
@@ -63,15 +71,18 @@ function User() {
         return;
       }
       const res = await updateAllUserApi({ data: dataManage }, token);
-      const resUser = await getAllUsersApi(token);
-      setdataUser(resUser.data.data);
+      const resUser = await getAllUsersPaginateApi(
+        token,
+        pagination.current_page
+      );
+      setdataUser(resUser.data.data.data);
       setDataFilter(resUser.data.data);
       setDataManage([]);
       const start = (page - 1) * itemsPerPage;
       const end = page * itemsPerPage;
       let dataFilter = [];
       if (dataSearch.role_id !== "") {
-        dataFilter = resUser.data.data.filter(
+        dataFilter = resUser.data.data.data.filter(
           (item) =>
             removeMark(
               (
@@ -89,7 +100,7 @@ function User() {
           dataFilter.length > 10 ? dataFilter.slice(start, end) : dataFilter
         );
       } else {
-        dataFilter = resUser.data.data.filter((item) =>
+        dataFilter = resUser.data.data.data.filter((item) =>
           removeMark(
             (
               item.first_name +
@@ -251,20 +262,55 @@ function User() {
   };
 
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link pre-btn"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={paginationOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
         <button
           type="button"
           className="page-link"
-          value={i + 1}
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
           onClick={paginationOnClick}
+          disabled={pagination.current_page === i + 1}
         >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={paginationOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="user-cover">
       <div className="container ">
@@ -285,7 +331,7 @@ function User() {
               <div className="contact-form">
                 <div className="form-group form2">
                   <label className="control-label label1 col-sm-2">
-                    {t("title")}
+                    {t("search")}
                   </label>
                   <div className="col-sm-10">
                     <input
@@ -325,6 +371,7 @@ function User() {
                     <button
                       type="submit"
                       className="btn btn-default btn-filter-user"
+                      disabled={isLoading}
                     >
                       {t("user.resetbtn")}
                     </button>
@@ -338,7 +385,7 @@ function User() {
             {dataPerPage.length === 0 && isLoading === false && (
               <h3 className="user-notify">{t("user.noUsers")}</h3>
             )}
-            {dataPerPage.length > 0 && isLoading === false && (
+            {dataPerPage.length > 0 && (
               <div>
                 <table className="table table-bordered text-center">
                   <thead>
@@ -355,7 +402,12 @@ function User() {
                     {dataPerPage.map((ele, index) => {
                       return (
                         <tr key={index}>
-                          <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                          <td>
+                            {(pagination.current_page - 1) *
+                              pagination.per_page +
+                              index +
+                              1}
+                          </td>
                           <td>{ele.email}</td>
                           <td>
                             {ele.first_name + " " + ele.last_name !==
@@ -398,7 +450,7 @@ function User() {
                   </tbody>
                 </table>
                 <nav aria-label="Page navigation example">
-                  <ul className="pagination justify-content-center">
+                  <ul className="pagination justify-content-center user">
                     {menuItems}
                   </ul>
                 </nav>
@@ -410,6 +462,7 @@ function User() {
                   <button
                     type="submit"
                     className="btn btn-default btn-user-save"
+                    disabled={isLoading}
                     style={{ background: "#5dabc3" }}
                   >
                     {t("btnSave")}

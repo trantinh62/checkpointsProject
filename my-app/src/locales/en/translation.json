@@ -21,7 +21,8 @@
         "allChecked": "No checkpoints need to be checked"
         
     },"listReviews": {
-        "btnReview": "Đánh giá",
+        "btnReview": "Review",
+        "btnView": "View",
         "allChecked": "No checkpoints need to be checked"
     },
     "detailReview":{
@@ -49,6 +50,7 @@
         "errorChoseDate":"End date must be chosen after start date",
         "createSuccess":"Create checkpoint successful!",
         "createFailed":"Create checkpoint failed!",
+        "createFailedExist":"Title checkpoint existed!",
         "deleteSuccess":"Delete checkpoint successful!",
         "deleteFailed":"Delete checkpoint failed!",
         "createBtn":"Create checkpoint",
@@ -105,6 +107,7 @@
     },
     "reset":{
         "resetFailed": "Reset password failed!",
+        "resetSuccess": "Reset password successful!",
         "title": "Reset password",
         "newPass": "New password",
         "confirmPass": "Confirm password",
@@ -118,6 +121,7 @@
         "age":"Age:",
         "address":"Address:",
         "registerFailed": "Register failed!",
+        "registerSuccess": "Register successful!",
         "title": "Register",
         "newPass": "Password",
         "confirmPass": "Confirm password",
@@ -125,8 +129,9 @@
         "inputConfirm": "Enter confirm password"
     },
     "profile":{
-        "firstname":"Firstname:",
-        "lastname":"Lastname:",
+        "firstname":"Firstname",
+        "lastname":"Lastname",
+        "email":"Email",
         "oldPass":"Old password",
         "newPass":"New password",
         "confirmPass":"Confirm password",
@@ -134,15 +139,19 @@
         "updateFailed":"Update profile failed!",
         "updatePassSuccess":"Update password successful!",
         "updatePassFailed":"Update password failed!",
+        "confirmNotMatch": "Password and confirm password not matching",
+        "login8Chars":"Password must be longer than 8 characters!",
         "btnUp":"Update profile",
         "btnChange":"Change password",
-        "age":"Age:",
-        "phone":"Phone:",
-        "address":"Address:"
+        "age":"Age",
+        "phone":"Phone",
+        "address":"Address"
     },
     "login": {
         "loginSuccess": "Login successful!",
-        "loginFailed": "Login failed!"
+        "loginFailedPass": "Login failed!",
+        "loginLocked":"This account is locked",
+        "login8Chars":"Password must be longer than 8 characters!"
     }
     ,
     "waitingData": "Waiting for loading data",
@@ -151,7 +160,8 @@
     "btnCancel": "Cancel",
     "btnDelete": "Delete",
     "errorFetchData":"Error occurs wwhen loading data",
-    "title": "Title:",
+    "title": "Title",
+    "search": "Search",
     "beChecked":"User is checked:",
     "startDate": "Start date",
     "endDate": "End date",
@@ -177,5 +187,8 @@
     "status":"Status:",
     "address":"Address:",
     "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số",
-    "ratio": "Checked/Total"
+    "ratio": "Checked/Total",
+    "count": "Number of reviews",
+    "previous": "Previous",
+    "next":"Next"
 }

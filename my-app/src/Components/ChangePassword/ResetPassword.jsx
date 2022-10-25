@@ -14,6 +14,7 @@ function ResetPassword() {
     password: "",
     password_confirm: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setDataPass({
@@ -25,15 +26,20 @@ function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await resetApi(dataPass, token);
-      navigate("/login", { replace: true });
-      navigate(0);
-    } catch (err) {
-      if (err.response.request.status === 422) {
-        Toast(t("errorFormatPass"), "error");
-        return;
+      if (dataPass.password.length < 8) {
+        return Toast(t("profile.login8Chars"), "warning");
       }
-      Toast("Reset password failed!", "error");
+      if (dataPass.password !== dataPass.password_confirm) {
+        return Toast(t("profile.confirmNotMatch"), "warning");
+      }
+      setIsLoading(true);
+      const response = await resetApi(dataPass, token);
+      Toast(t("reset.resetSuccess"), "success");
+      setIsLoading(false);
+      navigate("/login");
+    } catch (err) {
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   return (
@@ -89,7 +95,11 @@ function ResetPassword() {
 
                 <div className="form-group">
                   <div className="col-sm-offset-2 col-sm-10 mt-2">
-                    <button type="submit" className="btn btn-default btn-reset">
+                    <button
+                      type="submit"
+                      className="btn btn-default btn-reset"
+                      disabled={isLoading}
+                    >
                       {t("reset.title")}
                     </button>
                   </div>

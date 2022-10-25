@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Toast from "../Toast/Toast";
 import { profileApi, passApi, getProfileApi } from "../../Api/userApi";
 import { useTranslation } from "react-i18next";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./Profile.css";
 const Profile = () => {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ const Profile = () => {
     password: "",
     password_confirm: "",
   });
+  const [isLoading, setIsLoading] = useState(true);
   const onChangeInput = (e) => {
     const { name, value } = e.target;
     setDataProfile({
@@ -37,50 +39,66 @@ const Profile = () => {
     });
   };
 
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
+      setIsLoading(true);
       const res = await getProfileApi(token);
       setDataProfile(res.data.data);
+      setIsLoading(false);
     } catch (err) {
-      Toast(t("errorFetchData"), "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setIsLoading(true);
       const response = await profileApi(dataProfile, token);
-      sessionStorage.setItem(
-        "sessionUsername",
+      localStorage.setItem(
+        "localUsername",
         response.data.data.first_name + " " + response.data.data.last_name
       );
       Toast(t("profile.updateSuccess"), "success");
+      setIsLoading(false);
     } catch (err) {
-      Toast(t("profile.updateFailed"), "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   const handleChange = async (e) => {
     e.preventDefault();
     try {
+      if (dataPass.password.length < 8) {
+        return Toast(t("profile.login8Chars"), "warning");
+      }
+      if (dataPass.password !== dataPass.password_confirm) {
+        return Toast(t("profile.confirmNotMatch"), "warning");
+      }
+      setIsLoading(true);
       const response = await passApi(dataPass, token);
       Toast(t("profile.updatePassSuccess"), "success");
+      setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       if (err.response.request.status === 422) {
         Toast(t("errorFormatPass"), "error");
         return;
       }
-      Toast(t("profile.updatePassFailed"), "error");
+      Toast(err.response.data.message, "error");
     }
   };
   return (
     <div className="profile-cover">
       <div className="container emp-profile">
         <div className="row">
+          {isLoading === true && <LoadingSpinner />}
           <div className="col-md-4">
             <div className="profile-img">
               <img
@@ -113,7 +131,7 @@ const Profile = () => {
                           name="first_name"
                           value={dataProfile.first_name}
                           onChange={onChangeInput}
-                          placeholder="firstname"
+                          placeholder={t("profile.firstname")}
                           required
                         ></input>
                       </div>
@@ -128,7 +146,7 @@ const Profile = () => {
                           name="last_name"
                           value={dataProfile.last_name}
                           onChange={onChangeInput}
-                          placeholder="lastname"
+                          placeholder={t("profile.lastname")}
                           required
                         ></input>
                       </div>
@@ -143,7 +161,7 @@ const Profile = () => {
                           name="email"
                           value={dataProfile.email}
                           onChange={onChangeInput}
-                          placeholder="email"
+                          placeholder={t("profile.email")}
                           readOnly
                         ></input>
                       </div>
@@ -158,7 +176,7 @@ const Profile = () => {
                           name="phone"
                           value={dataProfile.phone}
                           onChange={onChangeInput}
-                          placeholder="phone"
+                          placeholder={t("profile.phone")}
                           required
                         ></input>
                       </div>
@@ -173,7 +191,7 @@ const Profile = () => {
                           name="age"
                           value={dataProfile.age}
                           onChange={onChangeInput}
-                          placeholder="age"
+                          placeholder={t("profile.age")}
                           required
                         ></input>
                       </div>
@@ -188,7 +206,7 @@ const Profile = () => {
                           name="address"
                           value={dataProfile.address}
                           onChange={onChangeInput}
-                          placeholder="address"
+                          placeholder={t("profile.address")}
                           required
                         ></input>
                       </div>
@@ -199,6 +217,7 @@ const Profile = () => {
                       <button
                         type="submit"
                         className="btn btn-default btn-profile"
+                        disabled={isLoading}
                       >
                         {t("profile.btnUp")}
                       </button>
@@ -257,7 +276,7 @@ const Profile = () => {
                       name="old_password"
                       value={dataPass.old_password}
                       onChange={onChangePass}
-                      placeholder="old password"
+                      placeholder={t("profile.oldPass")}
                       required
                     ></input>
                   </div>
@@ -273,7 +292,7 @@ const Profile = () => {
                       className="profile-pass"
                       value={dataPass.password}
                       onChange={onChangePass}
-                      placeholder="new password"
+                      placeholder={t("profile.newPass")}
                       required
                     ></input>
                   </div>
@@ -289,7 +308,7 @@ const Profile = () => {
                       className="profile-pass"
                       value={dataPass.password_confirm}
                       onChange={onChangePass}
-                      placeholder="confirm password"
+                      placeholder={t("profile.confirmPass")}
                       required
                     ></input>
                   </div>
@@ -299,6 +318,7 @@ const Profile = () => {
                     <button
                       type="submit"
                       className="btn btn-default btn-profile"
+                      disabled={isLoading}
                     >
                       {t("profile.btnChange")}
                     </button>

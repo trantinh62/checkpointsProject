@@ -136,3 +136,9 @@ table.table td .add {
     padding: 8px;
     color: #FFC107;
 }
+.pagination.justify-content-center.create{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+}

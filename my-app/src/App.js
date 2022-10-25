@@ -1,6 +1,5 @@
 import "./App.css";
-
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Components/Login/Login";
 import Register from "./Components/Register/Register";
 import Profile from "./Components/Profile/Profile";
@@ -21,40 +20,127 @@ import Invite from "./Components/Invite/Invite";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "./Common/Layout/Layout";
-
+import { PrivateRoute } from "./Common/PrivateRoute/PrivateRoute";
 function App() {
   return (
     <>
       <ToastContainer />
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/profile" element={<Profile />}></Route>
-          <Route path="/invite" element={<Invite />}></Route>
-          <Route path="/users" element={<User />}></Route>
-          <Route path="/mycheckpoints" element={<ListCheckpoints />}></Route>
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/invite"
+            element={
+              <PrivateRoute>
+                <Invite />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute>
+                <User />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <ListCheckpoints />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/mycheckpoints"
+            element={
+              <PrivateRoute>
+                <ListCheckpoints />
+              </PrivateRoute>
+            }
+          ></Route>
           <Route
             path="/mycheckpoints/:check_id"
-            element={<ListReviews />}
+            element={
+              <PrivateRoute>
+                <ListReviews />
+              </PrivateRoute>
+            }
           ></Route>
           <Route
             path="/mycheckpoints/:check_id/reviews/:review_id"
-            element={<DetailReview />}
+            element={
+              <PrivateRoute>
+                <DetailReview />
+              </PrivateRoute>
+            }
           ></Route>
-          <Route path="/create" element={<CreateCheckpoint />}></Route>
-          <Route path="/gpoint" element={<Gpoint />}></Route>
-          <Route path="/assign/:id" element={<Assign />}></Route>
-          <Route path="/histories" element={<History />}></Route>
+          <Route
+            path="/create"
+            element={
+              <PrivateRoute>
+                <CreateCheckpoint />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/gpoint"
+            element={
+              <PrivateRoute>
+                <Gpoint />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/assign/:id"
+            element={
+              <PrivateRoute>
+                <Assign />
+              </PrivateRoute>
+            }
+          ></Route>
+          <Route
+            path="/histories"
+            element={
+              <PrivateRoute>
+                <History />
+              </PrivateRoute>
+            }
+          ></Route>
           <Route
             path="/histories/member"
-            element={<ListMemberHistory />}
+            element={
+              <PrivateRoute>
+                <ListMemberHistory />
+              </PrivateRoute>
+            }
           ></Route>
           <Route
             path="/histories/member/:id"
-            element={<MemberHistory />}
+            element={
+              <PrivateRoute>
+                <MemberHistory />
+              </PrivateRoute>
+            }
           ></Route>
-          <Route path="/histories/:id" element={<DetailHistory />}></Route>
+          <Route
+            path="/histories/:id"
+            element={
+              <PrivateRoute>
+                <DetailHistory />
+              </PrivateRoute>
+            }
+          ></Route>
         </Route>
-        <Route path="/" element={<Login />}></Route>
+
         <Route path="/login" element={<Login />}></Route>
         <Route path="/forgot" element={<ForgotPassword />}></Route>
         <Route path="/register" element={<Register />}></Route>

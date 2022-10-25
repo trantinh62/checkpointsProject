@@ -100,3 +100,9 @@ table.table td .add {
     border: none;
     size: 10px;
 }
+.pagination.justify-content-center.history{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+}

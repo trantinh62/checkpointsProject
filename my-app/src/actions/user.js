@@ -1,6 +1,6 @@
-export const useraccount = (string) => {
-  return {
-    type: "USERACCOUNT",
-    payload: string,
-  };
-};
+// export const useraccount = (string) => {
+//   return {
+//     type: "USERACCOUNT",
+//     payload: string,
+//   };
+// };

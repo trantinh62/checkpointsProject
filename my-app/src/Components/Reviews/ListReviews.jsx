@@ -1,19 +1,23 @@
 import { useState, useEffect } from "react";
-import { getReviewsByCheckpointIdAndMyReviewId } from "../../Api/userApi";
 import {
-  useParams,
-  useNavigate,
-  useLocation,
-  useSearchParams,
-  Link,
-} from "react-router-dom";
+  getReviewsByCheckpointIdAndMyReviewId,
+  getCheckpointsByReviewId,
+} from "../../Api/userApi";
+import { useParams, useNavigate, useLocation, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectListCheckpoints,
+  updateListReviews,
+  updateListCheckpoints,
+} from "../../store/listCheckpointSlice";
 import Toast from "../Toast/Toast";
 import "./ListReviews.css";
 function ListReviews() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { search } = useLocation();
   const params = useParams();
   const [page, setPage] = useState(
@@ -22,65 +26,127 @@ function ListReviews() {
   const itemsPerPage = 8;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
-  const [searchParams] = useSearchParams();
-  const title = searchParams.get("title");
-  const [dataYetReview, setDataYetReview] = useState([]);
   const [dataPerPage, setDataPerPage] = useState([]);
   const [numPages, setNumPages] = useState(1, []);
   const [isLoading, setIsLoading] = useState(true);
-  const handleOnClick = (e) => {
-    const page = e.target.value;
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(dataYetReview.slice(start, end));
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
+  const handleOnClick = async (e) => {
+    setIsLoading(true);
+    const value = e.target.value;
+    const resCheck = await getReviewsByCheckpointIdAndMyReviewId(
+      token,
+      params.check_id,
+      value
+    );
+    setPagination(resCheck.data.data);
+    setDataPerPage(resCheck.data.data.data);
+    setIsLoading(false);
   };
-  const token = sessionStorage.getItem("sessionToken");
+  const list = useSelector(selectListCheckpoints);
+  const [title, setTitle] = useState("");
+  const token = localStorage.getItem("localToken");
 
   useEffect(() => {
     fetchData();
   }, []);
   const fetchData = async () => {
     try {
-      setIsLoading(true);
-      const res = await getReviewsByCheckpointIdAndMyReviewId(
-        token,
-        params.check_id
-      );
-      const yetReview = res.data.data.filter(
-        (item) =>
-          item.attitude === null &&
-          item.performance === null &&
-          item.strength === null &&
-          item.teamwork === null &&
-          item.training === null
-      );
-      setDataYetReview(yetReview);
-      setNumPages(Math.ceil(yetReview.length / itemsPerPage));
-      setDataPerPage(yetReview.slice(start, end));
-      // setDataYetReview(res.data.data);
-      // setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
-      // setDataPerPage(res.data.data.slice(start, end));
-      setIsLoading(false);
+      const index = list.listCheckpoints
+        ? list.listCheckpoints.findIndex(
+            (item) => item.checkpoint.id === parseInt(params.check_id)
+          )
+        : -1;
+      if (index !== -1) {
+        setTitle(
+          list.listCheckpoints
+            ? list.listCheckpoints.filter(
+                (item) => item.checkpoint_id === parseInt(params.check_id)
+              )[0].checkpoint.name
+            : ""
+        );
+        setIsLoading(true);
+        const resReviews = await getReviewsByCheckpointIdAndMyReviewId(
+          token,
+          params.check_id,
+          1
+        );
+        setNumPages(Math.ceil(resReviews.data.data.length / itemsPerPage));
+        setDataPerPage(resReviews.data.data.data);
+        setPagination(resReviews.data.data);
+        setIsLoading(false);
+      } else {
+        setIsLoading(true);
+        const resReviews = await getReviewsByCheckpointIdAndMyReviewId(
+          token,
+          params.check_id,
+          1
+        );
+
+        setTitle(resReviews.data.data.data[0].name);
+
+        setNumPages(Math.ceil(resReviews.data.data.length / itemsPerPage));
+        setPagination(resReviews.data.data);
+        setDataPerPage(resReviews.data.data.data);
+        setIsLoading(false);
+      }
     } catch (err) {
       Toast(t("errorFetchData"), "error");
     }
   };
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
         <button
           type="button"
           className="page-link"
-          value={i + 1}
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
           onClick={handleOnClick}
+          disabled={pagination.current_page === i + 1}
         >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="list-reviews-cover">
       <div className="container">
@@ -147,36 +213,27 @@ function ListReviews() {
                               <div>{ele.user.email}</div>
                             </div>
                           </div>
-                          <div className="d-flex gap-2 pt-4 btn-review-div">
-                            <Link
-                              to={`/mycheckpoints/${params.check_id}/reviews/${
-                                ele.id
-                              }?title=${title}&user_id=${
-                                ele.user.id
-                              }&username=${
-                                ele.user.first_name !== null &&
-                                ele.user.first_name !== null
-                                  ? ele.user.first_name +
-                                    " " +
-                                    ele.user.last_name +
-                                    " (" +
-                                    ele.user.email +
-                                    " )"
-                                  : ele.user.email
-                              }`}
-                            >
-                              <button
-                                type="button"
-                                className="btn btn-primary btn-review"
-                                style={{
-                                  background: "#5dabc3",
-                                  border: "none",
-                                }}
+                          <div>
+                            <div className="d-flex gap-2 pt-4 btn-review-div">
+                              <Link
+                                to={`/mycheckpoints/${params.check_id}/reviews/${ele.id}`}
                               >
-                                <i className="bx bx-message-square-dots me-1"></i>
-                                {t("listReviews.btnReview")}
-                              </button>
-                            </Link>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary btn-review"
+                                  style={{
+                                    background: "#5dabc3",
+                                    border: "none",
+                                  }}
+                                >
+                                  <i className="bx bx-message-square-dots me-1"></i>
+                                  {ele.attitude == null &&
+                                    t("listReviews.btnReview")}
+                                  {ele.attitude !== null &&
+                                    t("listReviews.btnView")}
+                                </button>
+                              </Link>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -184,7 +241,7 @@ function ListReviews() {
                   );
                 })}
                 <nav aria-label="Page navigation example">
-                  <ul className="pagination justify-content-center">
+                  <ul className="pagination justify-content-center list-reviews">
                     {menuItems}
                   </ul>
                 </nav>

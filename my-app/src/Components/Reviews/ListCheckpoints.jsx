@@ -6,15 +6,19 @@ import { useTranslation } from "react-i18next";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./ListCheckpoints.css";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  selectListCheckpoints,
+  updateListCheckpoints,
+} from "../../store/listCheckpointSlice";
 
 function ListReviews() {
   const { t } = useTranslation();
   const { search } = useLocation();
+  const dispatch = useDispatch();
+
   const [page, setPage] = useState(
     new URLSearchParams(search).get("page") || 1
   );
-  const user = useSelector((state) => state.userLogin);
-
   const itemsPerPage = 10;
   const start = (page - 1) * itemsPerPage;
   const end = page * itemsPerPage;
@@ -22,14 +26,22 @@ function ListReviews() {
   const [listCheckpoints, setListCheckpoints] = useState([]);
   const [numPages, setNumPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const handleOnClick = (e) => {
-    const page = e.target.value;
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(listCheckpoints.slice(start, end));
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
+  const handleOnClick = async (e) => {
+    setIsLoading(true);
+    const value = e.target.value;
+    const resCheck = await getCheckpointsByReviewId(token, value);
+    setPagination(resCheck.data.data);
+    setDataPerPage(resCheck.data.data.data);
+    dispatch(updateListCheckpoints(resCheck.data.data.data));
+    setIsLoading(false);
   };
-  const token = sessionStorage.getItem("sessionToken");
+  const token = localStorage.getItem("localToken");
+  const list = useSelector(selectListCheckpoints);
 
   useEffect(() => {
     fetchData();
@@ -37,34 +49,71 @@ function ListReviews() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const res = await getCheckpointsByReviewId(token);
-      setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
-      setListCheckpoints(res.data.data);
-      setDataPerPage(res.data.data.slice(start, end));
+      const res = await getCheckpointsByReviewId(token, 1);
+      setNumPages(Math.ceil(res.data.data.data.length / itemsPerPage));
+      setListCheckpoints(res.data.data.data);
+      setDataPerPage(res.data.data.data.slice(start, end));
+      dispatch(updateListCheckpoints(res.data.data.data));
+      setPagination(res.data.data);
       setIsLoading(false);
     } catch (err) {
-      console.log(err);
       Toast(t("errorFetchData"), "error");
     }
   };
+
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
         <button
           type="button"
           className="page-link"
-          value={i + 1}
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
           onClick={handleOnClick}
+          disabled={pagination.current_page === i + 1}
+          style={{ zIndex: 0 }}
         >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="list-checkpoints-cover">
-      <div>user: {user.username}</div>
       <div className="container ">
         <div className="table-wrapper list-check">
           <div className="table-title">
@@ -95,7 +144,7 @@ function ListReviews() {
                     <th>{t("title")}</th>
                     <th>{t("startDate")}</th>
                     <th>{t("endDate")}</th>
-                    <th>{t("ratio")}</th>
+                    <th style={{ width: "14%" }}>{t("ratio")}</th>
                     <th className="view-checkpoint">{t("view")}</th>
                   </tr>
                 </thead>
@@ -103,15 +152,20 @@ function ListReviews() {
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          {(pagination.current_page - 1) * pagination.per_page +
+                            index +
+                            1}
+                        </td>
                         <td>{ele.checkpoint.name}</td>
                         <td>{ele.checkpoint.start_date}</td>
                         <td>{ele.checkpoint.end_date}</td>
-                        <td></td>
                         <td>
-                          <Link
-                            to={`/mycheckpoints/${ele.checkpoint.id}?title=${ele.checkpoint.name}`}
-                          >
+                          {ele.checkpoint.count_review_done}/
+                          {ele.checkpoint.count_review}
+                        </td>
+                        <td>
+                          <Link to={`/mycheckpoints/${ele.checkpoint.id}`}>
                             <button
                               variant="primary"
                               className="btn-list-checkpoint"
@@ -126,7 +180,7 @@ function ListReviews() {
                 </tbody>
               </table>
               <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
+                <ul className="pagination justify-content-center list-checkpoints">
                   {menuItems}
                 </ul>
               </nav>

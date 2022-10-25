@@ -1,20 +1,22 @@
 import "./Header.css";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { updateLanguage } from "../../Api/userApi";
 import Toast from "../../Components/Toast/Toast";
 import { useTranslation } from "react-i18next";
 import i18n from "i18next";
+import variable from "../Variable/variabe";
 
 function Header() {
   const { t } = useTranslation();
-  const userName = sessionStorage.getItem("sessionUsername");
-  const token = sessionStorage.getItem("sessionToken");
-  const roleId = sessionStorage.getItem("sessionRoleId");
-  const language = sessionStorage.getItem("sessionLanguage");
+  const userName = localStorage.getItem("localUsername");
+  const token = localStorage.getItem("localToken");
+  const roleId = localStorage.getItem("localRoleId");
+  const language = localStorage.getItem("localLanguage");
   const handleLogout = async () => {
-    sessionStorage.clear();
+    localStorage.clear();
   };
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -33,9 +35,9 @@ function Header() {
     try {
       const languageValue = e.target.id;
       i18n.changeLanguage(languageValue);
-      sessionStorage.setItem("sessionLanguage", languageValue);
+      localStorage.setItem("localLanguage", languageValue);
       const updatelanguage = await updateLanguage(
-        { language: languageValue === "en" ? 0 : 1 },
+        { language: languageValue === "vn" ? 0 : 1 },
         token
       );
     } catch (err) {
@@ -50,7 +52,9 @@ function Header() {
         style={{ height: "5rem" }}
       >
         <div className="container">
-          <a className="navbar-brand">Checkpoint 360</a>
+          <Link to="/" className="navbar-brand">
+            Checkpoint 360
+          </Link>
 
           <button type="button" className="navbar-toggler collapsed"></button>
 
@@ -62,16 +66,16 @@ function Header() {
                 <Link to="/histories">{t("header.checkpointHistories")}</Link>
               </div>
             </div>
-            {roleId !== "3" && (
+            {parseInt(roleId) !== variable.MemRoleId && (
               <div className="dropdown ">
                 <button className="dropbtn">
                   {t("header.manageCheckpoints")}
                 </button>
                 <div className="dropdown-content">
-                  {roleId === "1" && (
+                  {parseInt(roleId) === variable.GLRoleId && (
                     <Link to="/create">{t("header.crudCheckpoints")}</Link>
                   )}
-                  {roleId === "1" && (
+                  {parseInt(roleId) === variable.GLRoleId && (
                     <Link to="/gpoint">{t("header.updateGpoint")}</Link>
                   )}
                   <Link to="/histories/member">
@@ -80,7 +84,7 @@ function Header() {
                 </div>
               </div>
             )}
-            {roleId !== "3" && (
+            {parseInt(roleId) === variable.GLRoleId && (
               <div className="dropdown ">
                 <button className="dropbtn">{t("header.manageUsers")}</button>
                 <div className="dropdown-content">
@@ -92,7 +96,10 @@ function Header() {
           </div>
           <div className="dropdown-right">
             <div className="dropdown">
-              <button className="dropbtn"> {userName}</button>
+              <button className="dropbtn">
+                {" "}
+                {userName ? userName : "Unknown"}
+              </button>
               <div className="dropdown-content">
                 <Link to="/profile">{t("header.profile")}</Link>
                 <a href="/login" onClick={handleLogout}>

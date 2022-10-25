@@ -200,3 +200,12 @@ a {
     background-color: var(--bs-btn-hover-bg);
     border-color: var(--bs-btn-hover-border-color);
 }
+.d-flex{
+    display: -webkit-inline-box;
+}
+.pagination.justify-content-center.list-reviews{
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+}

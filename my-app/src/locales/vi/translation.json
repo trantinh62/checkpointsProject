@@ -22,6 +22,7 @@
 
     },"listReviews": {
         "btnReview": "Đánh giá",
+        "btnView": "Xem",
         "allChecked": "Tất cả checkpoint đã được thực hiện"
     },
     "detailReview":{
@@ -49,6 +50,7 @@
         "errorChoseDate":"Ngày kết thúc phải sau ngày bắt đầu",
         "createSuccess":"Tạo checkpoint thành công!",
         "createFailed":"Tạo checkpoint thất bại!",
+        "createFailedExist":"Tiêu đề checkpoint đã tồn tại!",
         "deleteSuccess":"Xóa checkpoint thành công!",
         "deleteFailed":"Xóa checkpoint thất bại!",
         "createBtn":"Tạo checkpoint",
@@ -105,6 +107,7 @@
     },
     "reset":{
         "resetFailed": "Đặt lại mật khẩu thất bại!",
+        "resetSuccess": "Đặt lại mật khẩu thành công!",
         "title": "Đặt lại mật khẩu",
         "newPass": "Mật khẩu mới",
         "confirmPass": "Nhập lại mật khẩu",
@@ -118,6 +121,7 @@
         "age":"Tuổi:",
         "address":"Địa chỉ:",
         "registerFailed": "Đăng ký thất bại",
+        "registerSuccess": "Đăng ký thành công!",
         "title": "Đăng ký",
         "newPass": "Mật khẩu ",
         "confirmPass": "Nhập lại mật khẩu",
@@ -125,11 +129,12 @@
         "inputConfirm": "Nhập lại mật khẩu"
     },
     "profile":{
-        "firstname":"Họ:",
-        "lastname":"Tên:",
-        "phone":"Số điện thoại:",
-        "age":"Tuổi:",
-        "address":"Địa chỉ:",
+        "firstname":"Họ",
+        "lastname":"Tên",
+        "phone":"Số điện thoại",
+        "email":"Email",
+        "age":"Tuổi",
+        "address":"Địa chỉ",
         "oldPass":"Mật khẩu cũ",
         "newPass":"Mật khẩu mới",
         "confirmPass":"Nhập lại mật khẩu",
@@ -137,12 +142,16 @@
         "updateFailed":"Cập nhật thông tin thất bại",
         "updatePassSuccess":"Thay đổi password thành công!",
         "updatePassFailed":"Thay đổi pasword thất bại!",
+        "confirmNotMatch": "Nhập lại mật khẩu không khớp với mật khẩu mới",
+        "login8Chars":"Mật khẩu phải đủ 8 ký tự!",
         "btnUp":"Cập nhật profile",
         "btnChange":"Cập nhật password"
     },
     "login": {
         "loginSuccess": "Đăng nhập thành công",
-        "loginFailed": "Đăng nhập thất bại"
+        "loginFailedPass": "Sai thông tin mật khẩu!",
+        "loginLocked":"Tài khoản đã bị khóa",
+        "login8Chars":"Mật khẩu phải đủ 8 ký tự!"
     },
     "waitingData": "Đang tải dữ liệu",
     "btnBack": "Quay lại",
@@ -150,7 +159,8 @@
     "btnCancel": "Hủy",
     "btnDelete": "Xóa",
     "errorFetchData":"Có lỗi xảy ra khi tải dữ liệu.",
-    "title": "Tiêu đề:",
+    "title": "Tiêu đề",
+    "search": "Tìm kiếm",
     "beChecked":"Người được đánh giá:",
     "startDate": "Ngày bắt đầu",
     "endDate": "Ngày kết thúc",
@@ -176,5 +186,8 @@
     "status":"Trạng thái:",
     "address":"Địa chỉ:",
     "errorFormatPass":"Mật khẩu đủ 8 ký tự đủ chữ hoa, chữ thường, số",
-    "ratio": "Đã check/Tổng sô"
+    "ratio": "Đã check/Tổng số",
+    "count": "Tổng số đánh giá",
+    "previous": "Trước",
+    "next":"Sau"
 }

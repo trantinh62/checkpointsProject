@@ -49,8 +49,8 @@ function MemberHistory() {
     fetchData();
   }, []);
 
-  const token = sessionStorage.getItem("sessionToken");
-  const roleId = sessionStorage.getItem("sessionRoleId");
+  const token = localStorage.getItem("localToken");
+  const roleId = localStorage.getItem("localRoleId");
   const fetchData = async () => {
     try {
       const resCheck = await getCheckpointByCheckId(token, params.id);
@@ -61,7 +61,7 @@ function MemberHistory() {
         setDataUser(resUser.data.data.map((item) => item.user));
       }
       if (roleId === "2") {
-        resUser = await getListUsersByCheckpointId(token, params.id); // mai sua
+        resUser = await getListUsersByCheckpointId(token, params.id);
         setDataUser(resUser.data.data.map((item) => item.user));
       }
       const resMemberHistory = await getReviewsByCheckpointIdAndUserId(

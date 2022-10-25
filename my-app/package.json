@@ -10,6 +10,7 @@
     "axios": "^0.27.2",
     "bootstrap": "^5.2.0",
     "bootstrap-icons": "^1.9.1",
+    "connect-api-mocker": "^1.10.0",
     "dayjs": "^1.11.5",
     "i18next": "^21.10.0",
     "i18next-http-backend": "^1.4.4",

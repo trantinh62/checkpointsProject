@@ -19,6 +19,7 @@ function Register() {
     password: "",
     password_confirm: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
   const onChangeInput = (e) => {
     const { id, value } = e.target;
     setdataRegister({
@@ -29,12 +30,21 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (dataRegister.password.length < 8) {
+        return Toast(t("profile.login8Chars"), "warning");
+      }
+      if (dataRegister.password !== dataRegister.password_confirm) {
+        return Toast(t("profile.confirmNotMatch"), "warning");
+      }
+      setIsLoading(true);
       const res = await registerApi(dataRegister, token);
+      localStorage.clear();
       Toast(t("register.registerSuccess"), "success");
-      navigate("/login", { replace: true });
-      navigate(0);
+      navigate("/login");
+      setIsLoading(false);
     } catch (err) {
-      Toast(t("register.registerFailed"), "error");
+      setIsLoading(false);
+      Toast(err.response.data.message, "error");
     }
   };
   return (
@@ -167,7 +177,11 @@ function Register() {
                 </div>
                 <div className="form-group">
                   <div className="col-sm-offset-2 col-sm-10 mt-2">
-                    <button type="submit" className="btn btn-default register">
+                    <button
+                      type="submit"
+                      className="btn btn-default register"
+                      disabled={isLoading}
+                    >
                       {t("register.title")}
                     </button>
                   </div>

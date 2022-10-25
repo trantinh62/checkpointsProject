@@ -8,7 +8,9 @@ import dayjs from "dayjs";
 import Toast from "../Toast/Toast";
 import { useTranslation } from "react-i18next";
 import removeMark from "../../Helper/removeMark";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import "./ListMemberHistory.css";
+import variable from "../../Common/Variable/variabe";
 
 function ListMemberHistory() {
   const { t } = useTranslation();
@@ -26,11 +28,15 @@ function ListMemberHistory() {
   });
 
   const [dataPerPage, setDataPerPage] = useState([]);
-  const [numPages, setNumPages] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const token = sessionStorage.getItem("sessionToken");
-  const roleId = sessionStorage.getItem("sessionRoleId");
-
+  // const [numPages, setNumPages] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const token = localStorage.getItem("localToken");
+  const roleId = localStorage.getItem("localRoleId");
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+    links: [],
+  });
   const onChangeInput = (e) => {
     let { name, value } = e.target;
     let name_value = dataSearch.name || "";
@@ -51,7 +57,7 @@ function ListMemberHistory() {
           new Date(item.start_date) > new Date(start_date_value) &&
           new Date(item.end_date) < new Date(end_date_value)
       );
-      setDataPerPage(dataFilter.slice(start, end));
+      setDataPerPage(dataFilter);
     }
     if (name === "start_date") {
       start_date_value = value;
@@ -87,12 +93,20 @@ function ListMemberHistory() {
     }
   };
 
-  const handleOnClick = (e) => {
-    const page = e.target.value;
-    setPage(page);
-    const start = (page - 1) * itemsPerPage;
-    const end = page * itemsPerPage;
-    setDataPerPage(dataListCheck.slice(start, end));
+  const handleOnClick = async (e) => {
+    setIsLoading(true);
+    let res = [];
+    const value = e.target.value;
+    if (parseInt(roleId) === variable.GLRoleId) {
+      res = await getAllCheckpointApi(token, value);
+    }
+    if (parseInt(roleId) === variable.TLRoleId) {
+      res = await getCheckpointsByReviewId(token, value);
+    }
+    setDataPerPage(res.data.data.checkpoint.data);
+    setPagination(res.data.data.checkpoint);
+    setDataListCheck(res.data.data.checkpoint.data);
+    setIsLoading(false);
   };
 
   const [dataListCheck, setDataListCheck] = useState([]);
@@ -103,21 +117,25 @@ function ListMemberHistory() {
   const fetchData = async () => {
     try {
       let res = [];
-      if (roleId === "1") {
-        res = await getAllCheckpointApi(token);
-        setNumPages(Math.ceil(res.data.data.checkpoints.length / itemsPerPage));
-        setDataListCheck(res.data.data.checkpoints);
-        setDataPerPage(res.data.data.checkpoints.slice(start, end));
-        setLoading(true);
+      if (parseInt(roleId) === variable.GLRoleId) {
+        setIsLoading(true);
+        res = await getAllCheckpointApi(token, 1);
+        setDataListCheck(res.data.data.checkpoint.data);
+        setDataPerPage(res.data.data.checkpoint.data);
+        setPagination(res.data.data.checkpoint);
+        setIsLoading(false);
       }
-      if (roleId === "2") {
-        res = await getCheckpointsByReviewId(token);
-        setNumPages(Math.ceil(res.data.data.length / itemsPerPage));
-        setDataListCheck(res.data.data.map((item) => item.checkpoint));
-        setDataPerPage(
-          res.data.data.map((item) => item.checkpoint).slice(start, end)
+      if (parseInt(roleId) === variable.TLRoleId) {
+        setIsLoading(true);
+        res = await getCheckpointsByReviewId(token, 1);
+        setDataListCheck(
+          res.data.data.checkpoint.data.map((item) => item.checkpoint)
         );
-        setLoading(true);
+        setDataPerPage(
+          res.data.data.data.map((item) => item.checkpoint).slice(start, end)
+        );
+        setPagination(res.data.data);
+        setIsLoading(false);
       }
     } catch (err) {
       Toast(t("errorFetchData"), "error");
@@ -127,34 +145,67 @@ function ListMemberHistory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const page = 1;
-      setPage(page);
-      const start = (page - 1) * itemsPerPage;
-      const end = page * itemsPerPage;
+      setIsLoading(true);
       setDataSearch({
         name: "",
         start_date: dayjs(new Date("2022-01-01")).format("YYYY-MM-DDTHH:mm"),
-        end_date: dayjs(new Date("2022-12-31")).format("YYYY-MM-DDTHH:mm"),
+        end_date: dayjs(new Date("2025-12-31")).format("YYYY-MM-DDTHH:mm"),
       });
-      setDataPerPage(dataListCheck.slice(start, end));
+      setDataPerPage(dataListCheck);
+      setIsLoading(false);
     } catch (err) {}
   };
 
   let menuItems = [];
-  for (var i = 0; i < numPages; i++) {
+  menuItems.push(
+    <li key="pre" className="page-item">
+      <button
+        type="button"
+        className="page-link pre-btn"
+        value={
+          pagination.links[pagination.current_page - 1]
+            ? pagination.links[pagination.current_page - 1].label
+            : "none"
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === 1}
+      >
+        {t("previous")}
+      </button>
+    </li>
+  );
+  for (var i = 0; i < pagination.last_page; i++) {
     menuItems.push(
       <li key={i} className="page-item">
         <button
           type="button"
           className="page-link"
-          value={i + 1}
+          value={pagination.links[i + 1] ? pagination.links[i + 1].label : ""}
           onClick={handleOnClick}
+          disabled={pagination.current_page === i + 1}
         >
           {i + 1}
         </button>
       </li>
     );
   }
+  menuItems.push(
+    <li key="next" className="page-item">
+      <button
+        type="button"
+        className="page-link "
+        value={
+          pagination.links[pagination.current_page + 1]
+            ? pagination.links[pagination.current_page + 1].label
+            : ""
+        }
+        onClick={handleOnClick}
+        disabled={pagination.current_page === pagination.last_page}
+      >
+        {t("next")}
+      </button>
+    </li>
+  );
   return (
     <div className="list-member-his-cover">
       <div className="container ">
@@ -224,15 +275,13 @@ function ListMemberHistory() {
               </button>
             </div>
           </form>
-          {loading === false && (
-            <h3 className="review-notify">{t("waitingData")}</h3>
-          )}
-          {dataPerPage.length === 0 && loading === true && (
+          {isLoading === true && <LoadingSpinner />}
+          {dataPerPage.length === 0 && isLoading === false && (
             <h3 className="list-member-history-notify">
               {t("listMemberHistory.noCheckpoints")}
             </h3>
           )}
-          {dataPerPage.length > 0 && (
+          {dataPerPage.length > 0 && isLoading === false && (
             <div>
               <table className="table table-bordered text-center">
                 <thead>
@@ -241,7 +290,7 @@ function ListMemberHistory() {
                     <th>{t("title")}</th>
                     <th>{t("startDate")}</th>
                     <th>{t("endDate")}</th>
-                    <th>{t("ratio")}</th>
+                    <th>{t("count")}</th>
                     <th className="view-list-member-history">{t("view")}</th>
                   </tr>
                 </thead>
@@ -249,11 +298,15 @@ function ListMemberHistory() {
                   {dataPerPage?.map((ele, index) => {
                     return (
                       <tr key={index}>
-                        <td>{(page - 1) * itemsPerPage + index + 1}</td>
+                        <td>
+                          {(pagination.current_page - 1) * pagination.per_page +
+                            index +
+                            1}
+                        </td>
                         <td>{ele.name}</td>
                         <td>{ele.start_date}</td>
                         <td>{ele.end_date}</td>
-                        <td></td>
+                        <td>{ele.count_review}</td>
                         <td>
                           <a
                             href={`/histories/member/${ele.id}?title=${ele.name}`}
@@ -272,7 +325,7 @@ function ListMemberHistory() {
                 </tbody>
               </table>
               <nav aria-label="Page navigation example">
-                <ul className="pagination justify-content-center">
+                <ul className="pagination justify-content-center list-mem-history">
                   {menuItems}
                 </ul>
               </nav>
